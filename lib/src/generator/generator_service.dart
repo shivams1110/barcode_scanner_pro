@@ -2,9 +2,11 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
+import '../domain/barcode_format.dart';
 import '../error/barcode_gen_exception.dart';
 import 'batch/batch_generator.dart';
 import 'batch/render_cache.dart';
+import 'helpers/qr_payloads.dart';
 import 'models/barcode_decode_result.dart';
 import 'models/barcode_gen_result.dart';
 import 'models/barcode_request.dart';
@@ -13,8 +15,7 @@ import 'models/pdf_layout.dart';
 import 'rendering/pdf_renderer.dart';
 import 'rendering/raster_exporter.dart';
 import 'rendering/svg_renderer.dart';
-
-const _phase3 = 'arrives in Phase 3';
+import 'validators/barcode_validator.dart';
 
 /// Facade for generating barcodes/QR codes. Phase-1 methods are implemented;
 /// methods belonging to later phases throw [UnimplementedError] but keep the
@@ -141,27 +142,48 @@ class BarcodeGenerator {
   Future<List<BarcodeDecodeResult>> decodeImage(Uint8List bytes) =>
       throw UnimplementedError('decodeImage arrives in Phase 3b');
 
-  bool validate(BarcodeRequest request) =>
-      throw UnimplementedError('validate $_phase3');
+  /// Returns whether [request] can be generated. QR/2D codes accept arbitrary
+  /// data; linear numeric symbologies are checked against their format rules.
+  bool validate(BarcodeRequest request) {
+    switch (request.format) {
+      case BarcodeFormat.ean13:
+        return BarcodeValidator.isValidEAN13(request.data);
+      case BarcodeFormat.ean8:
+        return BarcodeValidator.isValidEAN8(request.data);
+      case BarcodeFormat.upcA:
+        return BarcodeValidator.isValidUPC(request.data);
+      case BarcodeFormat.code128:
+        return BarcodeValidator.isValidCode128(request.data);
+      case BarcodeFormat.code39:
+        return BarcodeValidator.isValidCode39(request.data);
+      default:
+        return request.data.isNotEmpty;
+    }
+  }
 
   // ---- Named QR-payload helpers (Phase 3) ----
-  static BarcodeRequest url(String url) =>
-      throw UnimplementedError('url() $_phase3');
-  static BarcodeRequest email(String to, {String? subject, String? body}) =>
-      throw UnimplementedError('email() $_phase3');
-  static BarcodeRequest phone(String number) =>
-      throw UnimplementedError('phone() $_phase3');
+  static BarcodeRequest url(String url) => _qr(QrPayloads.url(url));
+  static BarcodeRequest text(String value) => _qr(QrPayloads.text(value));
+  static BarcodeRequest phone(String number) => _qr(QrPayloads.phone(number));
   static BarcodeRequest sms(String number, {String? message}) =>
-      throw UnimplementedError('sms() $_phase3');
-  static BarcodeRequest wifi(
-          {required String ssid, String? password, String security = 'WPA'}) =>
-      throw UnimplementedError('wifi() $_phase3');
+      _qr(QrPayloads.sms(number, message: message));
+  static BarcodeRequest email(String to, {String? subject, String? body}) =>
+      _qr(QrPayloads.email(to, subject: subject, body: body));
+  static BarcodeRequest wifi({
+    required String ssid,
+    String? password,
+    String security = 'WPA',
+    bool hidden = false,
+  }) =>
+      _qr(QrPayloads.wifi(
+          ssid: ssid, password: password, security: security, hidden: hidden));
   static BarcodeRequest contact(Map<String, String> fields) =>
-      throw UnimplementedError('contact() $_phase3');
+      _qr(QrPayloads.contact(fields));
   static BarcodeRequest calendar(Map<String, String> fields) =>
-      throw UnimplementedError('calendar() $_phase3');
+      _qr(QrPayloads.calendar(fields));
   static BarcodeRequest location(double lat, double lng) =>
-      throw UnimplementedError('location() $_phase3');
-  static BarcodeRequest text(String value) =>
-      throw UnimplementedError('text() $_phase3');
+      _qr(QrPayloads.location(lat, lng));
+
+  static BarcodeRequest _qr(String data) =>
+      BarcodeRequest(data: data, format: BarcodeFormat.qr);
 }

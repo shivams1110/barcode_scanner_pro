@@ -31,8 +31,5 @@ void main() {
   test('later-phase methods are stubbed', () {
     expect(() => gen.decodeImage(Uint8List(0)),
         throwsA(isA<UnimplementedError>()));
-    expect(() => gen.validate(req), throwsA(isA<UnimplementedError>()));
-    expect(() => BarcodeGenerator.url('https://x.io'),
-        throwsA(isA<UnimplementedError>()));
   });
 }
