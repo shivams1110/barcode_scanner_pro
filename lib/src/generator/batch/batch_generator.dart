@@ -4,8 +4,8 @@ import 'render_cache.dart';
 
 /// Runs barcode generation over a list with bounded concurrency, an optional
 /// LRU cache (duplicate requests render once), and event-loop yields between
-/// groups to keep the UI isolate responsive. Results are returned in input
-/// order regardless of completion order.
+/// groups to keep the main isolate's UI responsive. Results are returned in
+/// input order regardless of completion order.
 ///
 /// Note: within a single concurrent group, two identical requests could both
 /// miss the cache and render twice (best-effort de-dup, not a lock). Place
@@ -29,7 +29,8 @@ class BatchGenerator {
         for (var i = start; i < end; i++)
           _one(i, requests[i], generateOne, cache, results),
       ]);
-      await Future<void>.value(); // yield to event loop between groups
+      await Future<void>.delayed(
+          Duration.zero); // yield to the event loop so the UI can render between groups
     }
     return results.cast<BarcodeGenResult>();
   }

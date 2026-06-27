@@ -35,10 +35,12 @@ void main() {
       const BarcodeRequest(data: 'c', format: BarcodeFormat.qr),
     ];
 
-    final out = await const BatchGenerator()
-        .run(reqs, fakeGen, concurrency: 2, cache: RenderCache());
+    final out = await tester.runAsync(() async {
+      return const BatchGenerator()
+          .run(reqs, fakeGen, concurrency: 2, cache: RenderCache());
+    });
 
-    expect(out.length, 4);
+    expect(out!.length, 4);
     expect(out.map((r) => r.request.data).toList(), ['a', 'b', 'a', 'c']);
     expect(renderCount, 3); // duplicate 'a' served from cache
   });
