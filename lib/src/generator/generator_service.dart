@@ -3,6 +3,8 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import '../error/barcode_gen_exception.dart';
+import 'batch/batch_generator.dart';
+import 'batch/render_cache.dart';
 import 'models/barcode_gen_result.dart';
 import 'models/barcode_request.dart';
 import 'models/pdf_layout.dart';
@@ -10,7 +12,6 @@ import 'rendering/pdf_renderer.dart';
 import 'rendering/raster_exporter.dart';
 import 'rendering/svg_renderer.dart';
 
-const _phase2 = 'arrives in Phase 2';
 const _phase3 = 'arrives in Phase 3';
 
 /// Facade for generating barcodes/QR codes. Phase-1 methods are implemented;
@@ -119,8 +120,12 @@ class BarcodeGenerator {
     return _writeBytes(path, bytes);
   }
 
-  Future<List<BarcodeGenResult>> generateBatch(List<BarcodeRequest> requests) =>
-      throw UnimplementedError('generateBatch $_phase2');
+  Future<List<BarcodeGenResult>> generateBatch(
+    List<BarcodeRequest> requests, {
+    int concurrency = 4,
+  }) =>
+      const BatchGenerator()
+          .run(requests, generate, concurrency: concurrency, cache: RenderCache());
 
   Future<Object> decodeImage(Uint8List bytes) =>
       throw UnimplementedError('decodeImage $_phase3');
