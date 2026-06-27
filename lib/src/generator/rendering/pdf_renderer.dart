@@ -114,9 +114,33 @@ class PdfRenderer {
     );
   }
 
-  // Task 7 fills this in. Stub keeps Task 6 compiling/testable for single.
+  /// Chunks [widgets] into [layout.perPage]-sized pages, each rendered as a
+  /// [pw.GridView] with [layout.columns] columns, [layout.cellPadding] spacing,
+  /// and a fixed [childAspectRatio] of 1.6 so the grid fills the page.
+  ///
+  /// Uses pw.GridView (pdf 3.11+) which accepts crossAxisCount,
+  /// childAspectRatio, crossAxisSpacing, mainAxisSpacing, and children.
   void _addGridPages(
       pw.Document doc, List<pw.Widget> widgets, BarcodePdfLayout layout) {
-    throw const BarcodeGenException('grid layout arrives in the next step');
+    final perPage = layout.perPage;
+    for (var start = 0; start < widgets.length; start += perPage) {
+      final end = (start + perPage).clamp(0, widgets.length);
+      final pageWidgets = widgets.sublist(start, end);
+      doc.addPage(pw.Page(
+        pageFormat: layout.pageFormat,
+        build: (_) => pw.GridView(
+          crossAxisCount: layout.columns,
+          childAspectRatio: 1.6,
+          crossAxisSpacing: layout.cellPadding,
+          mainAxisSpacing: layout.cellPadding,
+          children: pageWidgets
+              .map((w) => pw.Padding(
+                    padding: pw.EdgeInsets.all(layout.cellPadding),
+                    child: pw.Center(child: w),
+                  ))
+              .toList(),
+        ),
+      ));
+    }
   }
 }
