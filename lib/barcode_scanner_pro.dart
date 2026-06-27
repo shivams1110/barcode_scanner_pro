@@ -49,3 +49,6 @@ export 'package:pdf/pdf.dart' show PdfPageFormat;
 
 // Generator — decode contract (Phase 3a; native body in 3b)
 export 'src/generator/models/barcode_decode_result.dart';
+
+// Generator — validation helpers (Phase 3a)
+export 'src/generator/validators/barcode_validator.dart';
