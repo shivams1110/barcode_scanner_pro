@@ -150,7 +150,7 @@ class BarcodeScannerProPlugin :
             result.error(ErrorCode.DECODING_ERROR, "Could not decode image bytes", null)
             return
         }
-        val mask = (call.argument<Int>("formats")) ?: 0
+        val mask = (call.argument<Number>("formats"))?.toInt() ?: 0
         val scanner = if (mask == 0) {
             BarcodeScanning.getClient()
         } else {
