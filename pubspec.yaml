@@ -13,6 +13,7 @@ dependencies:
   plugin_platform_interface: ^2.0.2
   barcode: ^2.2.9
   qr: ^3.0.2
+  pdf: ^3.11.0
 
 dev_dependencies:
   flutter_test:
