@@ -22,12 +22,14 @@ class BarcodeRenderer {
         ..translate(-size.width / 2, -size.height / 2);
     }
 
-    if (request.isQr) {
-      const QrPainter().paint(canvas, size, request);
-    } else {
-      const LinearPainter().paint(canvas, size, request);
+    try {
+      if (request.isQr) {
+        const QrPainter().paint(canvas, size, request);
+      } else {
+        const LinearPainter().paint(canvas, size, request);
+      }
+    } finally {
+      if (rotation != 0) canvas.restore();
     }
-
-    if (rotation != 0) canvas.restore();
   }
 }
