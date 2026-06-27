@@ -5,6 +5,7 @@ import 'dart:ui' as ui;
 import '../error/barcode_gen_exception.dart';
 import 'batch/batch_generator.dart';
 import 'batch/render_cache.dart';
+import 'models/barcode_decode_result.dart';
 import 'models/barcode_gen_result.dart';
 import 'models/barcode_request.dart';
 import 'models/export_options.dart';
@@ -137,8 +138,8 @@ class BarcodeGenerator {
       const BatchGenerator()
           .run(requests, generate, concurrency: concurrency, cache: RenderCache());
 
-  Future<Object> decodeImage(Uint8List bytes) =>
-      throw UnimplementedError('decodeImage $_phase3');
+  Future<List<BarcodeDecodeResult>> decodeImage(Uint8List bytes) =>
+      throw UnimplementedError('decodeImage arrives in Phase 3b');
 
   bool validate(BarcodeRequest request) =>
       throw UnimplementedError('validate $_phase3');
