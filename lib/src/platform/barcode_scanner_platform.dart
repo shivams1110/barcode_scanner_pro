@@ -71,4 +71,11 @@ abstract class BarcodeScannerPlatform extends PlatformInterface {
 
   /// Captures the current frame as JPEG bytes, or null if unavailable.
   Future<Uint8List?> captureFrame(int viewId);
+
+  /// Decodes barcodes from in-memory image [bytes] using the native scanner.
+  /// [formatsMask] is the `BarcodeFormat` bitmask (0 ⇒ all). Returns raw result
+  /// maps (each shaped for `BarcodeDecodeResult.fromMap`); the generator layer
+  /// maps them. Throws [PlatformException] on native decode failure.
+  Future<List<Map<Object?, Object?>>> decodeImage(
+      Uint8List bytes, int formatsMask);
 }

@@ -38,6 +38,7 @@ class ScannerMethod {
   static const setExposure = 'setExposure';
   static const setFocus = 'setFocus';
   static const captureFrame = 'captureFrame';
+  static const decodeImage = 'decodeImage';
 
   // Global
   static const requestPermission = 'requestPermission';
