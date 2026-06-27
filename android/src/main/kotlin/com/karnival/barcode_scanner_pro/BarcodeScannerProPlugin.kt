@@ -3,8 +3,13 @@ package com.karnival.barcode_scanner_pro
 import android.Manifest
 import android.app.Activity
 import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.google.mlkit.vision.barcode.BarcodeScannerOptions
+import com.google.mlkit.vision.barcode.BarcodeScanning
+import com.google.mlkit.vision.barcode.common.Barcode
+import com.google.mlkit.vision.common.InputImage
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -54,6 +59,7 @@ class BarcodeScannerProPlugin :
         when (call.method) {
             Method.CHECK_PERMISSION -> result.success(isGranted())
             Method.REQUEST_PERMISSION -> requestPermission(result)
+            Method.DECODE_IMAGE -> decodeImage(call, result)
             else -> result.notImplemented()
         }
     }
@@ -113,5 +119,74 @@ class BarcodeScannerProPlugin :
 
     override fun onDetachedFromActivity() {
         activity = null
+    }
+
+    // --- decodeImage -----------------------------------------------------------
+
+    /**
+     * Decodes barcodes from raw image bytes using ML Kit.
+     *
+     * Args (from [MethodCall]):
+     *   - `bytes`   : ByteArray — JPEG/PNG/etc. image bytes.
+     *   - `formats` : Int      — bitmask of desired formats (0 = all formats).
+     *
+     * Returns a List of maps with keys: value, format, rawBytes, cornerPoints.
+     *
+     * ML Kit 17.3.0 API notes:
+     *   - [BarcodeScanning.getClient()] with no arg scans all formats.
+     *   - [BarcodeScannerOptions.Builder.setBarcodeFormats] takes (Int, vararg Int);
+     *     passing a single OR-ed Int as the first arg (empty varargs) is valid.
+     *   - [InputImage.fromBitmap] takes (Bitmap, rotationDegrees: Int).
+     *   - [Barcode.cornerPoints] is Array<android.graphics.Point>? (.x/.y are Ints).
+     */
+    private fun decodeImage(call: MethodCall, result: MethodChannel.Result) {
+        val bytes = call.argument<ByteArray>("bytes")
+        if (bytes == null || bytes.isEmpty()) {
+            result.error(ErrorCode.DECODING_ERROR, "Empty image bytes", null)
+            return
+        }
+        val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+        if (bitmap == null) {
+            result.error(ErrorCode.DECODING_ERROR, "Could not decode image bytes", null)
+            return
+        }
+        val mask = (call.argument<Int>("formats")) ?: 0
+        val scanner = if (mask == 0) {
+            BarcodeScanning.getClient()
+        } else {
+            val flags = FormatMapper.toMlKitFlags(mask)
+            BarcodeScanning.getClient(
+                BarcodeScannerOptions.Builder().setBarcodeFormats(flags).build(),
+            )
+        }
+        val image = InputImage.fromBitmap(bitmap, 0)
+        scanner.process(image)
+            .addOnSuccessListener { barcodes ->
+                result.success(barcodes.map { decodeMap(it) })
+                scanner.close()
+            }
+            .addOnFailureListener { e ->
+                result.error(ErrorCode.DECODING_ERROR, e.message, null)
+                scanner.close()
+            }
+    }
+
+    /**
+     * Converts an ML Kit [Barcode] to the light result map expected by Dart's
+     * `BarcodeDecodeResult.fromMap`. Key names MUST match exactly.
+     *
+     * [Barcode.cornerPoints] elements are [android.graphics.Point] with Int
+     * .x/.y; they are promoted to Double to match the Dart contract.
+     */
+    private fun decodeMap(barcode: Barcode): Map<String, Any?> {
+        val corners = barcode.cornerPoints?.map {
+            mapOf("x" to it.x.toDouble(), "y" to it.y.toDouble())
+        } ?: emptyList<Map<String, Double>>()
+        return mapOf(
+            "value" to (barcode.rawValue ?: ""),
+            "format" to FormatMapper.toBit(barcode.format),
+            "rawBytes" to barcode.rawBytes,
+            "cornerPoints" to corners,
+        )
     }
 }

@@ -26,6 +26,7 @@ internal object Method {
     const val SET_EXPOSURE = "setExposure"
     const val SET_FOCUS = "setFocus"
     const val CAPTURE_FRAME = "captureFrame"
+    const val DECODE_IMAGE = "decodeImage"
     const val REQUEST_PERMISSION = "requestPermission"
     const val CHECK_PERMISSION = "checkPermission"
 }
