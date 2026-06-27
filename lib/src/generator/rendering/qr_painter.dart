@@ -9,6 +9,13 @@ import '../models/barcode_request.dart';
 import '../models/barcode_style.dart';
 import '../models/enums.dart';
 
+/// Error-correction levels that keep a logo-bearing QR scannable: the spec
+/// requires >= quartile (Q or H). Low and medium are rejected.
+const Set<ErrorCorrection> _logoMinEcc = {
+  ErrorCorrection.quartile,
+  ErrorCorrection.high,
+};
+
 /// Encodes [request] data into a `qr` package [QrCode] at the requested error
 /// correction level. Wraps encoding failures as [BarcodeGenException].
 QrCode buildQrCode(BarcodeRequest request) {
@@ -30,11 +37,10 @@ class QrPainter {
   void paint(ui.Canvas canvas, ui.Size size, BarcodeRequest request) {
     final style = request.style;
 
-    // Logo requires ECC >= quartile to preserve scannability.
-    if (style.logo != null &&
-        style.errorCorrection == ErrorCorrection.low) {
+    // Logo requires ECC >= quartile (Q or H) to preserve scannability.
+    if (style.logo != null && !_logoMinEcc.contains(style.errorCorrection)) {
       throw const BarcodeGenException(
-        'A logo requires errorCorrection >= quartile to stay scannable',
+        'A logo requires errorCorrection >= quartile (Q or H) to stay scannable',
       );
     }
 

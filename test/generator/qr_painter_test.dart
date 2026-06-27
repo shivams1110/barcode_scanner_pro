@@ -55,4 +55,21 @@ void main() {
       throwsA(isA<BarcodeGenException>()),
     );
   });
+
+  testWidgets('logo with medium ecc throws', (tester) async {
+    final img = await _square();
+    final req = BarcodeRequest(
+      data: 'x',
+      format: BarcodeFormat.qr,
+      style: BarcodeStyle(
+        errorCorrection: ErrorCorrection.medium,
+        logo: BarcodeLogo(image: img),
+      ),
+    );
+    expect(
+      () => QrPainter()
+          .paint(Canvas(ui.PictureRecorder()), const Size(100, 100), req),
+      throwsA(isA<BarcodeGenException>()),
+    );
+  });
 }
