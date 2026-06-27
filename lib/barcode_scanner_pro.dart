@@ -30,3 +30,14 @@ export 'src/overlay/scanner_overlay.dart' show ScannerOverlay, ScannerOverlaySty
 // Platform interface (exposed for advanced use / testing)
 export 'src/platform/barcode_scanner_platform.dart';
 export 'src/platform/scanner_event.dart';
+
+// Generator
+export 'src/generator/models/enums.dart';
+export 'src/generator/models/barcode_logo.dart';
+export 'src/generator/models/barcode_style.dart';
+export 'src/generator/models/barcode_options.dart';
+export 'src/generator/models/barcode_request.dart';
+export 'src/generator/models/barcode_gen_result.dart';
+export 'src/generator/generator_service.dart';
+export 'src/generator/widgets/barcode_widget.dart';
+export 'src/error/barcode_gen_exception.dart';
