@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:barcode_scanner_pro/src/domain/barcode_format.dart';
 import 'package:barcode_scanner_pro/src/generator/generator_service.dart';
 import 'package:barcode_scanner_pro/src/generator/models/barcode_gen_result.dart';
@@ -28,8 +26,4 @@ void main() {
     expect(b64!.isNotEmpty, isTrue);
   });
 
-  test('later-phase methods are stubbed', () {
-    expect(() => gen.decodeImage(Uint8List(0)),
-        throwsA(isA<UnimplementedError>()));
-  });
 }

@@ -2,8 +2,11 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
+import 'package:flutter/services.dart' show PlatformException;
+
 import '../domain/barcode_format.dart';
 import '../error/barcode_gen_exception.dart';
+import '../platform/barcode_scanner_platform.dart';
 import 'batch/batch_generator.dart';
 import 'batch/render_cache.dart';
 import 'helpers/qr_payloads.dart';
@@ -139,8 +142,24 @@ class BarcodeGenerator {
       const BatchGenerator()
           .run(requests, generate, concurrency: concurrency, cache: RenderCache());
 
-  Future<List<BarcodeDecodeResult>> decodeImage(Uint8List bytes) =>
-      throw UnimplementedError('decodeImage arrives in Phase 3b');
+  /// Decodes all barcodes found in [bytes] (PNG/JPEG/bitmap) via the native
+  /// scanner. Pass [formats] to restrict symbologies (null => all). Returns an
+  /// empty list when the image contains no barcodes.
+  Future<List<BarcodeDecodeResult>> decodeImage(
+    Uint8List bytes, {
+    Set<BarcodeFormat>? formats,
+  }) async {
+    if (bytes.isEmpty) {
+      throw const BarcodeGenException('decodeImage requires non-empty image bytes');
+    }
+    final mask = formats == null ? 0 : BarcodeFormat.encode(formats);
+    try {
+      final maps = await BarcodeScannerPlatform.instance.decodeImage(bytes, mask);
+      return maps.map(BarcodeDecodeResult.fromMap).toList();
+    } on PlatformException catch (e) {
+      throw BarcodeGenException(e.message ?? 'Failed to decode image');
+    }
+  }
 
   /// Returns whether [request] can be generated. QR/2D codes accept arbitrary
   /// data; linear numeric symbologies are checked against their format rules.
