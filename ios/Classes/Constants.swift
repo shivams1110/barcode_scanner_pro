@@ -23,6 +23,7 @@ enum Method {
   static let setExposure = "setExposure"
   static let setFocus = "setFocus"
   static let captureFrame = "captureFrame"
+  static let decodeImage = "decodeImage"
   static let requestPermission = "requestPermission"
   static let checkPermission = "checkPermission"
 }
