@@ -6,6 +6,7 @@ import '../error/barcode_gen_exception.dart';
 import 'models/barcode_gen_result.dart';
 import 'models/barcode_request.dart';
 import 'rendering/raster_exporter.dart';
+import 'rendering/svg_renderer.dart';
 
 const _phase2 = 'arrives in Phase 2';
 const _phase3 = 'arrives in Phase 3';
@@ -14,10 +15,14 @@ const _phase3 = 'arrives in Phase 3';
 /// methods belonging to later phases throw [UnimplementedError] but keep the
 /// public surface stable.
 class BarcodeGenerator {
-  const BarcodeGenerator({RasterExporter exporter = const RasterExporter()})
-      : _exporter = exporter;
+  const BarcodeGenerator({
+    RasterExporter exporter = const RasterExporter(),
+    SvgRenderer svgRenderer = const SvgRenderer(),
+  })  : _exporter = exporter,
+        _svgRenderer = svgRenderer;
 
   final RasterExporter _exporter;
+  final SvgRenderer _svgRenderer;
 
   /// Generates a barcode and returns PNG bytes, the live image, and metadata.
   Future<BarcodeGenResult> generate(BarcodeRequest request) async {
@@ -52,10 +57,24 @@ class BarcodeGenerator {
     return File(path).writeAsBytes(bytes);
   }
 
+  Future<File> _writeString(String path, String contents) async {
+    try {
+      await _ensureParentDir(path);
+      return File(path).writeAsString(contents);
+    } on FileSystemException catch (e) {
+      throw BarcodeGenException('Failed to write "$path": ${e.message}');
+    }
+  }
+
+  Future<void> _ensureParentDir(String path) async {
+    final dir = File(path).parent;
+    if (!dir.existsSync()) await dir.create(recursive: true);
+  }
+
   // ---- Later-phase surface (stable signatures, not yet implemented) ----
 
   Future<String> generateSvg(BarcodeRequest request) =>
-      throw UnimplementedError('generateSvg $_phase2');
+      _svgRenderer.render(request);
 
   Future<Uint8List> generatePdf(List<BarcodeRequest> requests) =>
       throw UnimplementedError('generatePdf $_phase2');
@@ -63,8 +82,10 @@ class BarcodeGenerator {
   Future<File> save(BarcodeRequest request, String path) =>
       throw UnimplementedError('save $_phase2');
 
-  Future<File> saveAsSVG(BarcodeRequest request, String path) =>
-      throw UnimplementedError('saveAsSVG $_phase2');
+  Future<File> saveAsSVG(BarcodeRequest request, String path) async {
+    final svg = await generateSvg(request);
+    return _writeString(path, svg);
+  }
 
   Future<File> saveAsPDF(List<BarcodeRequest> requests, String path) =>
       throw UnimplementedError('saveAsPDF $_phase2');
