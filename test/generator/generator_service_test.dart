@@ -29,7 +29,6 @@ void main() {
   });
 
   test('later-phase methods are stubbed', () {
-    expect(() => gen.generatePdf([req]), throwsA(isA<UnimplementedError>()));
     expect(() => gen.generateBatch([req]), throwsA(isA<UnimplementedError>()));
     expect(() => gen.decodeImage(Uint8List(0)),
         throwsA(isA<UnimplementedError>()));

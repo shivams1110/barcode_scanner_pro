@@ -5,6 +5,8 @@ import 'dart:ui' as ui;
 import '../error/barcode_gen_exception.dart';
 import 'models/barcode_gen_result.dart';
 import 'models/barcode_request.dart';
+import 'models/pdf_layout.dart';
+import 'rendering/pdf_renderer.dart';
 import 'rendering/raster_exporter.dart';
 import 'rendering/svg_renderer.dart';
 
@@ -18,11 +20,14 @@ class BarcodeGenerator {
   const BarcodeGenerator({
     RasterExporter exporter = const RasterExporter(),
     SvgRenderer svgRenderer = const SvgRenderer(),
+    PdfRenderer pdfRenderer = const PdfRenderer(),
   })  : _exporter = exporter,
-        _svgRenderer = svgRenderer;
+        _svgRenderer = svgRenderer,
+        _pdfRenderer = pdfRenderer;
 
   final RasterExporter _exporter;
   final SvgRenderer _svgRenderer;
+  final PdfRenderer _pdfRenderer;
 
   /// Generates a barcode and returns PNG bytes, the live image, and metadata.
   Future<BarcodeGenResult> generate(BarcodeRequest request) async {
@@ -54,7 +59,16 @@ class BarcodeGenerator {
   /// Writes PNG to [path] and returns the file.
   Future<File> saveAsPNG(BarcodeRequest request, String path) async {
     final bytes = await generateBytes(request);
-    return File(path).writeAsBytes(bytes);
+    return _writeBytes(path, bytes);
+  }
+
+  Future<File> _writeBytes(String path, Uint8List bytes) async {
+    try {
+      await _ensureParentDir(path);
+      return File(path).writeAsBytes(bytes);
+    } on FileSystemException catch (e) {
+      throw BarcodeGenException('Failed to write "$path": ${e.message}');
+    }
   }
 
   Future<File> _writeString(String path, String contents) async {
@@ -76,19 +90,34 @@ class BarcodeGenerator {
   Future<String> generateSvg(BarcodeRequest request) =>
       _svgRenderer.render(request);
 
-  Future<Uint8List> generatePdf(List<BarcodeRequest> requests) =>
-      throw UnimplementedError('generatePdf $_phase2');
+  Future<Uint8List> generatePdf(
+    List<BarcodeRequest> requests, {
+    BarcodePdfLayout layout = const BarcodePdfLayout.single(),
+  }) =>
+      _pdfRenderer.render(requests, layout);
 
-  Future<File> save(BarcodeRequest request, String path) =>
-      throw UnimplementedError('save $_phase2');
+  Future<File> save(BarcodeRequest request, String path) {
+    final lower = path.toLowerCase();
+    if (lower.endsWith('.png')) return saveAsPNG(request, path);
+    if (lower.endsWith('.svg')) return saveAsSVG(request, path);
+    if (lower.endsWith('.pdf')) return saveAsPDF([request], path);
+    throw BarcodeGenException(
+        'Unsupported file extension for "$path" (use .png, .svg, or .pdf)');
+  }
 
   Future<File> saveAsSVG(BarcodeRequest request, String path) async {
     final svg = await generateSvg(request);
     return _writeString(path, svg);
   }
 
-  Future<File> saveAsPDF(List<BarcodeRequest> requests, String path) =>
-      throw UnimplementedError('saveAsPDF $_phase2');
+  Future<File> saveAsPDF(
+    List<BarcodeRequest> requests,
+    String path, {
+    BarcodePdfLayout layout = const BarcodePdfLayout.single(),
+  }) async {
+    final bytes = await generatePdf(requests, layout: layout);
+    return _writeBytes(path, bytes);
+  }
 
   Future<List<BarcodeGenResult>> generateBatch(List<BarcodeRequest> requests) =>
       throw UnimplementedError('generateBatch $_phase2');
