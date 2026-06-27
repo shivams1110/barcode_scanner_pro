@@ -54,7 +54,11 @@ public class BarcodeScannerProPlugin: NSObject, FlutterPlugin {
     let mask = (args["formats"] as? Int) ?? 0
     let request = VNDetectBarcodesRequest()
     if mask != 0 {
-      request.symbologies = FormatMapper.toSymbologies(mask)
+      let symbologies = FormatMapper.toSymbologies(mask)
+      if !symbologies.isEmpty {
+        request.symbologies = symbologies
+      }
+      // else: requested formats have no Vision symbology — leave unconstrained (detect all)
     }
     let width = CGFloat(image.width)
     let height = CGFloat(image.height)
