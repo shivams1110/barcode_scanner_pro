@@ -13,7 +13,15 @@ class BarcodeRenderer {
   const BarcodeRenderer();
 
   void paint(Canvas canvas, Size size, BarcodeRequest request) {
-    final rotation = request.options.rotationDegrees % 360;
+    // [transparentBackground] overrides [style.background] for both painters,
+    // which each read `style.background` directly.
+    final effective = request.options.transparentBackground
+        ? request.copyWith(
+            style: request.style.copyWith(background: const Color(0x00000000)),
+          )
+        : request;
+
+    final rotation = effective.options.rotationDegrees % 360;
     if (rotation != 0) {
       canvas
         ..save()
@@ -23,10 +31,10 @@ class BarcodeRenderer {
     }
 
     try {
-      if (request.isQr) {
-        const QrPainter().paint(canvas, size, request);
+      if (effective.isQr) {
+        const QrPainter().paint(canvas, size, effective);
       } else {
-        const LinearPainter().paint(canvas, size, request);
+        const LinearPainter().paint(canvas, size, effective);
       }
     } finally {
       if (rotation != 0) canvas.restore();
