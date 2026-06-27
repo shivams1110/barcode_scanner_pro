@@ -7,6 +7,7 @@ import 'batch/batch_generator.dart';
 import 'batch/render_cache.dart';
 import 'models/barcode_gen_result.dart';
 import 'models/barcode_request.dart';
+import 'models/export_options.dart';
 import 'models/pdf_layout.dart';
 import 'rendering/pdf_renderer.dart';
 import 'rendering/raster_exporter.dart';
@@ -88,14 +89,18 @@ class BarcodeGenerator {
 
   // ---- Later-phase surface (stable signatures, not yet implemented) ----
 
-  Future<String> generateSvg(BarcodeRequest request) =>
-      _svgRenderer.render(request);
+  Future<String> generateSvg(
+    BarcodeRequest request, {
+    BarcodeExportOptions options = const BarcodeExportOptions(),
+  }) =>
+      _svgRenderer.render(request, options: options);
 
   Future<Uint8List> generatePdf(
     List<BarcodeRequest> requests, {
     BarcodePdfLayout layout = const BarcodePdfLayout.single(),
+    BarcodeExportOptions options = const BarcodeExportOptions(),
   }) =>
-      _pdfRenderer.render(requests, layout);
+      _pdfRenderer.render(requests, layout, options: options);
 
   Future<File> save(BarcodeRequest request, String path) {
     final lower = path.toLowerCase();
@@ -106,8 +111,12 @@ class BarcodeGenerator {
         'Unsupported file extension for "$path" (use .png, .svg, or .pdf)');
   }
 
-  Future<File> saveAsSVG(BarcodeRequest request, String path) async {
-    final svg = await generateSvg(request);
+  Future<File> saveAsSVG(
+    BarcodeRequest request,
+    String path, {
+    BarcodeExportOptions options = const BarcodeExportOptions(),
+  }) async {
+    final svg = await generateSvg(request, options: options);
     return _writeString(path, svg);
   }
 
@@ -115,8 +124,9 @@ class BarcodeGenerator {
     List<BarcodeRequest> requests,
     String path, {
     BarcodePdfLayout layout = const BarcodePdfLayout.single(),
+    BarcodeExportOptions options = const BarcodeExportOptions(),
   }) async {
-    final bytes = await generatePdf(requests, layout: layout);
+    final bytes = await generatePdf(requests, layout: layout, options: options);
     return _writeBytes(path, bytes);
   }
 

@@ -88,7 +88,7 @@ class PdfRenderer {
       case PdfLayoutType.grid:
       case PdfLayoutType.a4:
       case PdfLayoutType.custom:
-        _addGridPages(doc, widgets, layout); // implemented in Task 7
+        _addGridPages(doc, widgets, layout);
     }
     return doc.save();
   }

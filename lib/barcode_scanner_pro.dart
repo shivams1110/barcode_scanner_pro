@@ -45,4 +45,4 @@ export 'src/error/barcode_gen_exception.dart';
 // Generator — export formats (Phase 2)
 export 'src/generator/models/pdf_layout.dart';
 export 'src/generator/models/export_options.dart';
-export 'package:pdf/pdf.dart' show PdfPageFormat, PdfColor;
+export 'package:pdf/pdf.dart' show PdfPageFormat;
