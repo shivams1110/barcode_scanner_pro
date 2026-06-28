@@ -9,6 +9,7 @@ import 'generator/print_preview_section.dart';
 import 'generator/batch_section.dart';
 import 'generator/save_section.dart';
 import 'generator/styled_qr_section.dart';
+import 'generator/validation_section.dart';
 import 'scanner_page.dart';
 
 /// Central navigation hub for the barcode_scanner_pro example app.
@@ -121,7 +122,11 @@ class _DemoHubPageState extends State<DemoHubPage> {
       ),
       (
         'Validation',
-        () => _pushPlaceholder(context, 'Validation'),
+        () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => const ValidationSection(),
+              ),
+            ),
       ),
       (
         'Image Decode',
