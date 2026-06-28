@@ -129,9 +129,9 @@ Doubling DPI doubles the linear dimension and **quadruples** the pixel area.
 ### Linear codes — true vector
 
 SVG and PDF output for **linear codes** (Code 128, EAN-13, UPC-A, Code 39, EAN-8,
-etc.) is fully vector. Every bar is an SVG `<rect>` or PDF path element. The
-output is tiny in file size, has no raster allocation, and scales to any
-resolution without pixellation.
+etc.) is fully vector. The `barcode` package's `toSvg` emits true vector
+geometry (filled paths) with no raster allocation. The output scales to any
+resolution without pixellation and is compact in file size.
 
 Prefer SVG for linear codes whenever the output will be scaled or embedded in a
 context that can render SVG.
