@@ -36,7 +36,7 @@ class BarcodeDecodeResult {
     }
     return BarcodeDecodeResult(
       value: (map['value'] as String?) ?? '',
-      format: BarcodeFormat.fromBit(map['format'] as int),
+      format: BarcodeFormat.fromBit((map['format'] as num).toInt()),
       rawBytes: map['rawBytes'] as Uint8List?,
       cornerPoints: corners,
     );
