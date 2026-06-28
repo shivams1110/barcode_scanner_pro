@@ -32,6 +32,10 @@ dependencies:
   # Used by the demo to open scanned URLs.
   url_launcher: ^6.3.0
 
+  # Generator demo: PDF print/preview and saving exported files.
+  printing: ^5.13.0
+  path_provider: ^2.1.0
+
 dev_dependencies:
   integration_test:
     sdk: flutter
