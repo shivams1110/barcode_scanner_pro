@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:barcode_scanner_pro/barcode_scanner_pro.dart';
 import 'package:flutter/material.dart';
 
@@ -20,6 +22,8 @@ const Map<BarcodeFormat, String> _defaultData = {
   BarcodeFormat.aztec: 'AZTEC DATA',
   BarcodeFormat.dataMatrix: 'DATAMATRIX',
 };
+
+String _defaultFor(BarcodeFormat f) => _defaultData[f] ?? 'ABC-123';
 
 /// Ordered list of the 12 non-QR formats shown in the dropdown.
 const List<BarcodeFormat> _linearFormats = [
@@ -99,6 +103,11 @@ _Validity _validate(BarcodeFormat format, String data) {
 }
 
 /// Demonstrates live linear/2D barcode generation for the 12 non-QR formats.
+///
+/// The preview uses [BarcodeGenerator.generateBytes] inside a [FutureBuilder]
+/// so that any [BarcodeGenException] thrown during encoding is caught in the
+/// async future (via [AsyncSnapshot.hasError]) rather than inside
+/// [CustomPainter.paint], where exceptions would crash the frame.
 class GenerateBarcodeSection extends StatefulWidget {
   const GenerateBarcodeSection({super.key});
 
@@ -113,8 +122,7 @@ class _GenerateBarcodeSectionState extends State<GenerateBarcodeSection> {
   @override
   void initState() {
     super.initState();
-    _controller =
-        TextEditingController(text: _defaultData[_format] ?? 'ABC-123');
+    _controller = TextEditingController(text: _defaultFor(_format));
     _controller.addListener(() => setState(() {}));
   }
 
@@ -128,10 +136,9 @@ class _GenerateBarcodeSectionState extends State<GenerateBarcodeSection> {
 
   void _onFormatChanged(BarcodeFormat? value) {
     if (value == null) return;
-    setState(() {
-      _format = value;
-      _controller.text = _defaultData[value] ?? '';
-    });
+    _format = value;
+    _controller.text = _defaultFor(value);
+    // setState is triggered by the controller listener above.
   }
 
   @override
@@ -153,14 +160,17 @@ class _GenerateBarcodeSectionState extends State<GenerateBarcodeSection> {
         ),
     };
 
-    final canRender = switch (validity) {
-      _Valid() => true,
-      _NoChecksum() => true,
-      _Invalid() => false,
+    // Formats with a validator: only attempt render when valid.
+    // Formats without a validator (NoChecksum): always attempt render,
+    // but catch any BarcodeGenException in the async future so it never
+    // reaches a CustomPainter.paint call.
+    final bool skipRender = switch (validity) {
+      _Invalid() => true,
+      _ => false,
     };
 
-    final Widget preview;
-    if (!canRender) {
+    Widget preview;
+    if (skipRender) {
       final reason = (validity as _Invalid).reason;
       preview = SizedBox(
         width: 280,
@@ -174,12 +184,45 @@ class _GenerateBarcodeSectionState extends State<GenerateBarcodeSection> {
         ),
       );
     } else {
-      preview = BarcodeWidget(
-        data: _text,
-        format: _format,
-        width: 280,
-        height: 120,
-        showText: true,
+      // Capture local copies for the closure so setState rebuilds produce a
+      // fresh future rather than reusing a stale one.
+      final capturedText = _text;
+      final capturedFormat = _format;
+      preview = FutureBuilder<Uint8List>(
+        future: const BarcodeGenerator().generateBytes(
+          BarcodeRequest(data: capturedText, format: capturedFormat),
+        ),
+        builder: (context, snap) {
+          if (snap.connectionState != ConnectionState.done) {
+            return const SizedBox(
+              width: 280,
+              height: 120,
+              child: Center(child: CircularProgressIndicator()),
+            );
+          }
+          if (snap.hasError) {
+            final e = snap.error;
+            final msg =
+                e is BarcodeGenException ? e.message : '$e';
+            return SizedBox(
+              width: 280,
+              height: 120,
+              child: Center(
+                child: Text(
+                  'Cannot encode: $msg',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: Colors.red),
+                ),
+              ),
+            );
+          }
+          return Image.memory(
+            snap.data!,
+            width: 280,
+            height: 120,
+            fit: BoxFit.contain,
+          );
+        },
       );
     }
 
