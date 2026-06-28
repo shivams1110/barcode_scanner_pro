@@ -1,3 +1,26 @@
+## Unreleased
+
+**Barcode & QR Code Generator module**
+
+* Offline generation of all 13 symbologies (`BarcodeFormat` — QR, Code128,
+  Code39, Code93, EAN-8, EAN-13, UPC-A, UPC-E, PDF417, Aztec, DataMatrix,
+  ITF, Codabar).
+* Styled QR codes: five module shapes (`ModuleShape`), four eye shapes
+  (`EyeShape`), four error-correction levels (`ErrorCorrection`), foreground
+  gradients (`GradientType`), and embedded logo support (`BarcodeLogo`).
+* Export to PNG raster (`generateBytes`, `generateImage`), SVG vector
+  (`generateSvg`), and multi-page print-ready PDF (`generatePdf`) at
+  300/600/1200 DPI with configurable grid or label layouts.
+* Batch generation via `generateBatch` for high-throughput label pipelines.
+* Input validation helpers (`BarcodeValidator`) for EAN-13, EAN-8, UPC-A,
+  UPC-E, and other checksum-bearing symbologies.
+* Named QR payload helpers on `BarcodeGenerator`: `wifi`, `url`, `email`,
+  `phone`, `sms`, `contact`, and `geoPoint`.
+* Native image decode contract (`BarcodeDecodeResult`) — Phase 3b native body
+  to follow.
+* `BarcodeWidget` — drop-in Flutter widget for inline barcode display with
+  full style support.
+
 ## 0.1.0
 
 Initial release.
