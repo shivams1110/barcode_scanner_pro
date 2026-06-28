@@ -81,7 +81,7 @@ final result = await gen.generate(
 
 final String base64     = result.toBase64();
 final MemoryImage mi    = result.toMemoryImage();
-final ImageProvider ip  = result.toImageProvider(); // same MemoryImage, wider type
+final ImageProvider ip  = result.toImageProvider(); // equivalent MemoryImage, typed as ImageProvider
 ```
 
 Use `toMemoryImage()` / `toImageProvider()` to feed the PNG directly into
@@ -181,7 +181,10 @@ final req = BarcodeGenerator.email(
 
 ### `wifi`
 
+`password` is optional — omit it (or pass `null`) for open networks.
+
 ```dart
+// Password-protected network
 final req = BarcodeGenerator.wifi(
   ssid: 'MyNetwork',
   password: 'secret',
@@ -189,6 +192,10 @@ final req = BarcodeGenerator.wifi(
   hidden: false,     // default
 );
 // data: 'WIFI:T:WPA;S:MyNetwork;P:secret;H:false;;'
+
+// Open network (no password)
+final open = BarcodeGenerator.wifi(ssid: 'Guest', security: 'nopass');
+// data: 'WIFI:T:nopass;S:Guest;P:;H:false;;'
 ```
 
 ### `contact` (vCard 3.0)
@@ -274,11 +281,12 @@ BarcodeValidator.calculateChecksum(BarcodeFormat.code128, 'ABC');
 
 ## 6. `decodeImage` — static image decode
 
+`decodeImage` is an instance method on `BarcodeGenerator`:
+
 ```dart
-Future<List<BarcodeDecodeResult>> decodeImage(
-  Uint8List bytes, {
-  Set<BarcodeFormat>? formats,
-})
+// BarcodeGenerator.decodeImage(Uint8List bytes, {Set<BarcodeFormat>? formats})
+final gen = BarcodeGenerator();
+final codes = await gen.decodeImage(bytes);
 ```
 
 Decodes all barcodes found in a PNG or JPEG buffer using the native ML Kit
