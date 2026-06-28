@@ -187,8 +187,8 @@ on-screen barcodes, `BarcodeWidget` is always the lower-overhead choice.
 
 ## See also
 
-- [GENERATOR.md](GENERATOR.md) — construction, output methods, named helpers, validation
-- [CUSTOMIZATION.md](CUSTOMIZATION.md) — colors, gradients, module shapes, logos, animation
-- [EXPORT.md](EXPORT.md) — SVG, PDF, batch, and file-save APIs
-- [doc/MIGRATION.md](../MIGRATION.md) — version upgrade notes
+- [GENERATOR.md](./GENERATOR.md) — overview and architecture
+- [CUSTOMIZATION.md](./CUSTOMIZATION.md) — module shapes, eye shapes, gradients, logos
+- [EXPORT.md](./EXPORT.md) — PNG/SVG/PDF export with print DPI
+- [MIGRATION.md](./MIGRATION.md) — migrating from other generator packages
 - [README](../../README.md) — quick-start and installation

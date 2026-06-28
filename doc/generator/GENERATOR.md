@@ -385,8 +385,8 @@ on-device verification checklist.
 
 ## See also
 
-- [CUSTOMIZATION.md](CUSTOMIZATION.md) — colors, gradients, module shapes, logos, animation
-- [EXPORT.md](EXPORT.md) — SVG, PDF, batch, and file-save APIs
-- [doc/PERFORMANCE.md](../PERFORMANCE.md) — scanner and generator tuning
-- [doc/MIGRATION.md](../MIGRATION.md) — version upgrade notes
+- [CUSTOMIZATION.md](./CUSTOMIZATION.md) — module shapes, eye shapes, gradients, logos
+- [EXPORT.md](./EXPORT.md) — PNG/SVG/PDF export with print DPI
+- [PERFORMANCE.md](./PERFORMANCE.md) — batch generation, isolate offloading
+- [MIGRATION.md](./MIGRATION.md) — migrating from other generator packages
 - [README](../../README.md) — quick-start and installation

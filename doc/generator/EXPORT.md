@@ -458,8 +458,8 @@ only in their declared return type.
 
 ## See also
 
-- [GENERATOR.md](GENERATOR.md) — construction, output methods, named helpers, validation
-- [CUSTOMIZATION.md](CUSTOMIZATION.md) — colors, gradients, module shapes, logos, animation
-- [doc/PERFORMANCE.md](../PERFORMANCE.md) — scanner and generator tuning
-- [doc/MIGRATION.md](../MIGRATION.md) — version upgrade notes
+- [GENERATOR.md](./GENERATOR.md) — overview and architecture
+- [CUSTOMIZATION.md](./CUSTOMIZATION.md) — module shapes, eye shapes, gradients, logos
+- [PERFORMANCE.md](./PERFORMANCE.md) — batch generation, isolate offloading
+- [MIGRATION.md](./MIGRATION.md) — migrating from other generator packages
 - [README](../../README.md) — quick-start and installation

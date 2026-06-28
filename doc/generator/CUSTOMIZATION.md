@@ -322,8 +322,8 @@ effect.
 
 ## See also
 
-- [GENERATOR.md](GENERATOR.md) — construction, output methods, named helpers, validation
-- [EXPORT.md](EXPORT.md) — SVG, PDF, batch, and file-save APIs
-- [doc/PERFORMANCE.md](../PERFORMANCE.md) — scanner and generator tuning
-- [doc/MIGRATION.md](../MIGRATION.md) — version upgrade notes
+- [GENERATOR.md](./GENERATOR.md) — overview and architecture
+- [EXPORT.md](./EXPORT.md) — PNG/SVG/PDF export with print DPI
+- [PERFORMANCE.md](./PERFORMANCE.md) — batch generation, isolate offloading
+- [MIGRATION.md](./MIGRATION.md) — migrating from other generator packages
 - [README](../../README.md) — quick-start and installation
