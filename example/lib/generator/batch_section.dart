@@ -10,10 +10,11 @@ class BatchSection extends StatefulWidget {
   const BatchSection({super.key});
 
   @override
-  State<BatchSection> createState() => _BatchSectionState();
+  State<BatchSection> createState() => BatchSectionState();
 }
 
-class _BatchSectionState extends State<BatchSection> {
+// Public so tests can resolve it via tester.state<BatchSectionState>().
+class BatchSectionState extends State<BatchSection> {
   static const int _minCount = 10;
   static const int _maxCount = 500;
   static const int _divisions = 49; // one step per 10 barcodes
@@ -22,6 +23,13 @@ class _BatchSectionState extends State<BatchSection> {
   bool _busy = false;
   int? _elapsedMs;
   List<BarcodeGenResult>? _results;
+
+  /// Stores the in-flight [_generate] future. Tests may await this to
+  /// deterministically wait for rasterization without any fixed sleep.
+  @visibleForTesting
+  Future<void>? lastRun;
+
+  void _startGenerate() => lastRun = _generate();
 
   Future<void> _generate() async {
     setState(() {
@@ -74,7 +82,7 @@ class _BatchSectionState extends State<BatchSection> {
           ),
           const SizedBox(height: 8),
           ElevatedButton(
-            onPressed: _busy ? null : _generate,
+            onPressed: _busy ? null : _startGenerate,
             child: const Text('Generate'),
           ),
           if (_busy) ...[

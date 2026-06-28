@@ -14,10 +14,13 @@ void main() {
       expect(generateBtn, findsOneWidget);
 
       // generateBatch is real async (rasterizes); use runAsync so it completes.
+      // Tap first so _startGenerate() runs and lastRun is assigned, then await
+      // the actual future — no fixed sleep.
       await tester.runAsync(() async {
         await tester.tap(generateBtn);
-        // Give real async (image rasterization) time to finish.
-        await Future<void>.delayed(const Duration(seconds: 5));
+        final state =
+            tester.state<BatchSectionState>(find.byType(BatchSection));
+        await state.lastRun;
       });
 
       // Pump frames so setState rebuilds land.
