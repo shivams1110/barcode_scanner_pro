@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 
 import 'generator/generate_barcode_section.dart';
 import 'generator/generate_qr_section.dart';
+import 'generator/gradient_qr_section.dart';
+import 'generator/styled_qr_section.dart';
 import 'scanner_page.dart';
 
 /// Central navigation hub for the barcode_scanner_pro example app.
@@ -67,11 +69,19 @@ class _DemoHubPageState extends State<DemoHubPage> {
       ),
       (
         'Styled QR',
-        () => _pushPlaceholder(context, 'Styled QR'),
+        () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => const StyledQrSection(),
+              ),
+            ),
       ),
       (
         'Gradient QR',
-        () => _pushPlaceholder(context, 'Gradient QR'),
+        () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => const GradientQrSection(),
+              ),
+            ),
       ),
       (
         'Logo QR',
