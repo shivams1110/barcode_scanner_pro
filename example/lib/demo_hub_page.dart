@@ -5,6 +5,7 @@ import 'generator/generate_barcode_section.dart';
 import 'generator/generate_qr_section.dart';
 import 'generator/gradient_qr_section.dart';
 import 'generator/logo_qr_section.dart';
+import 'generator/save_section.dart';
 import 'generator/styled_qr_section.dart';
 import 'scanner_page.dart';
 
@@ -94,7 +95,11 @@ class _DemoHubPageState extends State<DemoHubPage> {
       ),
       (
         'Save (PNG / SVG / PDF)',
-        () => _pushPlaceholder(context, 'Save (PNG / SVG / PDF)'),
+        () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => const SaveSection(),
+              ),
+            ),
       ),
       (
         'Print Preview',
