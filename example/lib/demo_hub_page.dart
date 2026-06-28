@@ -1,6 +1,8 @@
 import 'package:barcode_scanner_pro/barcode_scanner_pro.dart';
 import 'package:flutter/material.dart';
 
+import 'generator/generate_barcode_section.dart';
+import 'generator/generate_qr_section.dart';
 import 'scanner_page.dart';
 
 /// Central navigation hub for the barcode_scanner_pro example app.
@@ -25,7 +27,6 @@ class DemoHubPage extends StatefulWidget {
 class _DemoHubPageState extends State<DemoHubPage> {
   final List<BarcodeRequest> _history = [];
 
-  // ignore: unused_element — called by generator sections added in Tasks 3–10.
   void _remember(BarcodeRequest req) {
     setState(() => _history.insert(0, req));
   }
@@ -50,11 +51,19 @@ class _DemoHubPageState extends State<DemoHubPage> {
     final tiles = <(String, VoidCallback)>[
       (
         'Generate QR',
-        () => _pushPlaceholder(context, 'Generate QR'),
+        () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => GenerateQrSection(onGenerated: _remember),
+              ),
+            ),
       ),
       (
         'Generate Barcode',
-        () => _pushPlaceholder(context, 'Generate Barcode'),
+        () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => const GenerateBarcodeSection(),
+              ),
+            ),
       ),
       (
         'Styled QR',
