@@ -64,13 +64,21 @@ class _ValidationSectionState extends State<ValidationSection> {
     setState(() => _format = value);
   }
 
-  /// Calls [BarcodeValidator.calculateChecksum] with the entered data and
-  /// returns a display string. Catches [BarcodeGenException] for formats
-  /// (Code 128, Code 39) that have no standalone numeric checksum.
+  /// Calls [BarcodeValidator.calculateChecksum] with the payload minus its
+  /// trailing check digit, then displays the computed value alongside the
+  /// digit the user actually entered. Catches [BarcodeGenException] for
+  /// formats (Code 128, Code 39) that have no standalone numeric checksum.
   String _checksumLine() {
+    if (_data.isEmpty) return 'no standalone checksum for this format';
     try {
-      final digit = BarcodeValidator.calculateChecksum(_format, _data);
-      return 'mod-10 check digit for the entered digits: $digit';
+      // calculateChecksum expects the digits BEFORE the check digit.
+      final body = _data.length > 1
+          ? _data.substring(0, _data.length - 1)
+          : _data;
+      final computed = BarcodeValidator.calculateChecksum(_format, body);
+      final entered = _data[_data.length - 1];
+      return 'Computed check digit: $computed'
+          ' (entered last digit: $entered)';
     } on BarcodeGenException {
       return 'no standalone checksum for this format';
     }

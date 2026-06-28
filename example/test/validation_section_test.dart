@@ -9,9 +9,9 @@ void main() {
       await tester.pumpWidget(const MaterialApp(home: ValidationSection()));
       await tester.pump();
 
-      // Default '4006381333931' is a valid EAN-13 — expect "valid" indicator.
-      expect(find.textContaining('valid'), findsWidgets);
-      expect(find.textContaining('invalid'), findsNothing);
+      // Default '4006381333931' is a valid EAN-13 — expect exact "valid" label.
+      expect(find.text('valid'), findsOneWidget);
+      expect(find.text('invalid'), findsNothing);
     });
 
     testWidgets('shows invalid indicator when check digit is wrong',
@@ -23,7 +23,7 @@ void main() {
       await tester.enterText(find.byType(TextField), '4006381333930');
       await tester.pump();
 
-      expect(find.textContaining('invalid'), findsWidgets);
+      expect(find.text('invalid'), findsOneWidget);
     });
   });
 }
