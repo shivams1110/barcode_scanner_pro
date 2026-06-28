@@ -246,7 +246,9 @@ final Uint8List pdf = await gen.generatePdf(
 ```
 
 Note: `label()` is not `const` because the mm-to-points arithmetic is computed
-at runtime.
+at runtime. The constructor applies a `4 mm marginAll` inset, so the printable
+cell is approximately `(widthMm - 8) mm × (heightMm - 8) mm` — account for
+this on tight label stock.
 
 #### `thermal()` — standard 58 mm thermal roll (const)
 
@@ -361,10 +363,11 @@ final Uint8List pdf = await gen.generatePdf(
 
 ---
 
-## 4. Extension-dispatch save
+## 4. Instance-method dispatch: save
 
-`save(request, path)` inspects the file extension and dispatches to the
-appropriate export method. It accepts a single `BarcodeRequest`.
+`save` is a regular instance method on `BarcodeGenerator`. It inspects the
+file extension of `path` and dispatches to the appropriate export method.
+It accepts a single `BarcodeRequest`.
 
 ```dart
 const gen = BarcodeGenerator();
@@ -375,10 +378,12 @@ await gen.save(req, '/output/code.svg');  // → saveAsSVG
 await gen.save(req, '/output/code.pdf');  // → saveAsPDF([req])
 ```
 
-An unrecognised extension throws `BarcodeGenException`:
+An unrecognised extension throws `BarcodeGenException`. The message embeds
+the full path passed by the caller:
 
 ```dart
-// Throws BarcodeGenException: 'Unsupported file extension for "code.bmp" (use .png, .svg, or .pdf)'
+// Throws BarcodeGenException:
+//   'Unsupported file extension for "/output/code.bmp" (use .png, .svg, or .pdf)'
 await gen.save(req, '/output/code.bmp');
 ```
 
