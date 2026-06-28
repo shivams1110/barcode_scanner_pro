@@ -17,8 +17,7 @@ import 'scanner_page.dart';
 /// Central navigation hub for the barcode_scanner_pro example app.
 ///
 /// Owns the shared [BarcodeRequest] history, passed to generator sections via
-/// [_remember]. Each tile routes to its section; sections not yet built show a
-/// placeholder scaffold.
+/// [_remember]. Each tile routes to its section.
 class DemoHubPage extends StatefulWidget {
   const DemoHubPage({
     super.key,
