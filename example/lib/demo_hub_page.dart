@@ -9,6 +9,7 @@ import 'generator/print_preview_section.dart';
 import 'generator/batch_section.dart';
 import 'generator/save_section.dart';
 import 'generator/styled_qr_section.dart';
+import 'generator/image_decode_section.dart';
 import 'generator/validation_section.dart';
 import 'scanner_page.dart';
 
@@ -130,7 +131,11 @@ class _DemoHubPageState extends State<DemoHubPage> {
       ),
       (
         'Image Decode',
-        () => _pushPlaceholder(context, 'Image Decode'),
+        () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => const ImageDecodeSection(),
+              ),
+            ),
       ),
       (
         'History',
