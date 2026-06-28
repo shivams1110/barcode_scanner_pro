@@ -10,6 +10,7 @@ import 'generator/batch_section.dart';
 import 'generator/save_section.dart';
 import 'generator/styled_qr_section.dart';
 import 'generator/image_decode_section.dart';
+import 'generator/history_section.dart';
 import 'generator/validation_section.dart';
 import 'scanner_page.dart';
 
@@ -37,20 +38,6 @@ class _DemoHubPageState extends State<DemoHubPage> {
 
   void _remember(BarcodeRequest req) {
     setState(() => _history.insert(0, req));
-  }
-
-  /// Pushes a placeholder scaffold for sections not yet implemented.
-  void _pushPlaceholder(BuildContext context, String title) {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => Scaffold(
-          appBar: AppBar(title: Text(title)),
-          body: const Center(
-            child: Text('Arrives in a later step'),
-          ),
-        ),
-      ),
-    );
   }
 
   @override
@@ -139,7 +126,11 @@ class _DemoHubPageState extends State<DemoHubPage> {
       ),
       (
         'History',
-        () => _pushPlaceholder(context, 'History'),
+        () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => HistorySection(history: _history),
+              ),
+            ),
       ),
       (
         'Scanner',
