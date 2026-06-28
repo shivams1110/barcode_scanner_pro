@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'generator/generate_barcode_section.dart';
 import 'generator/generate_qr_section.dart';
 import 'generator/gradient_qr_section.dart';
+import 'generator/logo_qr_section.dart';
 import 'generator/styled_qr_section.dart';
 import 'scanner_page.dart';
 
@@ -85,7 +86,11 @@ class _DemoHubPageState extends State<DemoHubPage> {
       ),
       (
         'Logo QR',
-        () => _pushPlaceholder(context, 'Logo QR'),
+        () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => const LogoQrSection(),
+              ),
+            ),
       ),
       (
         'Save (PNG / SVG / PDF)',
