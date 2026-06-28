@@ -352,16 +352,16 @@ on-device verification checklist.
 | QR Code | `qr` | 2D | Yes | Yes |
 | Code 128 | `code128` | 1D | Yes | Yes |
 | Code 39 | `code39` | 1D | Yes | Yes |
-| Code 93 | `code93` | 1D | — | Yes |
+| Code 93 | `code93` | 1D | Yes | Yes |
 | EAN-8 | `ean8` | 1D | Yes | Yes |
 | EAN-13 | `ean13` | 1D | Yes | Yes |
 | UPC-A | `upcA` | 1D | Yes | Yes* |
-| UPC-E | `upcE` | 1D | — | Yes |
-| PDF417 | `pdf417` | 2D | — | Yes |
-| Aztec | `aztec` | 2D | — | Yes |
-| Data Matrix | `dataMatrix` | 2D | — | Yes |
-| ITF | `itf` | 1D | — | Yes |
-| Codabar | `codabar` | 1D | — | Yes** |
+| UPC-E | `upcE` | 1D | Yes | Yes |
+| PDF417 | `pdf417` | 2D | Yes | Yes |
+| Aztec | `aztec` | 2D | Yes | Yes |
+| Data Matrix | `dataMatrix` | 2D | Yes | Yes |
+| ITF | `itf` | 1D | Yes | Yes |
+| Codabar | `codabar` | 1D | Yes | Yes** |
 
 \* iOS Vision reports UPC-A as `ean13`; see [section 6](#6-decodeimage--static-image-decode).
 \*\* Codabar decoding on iOS requires iOS 15+.

@@ -14,8 +14,8 @@
 * Batch generation via `generateBatch` for high-throughput label pipelines.
 * Input validation helpers (`BarcodeValidator`) for EAN-13, EAN-8, UPC-A,
   UPC-E, and other checksum-bearing symbologies.
-* Named QR payload helpers on `BarcodeGenerator`: `wifi`, `url`, `email`,
-  `phone`, `sms`, `contact`, and `geoPoint`.
+* Named QR payload helpers on `BarcodeGenerator`: `url`, `text`, `phone`,
+  `sms`, `email`, `wifi`, `contact`, `calendar`, and `location`.
 * Native image decode contract (`BarcodeDecodeResult`) — Phase 3b native body
   to follow.
 * `BarcodeWidget` — drop-in Flutter widget for inline barcode display with

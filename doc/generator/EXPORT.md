@@ -147,8 +147,9 @@ final File svgFile = await gen.saveAsSVG(
 ### Vector vs. embedded-PNG
 
 **Linear codes** (Code 128, EAN-13, UPC-A, Code 39, etc.) produce **true
-vector** SVG. Every bar and quiet-zone rectangle is an SVG `<rect>` element;
-the output scales without any pixellation at any zoom level.
+vector** SVG. The `barcode` package's `toSvg` emits true vector geometry
+(filled paths) for each bar and quiet zone; the output scales without any
+pixellation at any zoom level.
 
 **QR codes** embed a **high-DPI PNG** inside the SVG `<image>` element rather
 than emitting vector paths. This is intentional: QR modules carry fine styling
