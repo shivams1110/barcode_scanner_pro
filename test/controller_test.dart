@@ -60,13 +60,16 @@ void main() {
     expect((await future).value, 'X');
   });
 
-  test('error events surface on the error stream and set error state', () async {
-    final future = controller.errors.first;
-    fake.emit(1, const ErrorEvent(CameraUnavailable('boom')));
-    final e = await future;
-    expect(e, isA<CameraUnavailable>());
-    expect(controller.state.value, ScannerState.error);
-  });
+  test(
+    'error events surface on the error stream and set error state',
+    () async {
+      final future = controller.errors.first;
+      fake.emit(1, const ErrorEvent(CameraUnavailable('boom')));
+      final e = await future;
+      expect(e, isA<CameraUnavailable>());
+      expect(controller.state.value, ScannerState.error);
+    },
+  );
 
   test('flash/zoom/camera events update notifiers', () async {
     fake.emit(1, const FlashChangedEvent(true));

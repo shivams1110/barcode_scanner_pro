@@ -23,11 +23,11 @@ class ScannerMaskPainter extends CustomPainter {
   final double cornerWidth;
 
   Rect _windowRect(Size size) => Rect.fromLTWH(
-        scanArea.left * size.width,
-        scanArea.top * size.height,
-        scanArea.width * size.width,
-        scanArea.height * size.height,
-      );
+    scanArea.left * size.width,
+    scanArea.top * size.height,
+    scanArea.width * size.width,
+    scanArea.height * size.height,
+  );
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -59,26 +59,34 @@ class ScannerMaskPainter extends CustomPainter {
       // top-left
       ..moveTo(r.left, r.top + l)
       ..lineTo(r.left, r.top + borderRadius)
-      ..arcToPoint(Offset(r.left + borderRadius, r.top),
-          radius: Radius.circular(borderRadius))
+      ..arcToPoint(
+        Offset(r.left + borderRadius, r.top),
+        radius: Radius.circular(borderRadius),
+      )
       ..lineTo(r.left + l, r.top)
       // top-right
       ..moveTo(r.right - l, r.top)
       ..lineTo(r.right - borderRadius, r.top)
-      ..arcToPoint(Offset(r.right, r.top + borderRadius),
-          radius: Radius.circular(borderRadius))
+      ..arcToPoint(
+        Offset(r.right, r.top + borderRadius),
+        radius: Radius.circular(borderRadius),
+      )
       ..lineTo(r.right, r.top + l)
       // bottom-right
       ..moveTo(r.right, r.bottom - l)
       ..lineTo(r.right, r.bottom - borderRadius)
-      ..arcToPoint(Offset(r.right - borderRadius, r.bottom),
-          radius: Radius.circular(borderRadius))
+      ..arcToPoint(
+        Offset(r.right - borderRadius, r.bottom),
+        radius: Radius.circular(borderRadius),
+      )
       ..lineTo(r.right - l, r.bottom)
       // bottom-left
       ..moveTo(r.left + l, r.bottom)
       ..lineTo(r.left + borderRadius, r.bottom)
-      ..arcToPoint(Offset(r.left, r.bottom - borderRadius),
-          radius: Radius.circular(borderRadius))
+      ..arcToPoint(
+        Offset(r.left, r.bottom - borderRadius),
+        radius: Radius.circular(borderRadius),
+      )
       ..lineTo(r.left, r.bottom - l);
 
     canvas.drawPath(path, paint);
@@ -112,7 +120,12 @@ class LaserPainter extends CustomPainter {
       scanArea.height * size.height,
     );
     final y = window.top + window.height * progress.value;
-    final rect = Rect.fromLTRB(window.left + 8, y - 1.5, window.right - 8, y + 1.5);
+    final rect = Rect.fromLTRB(
+      window.left + 8,
+      y - 1.5,
+      window.right - 8,
+      y + 1.5,
+    );
 
     final paint = Paint()
       ..shader = LinearGradient(
@@ -179,8 +192,8 @@ class DetectionPainter extends CustomPainter {
 
   Size _orientedImageSize(BarcodeResult b) =>
       b.rotation == 90 || b.rotation == 270
-          ? Size(b.imageSize.height, b.imageSize.width)
-          : b.imageSize;
+      ? Size(b.imageSize.height, b.imageSize.width)
+      : b.imageSize;
 
   Offset _rotatePoint(Offset p, int rotation, Size img) {
     switch (rotation) {

@@ -13,22 +13,22 @@ const List<BarcodeFormat> _validatorFormats = [
 ];
 
 String _formatLabel(BarcodeFormat f) => switch (f) {
-      BarcodeFormat.ean13 => 'EAN-13',
-      BarcodeFormat.ean8 => 'EAN-8',
-      BarcodeFormat.upcA => 'UPC-A',
-      BarcodeFormat.code128 => 'Code 128',
-      BarcodeFormat.code39 => 'Code 39',
-      _ => f.name,
-    };
+  BarcodeFormat.ean13 => 'EAN-13',
+  BarcodeFormat.ean8 => 'EAN-8',
+  BarcodeFormat.upcA => 'UPC-A',
+  BarcodeFormat.code128 => 'Code 128',
+  BarcodeFormat.code39 => 'Code 39',
+  _ => f.name,
+};
 
 bool _validate(BarcodeFormat format, String data) => switch (format) {
-      BarcodeFormat.ean13 => BarcodeValidator.isValidEAN13(data),
-      BarcodeFormat.ean8 => BarcodeValidator.isValidEAN8(data),
-      BarcodeFormat.upcA => BarcodeValidator.isValidUPC(data),
-      BarcodeFormat.code128 => BarcodeValidator.isValidCode128(data),
-      BarcodeFormat.code39 => BarcodeValidator.isValidCode39(data),
-      _ => false,
-    };
+  BarcodeFormat.ean13 => BarcodeValidator.isValidEAN13(data),
+  BarcodeFormat.ean8 => BarcodeValidator.isValidEAN8(data),
+  BarcodeFormat.upcA => BarcodeValidator.isValidUPC(data),
+  BarcodeFormat.code128 => BarcodeValidator.isValidCode128(data),
+  BarcodeFormat.code39 => BarcodeValidator.isValidCode39(data),
+  _ => false,
+};
 
 /// Demonstrates [BarcodeValidator]: live validity check + checksum for the
 /// five symbologies the validator supports (EAN-13, EAN-8, UPC-A, Code 128,
@@ -98,10 +98,8 @@ class _ValidationSectionState extends State<ValidationSection> {
             value: _format,
             items: _validatorFormats
                 .map(
-                  (f) => DropdownMenuItem(
-                    value: f,
-                    child: Text(_formatLabel(f)),
-                  ),
+                  (f) =>
+                      DropdownMenuItem(value: f, child: Text(_formatLabel(f))),
                 )
                 .toList(),
             onChanged: _onFormatChanged,
@@ -132,10 +130,7 @@ class _ValidationSectionState extends State<ValidationSection> {
             ],
           ),
           const SizedBox(height: 8),
-          Text(
-            _checksumLine(),
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
+          Text(_checksumLine(), style: Theme.of(context).textTheme.bodyMedium),
         ],
       ),
     );

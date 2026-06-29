@@ -46,101 +46,85 @@ class _DemoHubPageState extends State<DemoHubPage> {
       (
         'Generate QR',
         () => Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (_) => GenerateQrSection(onGenerated: _remember),
-              ),
-            ),
+          MaterialPageRoute<void>(
+            builder: (_) => GenerateQrSection(onGenerated: _remember),
+          ),
+        ),
       ),
       (
         'Generate Barcode',
         () => Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (_) => const GenerateBarcodeSection(),
-              ),
-            ),
+          MaterialPageRoute<void>(
+            builder: (_) => const GenerateBarcodeSection(),
+          ),
+        ),
       ),
       (
         'Styled QR',
         () => Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (_) => const StyledQrSection(),
-              ),
-            ),
+          MaterialPageRoute<void>(builder: (_) => const StyledQrSection()),
+        ),
       ),
       (
         'Gradient QR',
         () => Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (_) => const GradientQrSection(),
-              ),
-            ),
+          MaterialPageRoute<void>(builder: (_) => const GradientQrSection()),
+        ),
       ),
       (
         'Logo QR',
-        () => Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (_) => const LogoQrSection(),
-              ),
-            ),
+        () => Navigator.of(
+          context,
+        ).push(MaterialPageRoute<void>(builder: (_) => const LogoQrSection())),
       ),
       (
         'Save (PNG / SVG / PDF)',
-        () => Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (_) => const SaveSection(),
-              ),
-            ),
+        () => Navigator.of(
+          context,
+        ).push(MaterialPageRoute<void>(builder: (_) => const SaveSection())),
       ),
       (
         'Print Preview',
         () => Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (_) => const PrintPreviewSection(),
-              ),
-            ),
+          MaterialPageRoute<void>(builder: (_) => const PrintPreviewSection()),
+        ),
       ),
       (
         'Batch Generation',
-        () => Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (_) => const BatchSection(),
-              ),
-            ),
+        () => Navigator.of(
+          context,
+        ).push(MaterialPageRoute<void>(builder: (_) => const BatchSection())),
       ),
       (
         'Validation',
         () => Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (_) => const ValidationSection(),
-              ),
-            ),
+          MaterialPageRoute<void>(builder: (_) => const ValidationSection()),
+        ),
       ),
       (
         'Image Decode',
         () => Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (_) => const ImageDecodeSection(),
-              ),
-            ),
+          MaterialPageRoute<void>(builder: (_) => const ImageDecodeSection()),
+        ),
       ),
       (
         'History',
         () => Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (_) => HistorySection(history: _history),
-              ),
-            ),
+          MaterialPageRoute<void>(
+            builder: (_) => HistorySection(history: _history),
+          ),
+        ),
       ),
       (
         'Scanner',
         () => Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (_) => ScannerPage(
-                  isDark: widget.isDark,
-                  onToggleTheme: widget.onToggleTheme,
-                ),
-              ),
+          MaterialPageRoute<void>(
+            builder: (_) => ScannerPage(
+              isDark: widget.isDark,
+              onToggleTheme: widget.onToggleTheme,
             ),
+          ),
+        ),
       ),
     ];
 
@@ -150,9 +134,7 @@ class _DemoHubPageState extends State<DemoHubPage> {
         actions: [
           IconButton(
             tooltip: 'Toggle theme',
-            icon: Icon(
-              widget.isDark ? Icons.light_mode : Icons.dark_mode,
-            ),
+            icon: Icon(widget.isDark ? Icons.light_mode : Icons.dark_mode),
             onPressed: widget.onToggleTheme,
           ),
         ],

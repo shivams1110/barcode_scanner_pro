@@ -3,10 +3,10 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   test('ErrorCorrection maps to qr package level ints', () {
-    expect(ErrorCorrection.low.qrLevel, 1);      // QrErrorCorrectLevel.L
-    expect(ErrorCorrection.medium.qrLevel, 0);   // M
+    expect(ErrorCorrection.low.qrLevel, 1); // QrErrorCorrectLevel.L
+    expect(ErrorCorrection.medium.qrLevel, 0); // M
     expect(ErrorCorrection.quartile.qrLevel, 3); // Q
-    expect(ErrorCorrection.high.qrLevel, 2);     // H
+    expect(ErrorCorrection.high.qrLevel, 2); // H
   });
 
   test('all enums expose every variant', () {

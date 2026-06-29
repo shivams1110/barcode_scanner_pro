@@ -16,11 +16,12 @@ class FakeBarcodeScannerPlatform extends BarcodeScannerPlatform
   bool permission = true;
   bool flash = false;
 
-  StreamController<ScannerEvent> _controllerFor(int id) =>
-      _controllers.putIfAbsent(id, () => StreamController<ScannerEvent>.broadcast());
+  StreamController<ScannerEvent> _controllerFor(int id) => _controllers
+      .putIfAbsent(id, () => StreamController<ScannerEvent>.broadcast());
 
   /// Pushes an event to listeners of [viewId].
-  void emit(int viewId, ScannerEvent event) => _controllerFor(viewId).add(event);
+  void emit(int viewId, ScannerEvent event) =>
+      _controllerFor(viewId).add(event);
 
   @override
   String get viewType => 'fake/view';
@@ -79,7 +80,8 @@ class FakeBarcodeScannerPlatform extends BarcodeScannerPlatform
   Future<void> switchCamera(int viewId) async => calls.add('switchCamera');
 
   @override
-  Future<void> setZoom(int viewId, double zoom) async => calls.add('setZoom:$zoom');
+  Future<void> setZoom(int viewId, double zoom) async =>
+      calls.add('setZoom:$zoom');
 
   @override
   Future<void> setExposure(int viewId, double exposure) async =>
@@ -101,7 +103,9 @@ class FakeBarcodeScannerPlatform extends BarcodeScannerPlatform
 
   @override
   Future<List<Map<Object?, Object?>>> decodeImage(
-      Uint8List bytes, int formatsMask) async {
+    Uint8List bytes,
+    int formatsMask,
+  ) async {
     calls.add('decodeImage');
     lastDecodeMask = formatsMask;
     final err = decodeImageError;

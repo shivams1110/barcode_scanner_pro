@@ -84,7 +84,8 @@ class PdfRenderer {
   }) async {
     if (requests.isEmpty) {
       throw const BarcodeGenException(
-          'PDF export requires at least one request');
+        'PDF export requires at least one request',
+      );
     }
     final doc = pw.Document();
 
@@ -99,10 +100,12 @@ class PdfRenderer {
       case PdfLayoutType.label:
       case PdfLayoutType.thermal:
         for (final w in widgets) {
-          doc.addPage(pw.Page(
-            pageFormat: layout.pageFormat,
-            build: (_) => pw.Center(child: w),
-          ));
+          doc.addPage(
+            pw.Page(
+              pageFormat: layout.pageFormat,
+              build: (_) => pw.Center(child: w),
+            ),
+          );
         }
       case PdfLayoutType.grid:
       case PdfLayoutType.a4:
@@ -113,15 +116,21 @@ class PdfRenderer {
   }
 
   Future<pw.Widget> _codeWidget(
-      BarcodeRequest req, BarcodeExportOptions options) async {
+    BarcodeRequest req,
+    BarcodeExportOptions options,
+  ) async {
     if (req.format == BarcodeFormat.qr) {
-      final dpiReq =
-          req.copyWith(options: req.options.copyWith(dpi: options.pdfDpi));
+      final dpiReq = req.copyWith(
+        options: req.options.copyWith(dpi: options.pdfDpi),
+      );
       final out = await _exporter.rasterize(dpiReq);
       // pw.Image first positional arg is ImageProvider (pw.MemoryImage).
       // width/height are optional named params on pw.Image.
-      return pw.Image(pw.MemoryImage(out.png),
-          width: req.options.size, height: req.options.size);
+      return pw.Image(
+        pw.MemoryImage(out.png),
+        width: req.options.size,
+        height: req.options.size,
+      );
     }
     // pw.BarcodeWidget: data (named String), barcode, width, height, drawText.
     return pw.BarcodeWidget(
@@ -140,26 +149,33 @@ class PdfRenderer {
   /// Uses pw.GridView (pdf 3.11+) which accepts crossAxisCount,
   /// childAspectRatio, crossAxisSpacing, mainAxisSpacing, and children.
   void _addGridPages(
-      pw.Document doc, List<pw.Widget> widgets, BarcodePdfLayout layout) {
+    pw.Document doc,
+    List<pw.Widget> widgets,
+    BarcodePdfLayout layout,
+  ) {
     final perPage = layout.perPage;
     for (var start = 0; start < widgets.length; start += perPage) {
       final end = (start + perPage).clamp(0, widgets.length);
       final pageWidgets = widgets.sublist(start, end);
-      doc.addPage(pw.Page(
-        pageFormat: layout.pageFormat,
-        build: (_) => pw.GridView(
-          crossAxisCount: layout.columns,
-          childAspectRatio: 1.6,
-          crossAxisSpacing: layout.cellPadding,
-          mainAxisSpacing: layout.cellPadding,
-          children: pageWidgets
-              .map((w) => pw.Padding(
+      doc.addPage(
+        pw.Page(
+          pageFormat: layout.pageFormat,
+          build: (_) => pw.GridView(
+            crossAxisCount: layout.columns,
+            childAspectRatio: 1.6,
+            crossAxisSpacing: layout.cellPadding,
+            mainAxisSpacing: layout.cellPadding,
+            children: pageWidgets
+                .map(
+                  (w) => pw.Padding(
                     padding: pw.EdgeInsets.all(layout.cellPadding),
                     child: pw.Center(child: w),
-                  ))
-              .toList(),
+                  ),
+                )
+                .toList(),
+          ),
         ),
-      ));
+      );
     }
   }
 }

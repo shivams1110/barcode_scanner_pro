@@ -103,9 +103,9 @@ class _Label extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.only(bottom: 4),
-        child: Text(text, style: Theme.of(context).textTheme.labelLarge),
-      );
+    padding: const EdgeInsets.only(bottom: 4),
+    child: Text(text, style: Theme.of(context).textTheme.labelLarge),
+  );
 }
 
 class _ChipRow<T> extends StatelessWidget {
@@ -123,15 +123,15 @@ class _ChipRow<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Wrap(
-        spacing: 6,
-        children: values
-            .map(
-              (v) => ChoiceChip(
-                label: Text(label(v)),
-                selected: selected == v,
-                onSelected: (_) => onSelected(v),
-              ),
-            )
-            .toList(),
-      );
+    spacing: 6,
+    children: values
+        .map(
+          (v) => ChoiceChip(
+            label: Text(label(v)),
+            selected: selected == v,
+            onSelected: (_) => onSelected(v),
+          ),
+        )
+        .toList(),
+  );
 }

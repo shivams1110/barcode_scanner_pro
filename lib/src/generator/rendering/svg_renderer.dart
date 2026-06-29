@@ -59,7 +59,9 @@ class SvgRenderer {
   }
 
   Future<String> _qrSvg(
-      BarcodeRequest request, BarcodeExportOptions options) async {
+    BarcodeRequest request,
+    BarcodeExportOptions options,
+  ) async {
     final dpiRequest = request.copyWith(
       options: request.options.copyWith(dpi: options.svgDpi),
     );

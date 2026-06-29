@@ -10,10 +10,16 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   testWidgets('routes qr and linear without throwing', (tester) async {
     const r = BarcodeRenderer();
-    r.paint(Canvas(PictureRecorder()), const Size(200, 200),
-        const BarcodeRequest(data: 'qr', format: BarcodeFormat.qr));
-    r.paint(Canvas(PictureRecorder()), const Size(200, 80),
-        const BarcodeRequest(data: 'CODE128', format: BarcodeFormat.code128));
+    r.paint(
+      Canvas(PictureRecorder()),
+      const Size(200, 200),
+      const BarcodeRequest(data: 'qr', format: BarcodeFormat.qr),
+    );
+    r.paint(
+      Canvas(PictureRecorder()),
+      const Size(200, 80),
+      const BarcodeRequest(data: 'CODE128', format: BarcodeFormat.code128),
+    );
   });
 
   testWidgets('applies rotation transform', (tester) async {
@@ -29,8 +35,9 @@ void main() {
     );
   });
 
-  testWidgets('painter exception propagates through rotation finally',
-      (tester) async {
+  testWidgets('painter exception propagates through rotation finally', (
+    tester,
+  ) async {
     const r = BarcodeRenderer();
     expect(
       () => r.paint(

@@ -11,28 +11,48 @@ void main() {
 
     expect(BarcodeGenerator.url('https://x.io').data, 'https://x.io');
     expect(BarcodeGenerator.phone('+15551234').data, 'tel:+15551234');
-    expect(BarcodeGenerator.email('a@b.com', subject: 'Hi').data,
-        'mailto:a@b.com?subject=Hi');
+    expect(
+      BarcodeGenerator.email('a@b.com', subject: 'Hi').data,
+      'mailto:a@b.com?subject=Hi',
+    );
     expect(BarcodeGenerator.location(1.5, 2.5).data, 'geo:1.5,2.5');
     expect(BarcodeGenerator.contact({'name': 'Ada'}).data, contains('FN:Ada'));
-    expect(BarcodeGenerator.calendar({'summary': 'X'}).data, contains('SUMMARY:X'));
+    expect(
+      BarcodeGenerator.calendar({'summary': 'X'}).data,
+      contains('SUMMARY:X'),
+    );
     expect(BarcodeGenerator.text('hi').data, 'hi');
-    expect(BarcodeGenerator.sms('5551234', message: 'yo').data, 'SMSTO:5551234:yo');
+    expect(
+      BarcodeGenerator.sms('5551234', message: 'yo').data,
+      'SMSTO:5551234:yo',
+    );
   });
 
   test('validate dispatches to BarcodeValidator', () {
     const gen = BarcodeGenerator();
     expect(
-      gen.validate(const BarcodeRequest(data: '4006381333931', format: BarcodeFormat.ean13)),
+      gen.validate(
+        const BarcodeRequest(
+          data: '4006381333931',
+          format: BarcodeFormat.ean13,
+        ),
+      ),
       isTrue,
     );
     expect(
-      gen.validate(const BarcodeRequest(data: '4006381333930', format: BarcodeFormat.ean13)),
+      gen.validate(
+        const BarcodeRequest(
+          data: '4006381333930',
+          format: BarcodeFormat.ean13,
+        ),
+      ),
       isFalse,
     );
     // QR/2D are always valid for generation:
     expect(
-      gen.validate(const BarcodeRequest(data: 'anything', format: BarcodeFormat.qr)),
+      gen.validate(
+        const BarcodeRequest(data: 'anything', format: BarcodeFormat.qr),
+      ),
       isTrue,
     );
   });

@@ -15,7 +15,7 @@ void main() {
             'imageWidth': 10,
             'imageHeight': 10,
             'rotation': 0,
-          }
+          },
         ],
       });
       expect(event, isA<BarcodesEvent>());
@@ -23,17 +23,26 @@ void main() {
     });
 
     test('decodes lifecycle and control events', () {
-      expect(ScannerEvent.fromMap({'type': 'scannerStarted'}),
-          isA<ScannerStartedEvent>());
-      expect(ScannerEvent.fromMap({'type': 'scannerStopped'}),
-          isA<ScannerStoppedEvent>());
-      expect(ScannerEvent.fromMap({'type': 'permissionDenied'}),
-          isA<PermissionDeniedEvent>());
       expect(
-          ScannerEvent.fromMap({'type': 'flashChanged', 'enabled': true}),
-          isA<FlashChangedEvent>());
-      expect(ScannerEvent.fromMap({'type': 'zoomChanged', 'zoom': 0.4}),
-          isA<ZoomChangedEvent>());
+        ScannerEvent.fromMap({'type': 'scannerStarted'}),
+        isA<ScannerStartedEvent>(),
+      );
+      expect(
+        ScannerEvent.fromMap({'type': 'scannerStopped'}),
+        isA<ScannerStoppedEvent>(),
+      );
+      expect(
+        ScannerEvent.fromMap({'type': 'permissionDenied'}),
+        isA<PermissionDeniedEvent>(),
+      );
+      expect(
+        ScannerEvent.fromMap({'type': 'flashChanged', 'enabled': true}),
+        isA<FlashChangedEvent>(),
+      );
+      expect(
+        ScannerEvent.fromMap({'type': 'zoomChanged', 'zoom': 0.4}),
+        isA<ZoomChangedEvent>(),
+      );
     });
 
     test('maps error codes to typed exceptions', () {

@@ -25,5 +25,4 @@ void main() {
     final b64 = await tester.runAsync(() => gen.toBase64(req));
     expect(b64!.isNotEmpty, isTrue);
   });
-
 }

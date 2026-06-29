@@ -54,11 +54,7 @@ class _LogoQrSectionState extends State<LogoQrSection> {
       ..color = const Color(0xFF3F51B5)
       ..isAntiAlias = true;
     canvas.drawRRect(
-      RRect.fromRectXY(
-        const Rect.fromLTWH(0, 0, size, size),
-        24.0,
-        24.0,
-      ),
+      RRect.fromRectXY(const Rect.fromLTWH(0, 0, size, size), 24.0, 24.0),
       bgPaint,
     );
 
@@ -114,9 +110,9 @@ class _LogoQrSectionState extends State<LogoQrSection> {
     } on BarcodeGenException catch (e) {
       if (!mounted) return;
       setState(() => _eccErrorMessage = e.message);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.message)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.message)));
     }
   }
 
@@ -132,9 +128,9 @@ class _LogoQrSectionState extends State<LogoQrSection> {
           Text(
             'A logo requires error correction ≥ quartile (Q or H).',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.primary,
-                  fontWeight: FontWeight.w600,
-                ),
+              color: Theme.of(context).colorScheme.primary,
+              fontWeight: FontWeight.w600,
+            ),
           ),
           const SizedBox(height: 16),
           if (logo == null)
@@ -161,8 +157,8 @@ class _LogoQrSectionState extends State<LogoQrSection> {
             Text(
               _eccErrorMessage!,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.error,
-                  ),
+                color: Theme.of(context).colorScheme.error,
+              ),
             ),
           ],
         ],

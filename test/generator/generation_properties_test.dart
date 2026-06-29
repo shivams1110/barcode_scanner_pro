@@ -50,8 +50,12 @@ void main() {
           BarcodeRequest(data: entry.value, format: entry.key),
         );
         expect(bytes.length, greaterThan(8), reason: '${entry.key.name} empty');
-        expect(bytes.sublist(0, 4), [0x89, 0x50, 0x4E, 0x47],
-            reason: '${entry.key.name} not PNG');
+        expect(bytes.sublist(0, 4), [
+          0x89,
+          0x50,
+          0x4E,
+          0x47,
+        ], reason: '${entry.key.name} not PNG');
       }
     });
   });
@@ -59,34 +63,47 @@ void main() {
   testWidgets('DPI scales raster pixel dimensions', (tester) async {
     await tester.runAsync(() async {
       for (final dpi in [300, 600, 1200]) {
-        final result = await gen.generate(BarcodeRequest(
-          data: 'https://karnival.com',
-          format: BarcodeFormat.qr,
-          options: BarcodeOptions(size: 100, dpi: dpi),
-        ));
+        final result = await gen.generate(
+          BarcodeRequest(
+            data: 'https://karnival.com',
+            format: BarcodeFormat.qr,
+            options: BarcodeOptions(size: 100, dpi: dpi),
+          ),
+        );
         final expected = (100 * dpi / 96).floor();
         expect(result.uiImage.width, expected, reason: 'dpi $dpi');
       }
     });
   });
 
-  testWidgets('corner pixel reflects background; transparent => alpha 0',
-      (tester) async {
+  testWidgets('corner pixel reflects background; transparent => alpha 0', (
+    tester,
+  ) async {
     await tester.runAsync(() async {
       // Opaque white bg → top-left corner alpha 255.
-      final opaque = await gen.generate(const BarcodeRequest(
-        data: 'x', format: BarcodeFormat.qr,
-        options: BarcodeOptions(size: 64),
-      ));
-      final od = await opaque.uiImage.toByteData(format: ui.ImageByteFormat.rawRgba);
+      final opaque = await gen.generate(
+        const BarcodeRequest(
+          data: 'x',
+          format: BarcodeFormat.qr,
+          options: BarcodeOptions(size: 64),
+        ),
+      );
+      final od = await opaque.uiImage.toByteData(
+        format: ui.ImageByteFormat.rawRgba,
+      );
       expect(od!.getUint8(3), 255);
 
       // Transparent bg → corner alpha 0.
-      final clear = await gen.generate(const BarcodeRequest(
-        data: 'x', format: BarcodeFormat.qr,
-        options: BarcodeOptions(size: 64, transparentBackground: true),
-      ));
-      final cd = await clear.uiImage.toByteData(format: ui.ImageByteFormat.rawRgba);
+      final clear = await gen.generate(
+        const BarcodeRequest(
+          data: 'x',
+          format: BarcodeFormat.qr,
+          options: BarcodeOptions(size: 64, transparentBackground: true),
+        ),
+      );
+      final cd = await clear.uiImage.toByteData(
+        format: ui.ImageByteFormat.rawRgba,
+      );
       expect(cd!.getUint8(3), 0);
     });
   });

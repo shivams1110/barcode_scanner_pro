@@ -77,5 +77,7 @@ abstract class BarcodeScannerPlatform extends PlatformInterface {
   /// maps (each shaped for `BarcodeDecodeResult.fromMap`); the generator layer
   /// maps them. Throws [PlatformException] on native decode failure.
   Future<List<Map<Object?, Object?>>> decodeImage(
-      Uint8List bytes, int formatsMask);
+    Uint8List bytes,
+    int formatsMask,
+  );
 }

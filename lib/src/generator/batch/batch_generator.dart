@@ -30,7 +30,8 @@ class BatchGenerator {
           _one(i, requests[i], generateOne, cache, results),
       ]);
       await Future<void>.delayed(
-          Duration.zero); // yield to the event loop so the UI can render between groups
+        Duration.zero,
+      ); // yield to the event loop so the UI can render between groups
     }
     return results.cast<BarcodeGenResult>();
   }

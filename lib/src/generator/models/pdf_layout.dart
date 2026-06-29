@@ -42,70 +42,70 @@ class BarcodePdfLayout {
 
   /// One code centred per page (A4).
   const BarcodePdfLayout.single()
-      : this._(
-          type: PdfLayoutType.single,
-          columns: 1,
-          rows: 1,
-          pageFormat: PdfPageFormat.a4,
-        );
+    : this._(
+        type: PdfLayoutType.single,
+        columns: 1,
+        rows: 1,
+        pageFormat: PdfPageFormat.a4,
+      );
 
   /// [columns]×[rows] codes flowed across A4 pages.
   const BarcodePdfLayout.grid({int columns = 3, int rows = 4})
-      : this._(
-          type: PdfLayoutType.grid,
-          columns: columns,
-          rows: rows,
-          pageFormat: PdfPageFormat.a4,
-        );
+    : this._(
+        type: PdfLayoutType.grid,
+        columns: columns,
+        rows: rows,
+        pageFormat: PdfPageFormat.a4,
+      );
 
   /// One code per fixed physical label of [widthMm]×[heightMm] millimetres.
   ///
   /// Not const — mm arithmetic is computed at runtime.
   BarcodePdfLayout.label({required double widthMm, required double heightMm})
-      : this._(
-          type: PdfLayoutType.label,
-          columns: 1,
-          rows: 1,
-          pageFormat: PdfPageFormat(
-            widthMm * PdfPageFormat.mm,
-            heightMm * PdfPageFormat.mm,
-            marginAll: 4 * PdfPageFormat.mm,
-          ),
-        );
+    : this._(
+        type: PdfLayoutType.label,
+        columns: 1,
+        rows: 1,
+        pageFormat: PdfPageFormat(
+          widthMm * PdfPageFormat.mm,
+          heightMm * PdfPageFormat.mm,
+          marginAll: 4 * PdfPageFormat.mm,
+        ),
+      );
 
   /// Continuous narrow roll for thermal printers (default 58 mm wide).
   ///
   /// This zero-argument form is `const`. Pass a custom [widthMm] to override
   /// the page format (use the [custom] constructor for non-standard widths).
   const BarcodePdfLayout.thermal()
-      : this._(
-          type: PdfLayoutType.thermal,
-          columns: 1,
-          rows: 1,
-          pageFormat: _kThermal58,
-        );
+    : this._(
+        type: PdfLayoutType.thermal,
+        columns: 1,
+        rows: 1,
+        pageFormat: _kThermal58,
+      );
 
   /// Thermal roll with a custom [widthMm] (not const — uses runtime mm math).
   BarcodePdfLayout.thermalWide({required double widthMm})
-      : this._(
-          type: PdfLayoutType.thermal,
-          columns: 1,
-          rows: 1,
-          pageFormat: PdfPageFormat(
-            widthMm * PdfPageFormat.mm,
-            widthMm * PdfPageFormat.mm,
-            marginAll: 2 * PdfPageFormat.mm,
-          ),
-        );
+    : this._(
+        type: PdfLayoutType.thermal,
+        columns: 1,
+        rows: 1,
+        pageFormat: PdfPageFormat(
+          widthMm * PdfPageFormat.mm,
+          widthMm * PdfPageFormat.mm,
+          marginAll: 2 * PdfPageFormat.mm,
+        ),
+      );
 
   /// Grid tuned for A4 label sheets (3 columns × 8 rows by default).
   const BarcodePdfLayout.a4({int columns = 3, int rows = 8})
-      : this._(
-          type: PdfLayoutType.a4,
-          columns: columns,
-          rows: rows,
-          pageFormat: PdfPageFormat.a4,
-        );
+    : this._(
+        type: PdfLayoutType.a4,
+        columns: columns,
+        rows: rows,
+        pageFormat: PdfPageFormat.a4,
+      );
 
   /// Caller-supplied page format and grid.
   const BarcodePdfLayout.custom({
@@ -113,11 +113,11 @@ class BarcodePdfLayout {
     int columns = 1,
     int rows = 1,
   }) : this._(
-          type: PdfLayoutType.custom,
-          columns: columns,
-          rows: rows,
-          pageFormat: pageFormat,
-        );
+         type: PdfLayoutType.custom,
+         columns: columns,
+         rows: rows,
+         pageFormat: pageFormat,
+       );
 
   final PdfLayoutType type;
   final int columns;
@@ -140,6 +140,5 @@ class BarcodePdfLayout {
       other.cellPadding == cellPadding;
 
   @override
-  int get hashCode =>
-      Object.hash(type, columns, rows, pageFormat, cellPadding);
+  int get hashCode => Object.hash(type, columns, rows, pageFormat, cellPadding);
 }

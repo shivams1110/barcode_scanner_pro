@@ -51,8 +51,10 @@ class BatchSectionState extends State<BatchSection> {
 
     final stopwatch = Stopwatch()..start();
     try {
-      final results = await const BarcodeGenerator()
-          .generateBatch(requests, concurrency: 8);
+      final results = await const BarcodeGenerator().generateBatch(
+        requests,
+        concurrency: 8,
+      );
       stopwatch.stop();
       if (!mounted) return;
       setState(() {
@@ -86,9 +88,7 @@ class BatchSectionState extends State<BatchSection> {
             max: _maxCount.toDouble(),
             divisions: _divisions,
             label: '$count',
-            onChanged: _busy
-                ? null
-                : (value) => setState(() => _count = value),
+            onChanged: _busy ? null : (value) => setState(() => _count = value),
           ),
           const SizedBox(height: 8),
           ElevatedButton(
@@ -104,8 +104,8 @@ class BatchSectionState extends State<BatchSection> {
             Text(
               _errorMessage!,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.error,
-                  ),
+                color: Theme.of(context).colorScheme.error,
+              ),
             ),
           ],
           if (_elapsedMs != null && _results != null) ...[

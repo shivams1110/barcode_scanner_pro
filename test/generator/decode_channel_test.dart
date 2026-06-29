@@ -6,7 +6,8 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   final channel = MethodChannel(Channels.global);
-  final messenger = TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+  final messenger =
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
 
   tearDown(() => messenger.setMockMethodCallHandler(channel, null));
 
@@ -38,9 +39,13 @@ void main() {
 
   test('PlatformException propagates (not swallowed by _guard)', () async {
     messenger.setMockMethodCallHandler(
-        channel, (call) async => throw PlatformException(code: 'DECODING_ERROR'));
+      channel,
+      (call) async => throw PlatformException(code: 'DECODING_ERROR'),
+    );
     final platform = MethodChannelBarcodeScanner();
-    expect(() => platform.decodeImage(Uint8List.fromList([1]), 0),
-        throwsA(isA<PlatformException>()));
+    expect(
+      () => platform.decodeImage(Uint8List.fromList([1]), 0),
+      throwsA(isA<PlatformException>()),
+    );
   });
 }

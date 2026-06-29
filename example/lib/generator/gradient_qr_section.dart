@@ -34,10 +34,10 @@ class _GradientQrSectionState extends State<GradientQrSection> {
   Color _colorB = Colors.teal;
 
   Gradient get _gradient => switch (_type) {
-        'radial' => RadialGradient(colors: [_colorA, _colorB]),
-        'sweep' => SweepGradient(colors: [_colorA, _colorB]),
-        _ => LinearGradient(colors: [_colorA, _colorB]),
-      };
+    'radial' => RadialGradient(colors: [_colorA, _colorB]),
+    'sweep' => SweepGradient(colors: [_colorA, _colorB]),
+    _ => LinearGradient(colors: [_colorA, _colorB]),
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -93,9 +93,9 @@ class _GradientQrSectionState extends State<GradientQrSection> {
   }
 
   Widget _label(BuildContext context, String text) => Padding(
-        padding: const EdgeInsets.only(bottom: 4),
-        child: Text(text, style: Theme.of(context).textTheme.labelLarge),
-      );
+    padding: const EdgeInsets.only(bottom: 4),
+    child: Text(text, style: Theme.of(context).textTheme.labelLarge),
+  );
 }
 
 class _ColorChips extends StatelessWidget {
@@ -106,17 +106,17 @@ class _ColorChips extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Wrap(
-        spacing: 6,
-        children: _kColors
-            .map(
-              (entry) => ChoiceChip(
-                label: Text(entry.label),
-                selected: selected == entry.color,
-                selectedColor: entry.color.withAlpha(80),
-                avatar: CircleAvatar(backgroundColor: entry.color),
-                onSelected: (_) => onSelected(entry.color),
-              ),
-            )
-            .toList(),
-      );
+    spacing: 6,
+    children: _kColors
+        .map(
+          (entry) => ChoiceChip(
+            label: Text(entry.label),
+            selected: selected == entry.color,
+            selectedColor: entry.color.withAlpha(80),
+            avatar: CircleAvatar(backgroundColor: entry.color),
+            onSelected: (_) => onSelected(entry.color),
+          ),
+        )
+        .toList(),
+  );
 }

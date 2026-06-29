@@ -8,10 +8,8 @@ import 'controller.dart';
 import 'platform/barcode_scanner_platform.dart';
 
 /// Builds an overlay layered on top of the native camera preview.
-typedef OverlayBuilder = Widget Function(
-  BuildContext context,
-  BarcodeScannerController controller,
-);
+typedef OverlayBuilder =
+    Widget Function(BuildContext context, BarcodeScannerController controller);
 
 /// Hosts the native camera preview via a [PlatformView] and never renders a
 /// Flutter-side camera image. Flutter is responsible only for the overlay,
@@ -47,8 +45,7 @@ class _BarcodeScannerViewState extends State<BarcodeScannerView> {
 
   String get _viewType => BarcodeScannerPlatform.instance.viewType;
 
-  Map<String, dynamic> get _creationParams =>
-      _controller.configuration.toMap();
+  Map<String, dynamic> get _creationParams => _controller.configuration.toMap();
 
   void _onPlatformViewCreated(int id) {
     _controller.attach(id);
@@ -140,13 +137,13 @@ class _UnsupportedPlatform extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => const ColoredBox(
-        color: Color(0xFF000000),
-        child: Center(
-          child: Text(
-            'barcode_scanner_pro supports Android and iOS only.',
-            textDirection: TextDirection.ltr,
-            style: TextStyle(color: Color(0xFFFFFFFF)),
-          ),
-        ),
-      );
+    color: Color(0xFF000000),
+    child: Center(
+      child: Text(
+        'barcode_scanner_pro supports Android and iOS only.',
+        textDirection: TextDirection.ltr,
+        style: TextStyle(color: Color(0xFFFFFFFF)),
+      ),
+    ),
+  );
 }

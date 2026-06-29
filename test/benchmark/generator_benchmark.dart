@@ -47,8 +47,9 @@ void main() {
     expect(sw.elapsedMilliseconds, lessThan(30000));
   });
 
-  testWidgets('BENCH generateBatch 100 code128 items concurrency=8',
-      (tester) async {
+  testWidgets('BENCH generateBatch 100 code128 items concurrency=8', (
+    tester,
+  ) async {
     final requests = List.generate(
       100,
       (i) => BarcodeRequest(data: 'ITEM-$i', format: BarcodeFormat.code128),
@@ -60,7 +61,9 @@ void main() {
     );
     sw.stop();
 
-    debugPrint('BENCH batch(100, code128, concurrency=8): ${sw.elapsedMilliseconds}ms');
+    debugPrint(
+      'BENCH batch(100, code128, concurrency=8): ${sw.elapsedMilliseconds}ms',
+    );
 
     expect(results, isNotNull);
     expect(results!.length, 100);
@@ -73,8 +76,9 @@ void main() {
     expect(sw.elapsedMilliseconds, lessThan(60000));
   });
 
-  testWidgets('BENCH generateBatch 150 requests (100 unique + 50 duplicates)',
-      (tester) async {
+  testWidgets('BENCH generateBatch 150 requests (100 unique + 50 duplicates)', (
+    tester,
+  ) async {
     // 100 unique items followed by 50 duplicates of the first 50.
     final unique = List.generate(
       100,
@@ -93,7 +97,8 @@ void main() {
     sw.stop();
 
     debugPrint(
-        'BENCH batch(150 = 100 unique + 50 dup, code128): ${sw.elapsedMilliseconds}ms');
+      'BENCH batch(150 = 100 unique + 50 dup, code128): ${sw.elapsedMilliseconds}ms',
+    );
 
     expect(results, isNotNull);
     // Must return exactly 150 results — one per input request, including dups.
@@ -114,7 +119,11 @@ void main() {
     // Different data → not equal.
     expect(a, isNot(equals(b)));
     // Hash codes consistent with equality.
-    expect(a.hashCode,
-        equals(const BarcodeRequest(data: 'hello', format: BarcodeFormat.qr).hashCode));
+    expect(
+      a.hashCode,
+      equals(
+        const BarcodeRequest(data: 'hello', format: BarcodeFormat.qr).hashCode,
+      ),
+    );
   });
 }

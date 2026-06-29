@@ -9,12 +9,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 BarcodeGenResult _result(BarcodeRequest req, ui.Image img) => BarcodeGenResult(
-      pngBytes: Uint8List.fromList([1]),
-      uiImage: img,
-      pixelSize: const Size(1, 1),
-      format: req.format,
-      request: req,
-    );
+  pngBytes: Uint8List.fromList([1]),
+  uiImage: img,
+  pixelSize: const Size(1, 1),
+  format: req.format,
+  request: req,
+);
 
 void main() {
   testWidgets('hit by value-equal key; LRU eviction', (tester) async {
@@ -30,8 +30,10 @@ void main() {
     cache.put(a, _result(a, img));
     cache.put(b, _result(b, img));
     // value-equal lookup hits:
-    expect(cache.get(const BarcodeRequest(data: 'a', format: BarcodeFormat.qr)),
-        isNotNull);
+    expect(
+      cache.get(const BarcodeRequest(data: 'a', format: BarcodeFormat.qr)),
+      isNotNull,
+    );
     // touching 'a' makes 'b' the LRU; inserting 'c' evicts 'b':
     cache.put(c, _result(c, img));
     expect(cache.get(b), isNull);

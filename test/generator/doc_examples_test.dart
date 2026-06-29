@@ -17,8 +17,9 @@ void main() {
     });
   });
 
-  testWidgets('generate returns a populated result + output conversions',
-      (tester) async {
+  testWidgets('generate returns a populated result + output conversions', (
+    tester,
+  ) async {
     await tester.runAsync(() async {
       final result = await gen.generate(
         const BarcodeRequest(data: '012345678905', format: BarcodeFormat.upcA),
@@ -26,9 +27,12 @@ void main() {
       expect(result.pngBytes.length, greaterThan(8));
       expect(result.toBase64(), isNotEmpty);
       expect(result.toMemoryImage(), isA<MemoryImage>());
-      expect((await gen.generateImage(
-        const BarcodeRequest(data: 'x', format: BarcodeFormat.qr),
-      )).width, greaterThan(0));
+      expect(
+        (await gen.generateImage(
+          const BarcodeRequest(data: 'x', format: BarcodeFormat.qr),
+        )).width,
+        greaterThan(0),
+      );
     });
   });
 
@@ -44,10 +48,9 @@ void main() {
         const BarcodeRequest(data: '012345678905', format: BarcodeFormat.upcA),
       );
       expect(svg, contains('<svg'));
-      final pdf = await gen.generatePdf(
-        const [BarcodeRequest(data: '012345678905', format: BarcodeFormat.upcA)],
-        layout: const BarcodePdfLayout.grid(columns: 2, rows: 4),
-      );
+      final pdf = await gen.generatePdf(const [
+        BarcodeRequest(data: '012345678905', format: BarcodeFormat.upcA),
+      ], layout: const BarcodePdfLayout.grid(columns: 2, rows: 4));
       expect(String.fromCharCodes(pdf.sublist(0, 4)), '%PDF');
     });
   });
@@ -57,19 +60,21 @@ void main() {
   });
 
   testWidgets('styled BarcodeWidget renders', (tester) async {
-    await tester.pumpWidget(const MaterialApp(
-      home: Center(
-        child: BarcodeWidget(
-          data: 'https://karnival.com',
-          format: BarcodeFormat.qr,
-          width: 200,
-          height: 200,
-          moduleShape: ModuleShape.rounded,
-          eyeShape: EyeShape.circular,
-          errorCorrectionLevel: ErrorCorrection.high,
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Center(
+          child: BarcodeWidget(
+            data: 'https://karnival.com',
+            format: BarcodeFormat.qr,
+            width: 200,
+            height: 200,
+            moduleShape: ModuleShape.rounded,
+            eyeShape: EyeShape.circular,
+            errorCorrectionLevel: ErrorCorrection.high,
+          ),
         ),
       ),
-    ));
+    );
     expect(tester.takeException(), isNull);
     expect(find.byType(BarcodeWidget), findsOneWidget);
   });

@@ -39,9 +39,9 @@ class _GenerateQrSectionState extends State<GenerateQrSection> {
     widget.onGenerated?.call(
       BarcodeRequest(data: _text, format: BarcodeFormat.qr),
     );
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Saved to history')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Saved to history')));
   }
 
   @override
@@ -64,7 +64,9 @@ class _GenerateQrSectionState extends State<GenerateQrSection> {
                 ? const SizedBox(
                     width: 240,
                     height: 240,
-                    child: Center(child: Text('Enter text to generate a QR code')),
+                    child: Center(
+                      child: Text('Enter text to generate a QR code'),
+                    ),
                   )
                 : BarcodeWidget(
                     data: _text,

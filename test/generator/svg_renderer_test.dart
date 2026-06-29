@@ -21,7 +21,10 @@ void main() {
     String? svg;
     await tester.runAsync(() async {
       svg = await const SvgRenderer().render(
-        const BarcodeRequest(data: 'https://karnival.com', format: BarcodeFormat.qr),
+        const BarcodeRequest(
+          data: 'https://karnival.com',
+          format: BarcodeFormat.qr,
+        ),
       );
     });
     expect(svg, contains('<svg'));

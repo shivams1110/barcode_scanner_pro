@@ -90,8 +90,7 @@ class BarcodeResult {
   }
 
   @override
-  String toString() =>
-      'BarcodeResult(${format.name}: "$value" @ $boundingBox)';
+  String toString() => 'BarcodeResult(${format.name}: "$value" @ $boundingBox)';
 
   @override
   bool operator ==(Object other) =>

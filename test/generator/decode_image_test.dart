@@ -16,22 +16,27 @@ void main() {
     BarcodeScannerPlatform.instance = fake;
   });
 
-  test('maps native maps to BarcodeDecodeResult and forwards format mask', () async {
-    fake.decodeImageResult = [
-      {'value': 'HELLO', 'format': BarcodeFormat.qr.bit},
-      {'value': '4006381333931', 'format': BarcodeFormat.ean13.bit},
-    ];
-    final out = await gen.decodeImage(
-      Uint8List.fromList([1, 2, 3]),
-      formats: {BarcodeFormat.qr, BarcodeFormat.ean13},
-    );
-    expect(out, hasLength(2));
-    expect(out.first.value, 'HELLO');
-    expect(out.first.format, BarcodeFormat.qr);
-    expect(out[1].format, BarcodeFormat.ean13);
-    expect(fake.lastDecodeMask,
-        BarcodeFormat.encode({BarcodeFormat.qr, BarcodeFormat.ean13}));
-  });
+  test(
+    'maps native maps to BarcodeDecodeResult and forwards format mask',
+    () async {
+      fake.decodeImageResult = [
+        {'value': 'HELLO', 'format': BarcodeFormat.qr.bit},
+        {'value': '4006381333931', 'format': BarcodeFormat.ean13.bit},
+      ];
+      final out = await gen.decodeImage(
+        Uint8List.fromList([1, 2, 3]),
+        formats: {BarcodeFormat.qr, BarcodeFormat.ean13},
+      );
+      expect(out, hasLength(2));
+      expect(out.first.value, 'HELLO');
+      expect(out.first.format, BarcodeFormat.qr);
+      expect(out[1].format, BarcodeFormat.ean13);
+      expect(
+        fake.lastDecodeMask,
+        BarcodeFormat.encode({BarcodeFormat.qr, BarcodeFormat.ean13}),
+      );
+    },
+  );
 
   test('no formats => mask 0 (all)', () async {
     fake.decodeImageResult = const [];
@@ -41,14 +46,20 @@ void main() {
   });
 
   test('empty bytes throws BarcodeGenException before the channel', () async {
-    expect(() => gen.decodeImage(Uint8List(0)),
-        throwsA(isA<BarcodeGenException>()));
+    expect(
+      () => gen.decodeImage(Uint8List(0)),
+      throwsA(isA<BarcodeGenException>()),
+    );
   });
 
   test('PlatformException is wrapped as BarcodeGenException', () async {
-    fake.decodeImageError =
-        PlatformException(code: 'DECODING_ERROR', message: 'bad image');
-    expect(() => gen.decodeImage(Uint8List.fromList([1])),
-        throwsA(isA<BarcodeGenException>()));
+    fake.decodeImageError = PlatformException(
+      code: 'DECODING_ERROR',
+      message: 'bad image',
+    );
+    expect(
+      () => gen.decodeImage(Uint8List.fromList([1])),
+      throwsA(isA<BarcodeGenException>()),
+    );
   });
 }

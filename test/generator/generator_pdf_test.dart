@@ -15,8 +15,10 @@ void main() {
     await tester.runAsync(() async {
       final a = await gen.generatePdf(const [req]);
       expect(String.fromCharCodes(a.sublist(0, 4)), '%PDF');
-      final b = await gen.generatePdf(const [req, req],
-          layout: const BarcodePdfLayout.grid(columns: 2, rows: 2));
+      final b = await gen.generatePdf(const [
+        req,
+        req,
+      ], layout: const BarcodePdfLayout.grid(columns: 2, rows: 2));
       expect(String.fromCharCodes(b.sublist(0, 4)), '%PDF');
     });
   });
@@ -33,7 +35,9 @@ void main() {
   });
 
   test('save rejects unknown extension', () {
-    expect(() => gen.save(req, '/tmp/a.bmp'),
-        throwsA(isA<BarcodeGenException>()));
+    expect(
+      () => gen.save(req, '/tmp/a.bmp'),
+      throwsA(isA<BarcodeGenException>()),
+    );
   });
 }

@@ -73,8 +73,7 @@ enum BarcodeFormat {
   /// Formats the native scanners can detect. Note that [gs128], [itf14],
   /// [itf16] and [isbn] are detected via a parent symbology, so a scan result
   /// reports the parent ([code128], [itf], [ean13]) rather than the subset.
-  static Set<BarcodeFormat> get scannable =>
-      all.difference(generateOnly);
+  static Set<BarcodeFormat> get scannable => all.difference(generateOnly);
 
   /// Whether this format can be detected by the native scanners.
   bool get isScannable => !generateOnly.contains(this);

@@ -55,11 +55,11 @@ class BarcodeDecodeResult {
 
   @override
   int get hashCode => Object.hash(
-        value,
-        format,
-        rawBytes == null ? null : Object.hashAll(rawBytes!),
-        cornerPoints == null ? null : Object.hashAll(cornerPoints!),
-      );
+    value,
+    format,
+    rawBytes == null ? null : Object.hashAll(rawBytes!),
+    cornerPoints == null ? null : Object.hashAll(cornerPoints!),
+  );
 
   static bool _bytesEq(Uint8List? a, Uint8List? b) {
     if (identical(a, b)) return true;

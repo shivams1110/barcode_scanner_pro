@@ -21,7 +21,9 @@ void main() {
   });
 
   test('value equality', () {
-    expect(const BarcodePdfLayout.grid(columns: 3, rows: 4),
-        const BarcodePdfLayout.grid(columns: 3, rows: 4));
+    expect(
+      const BarcodePdfLayout.grid(columns: 3, rows: 4),
+      const BarcodePdfLayout.grid(columns: 3, rows: 4),
+    );
   });
 }

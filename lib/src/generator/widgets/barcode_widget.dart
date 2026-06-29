@@ -99,9 +99,9 @@ class BarcodeWidget extends StatelessWidget {
     );
 
     Widget paint(double progress) => CustomPaint(
-          size: size,
-          painter: _BarcodeCustomPainter(request, progress),
-        );
+      size: size,
+      painter: _BarcodeCustomPainter(request, progress),
+    );
 
     final child = animation == null
         ? paint(1)
@@ -149,8 +149,10 @@ class _AnimatedBarcode extends StatefulWidget {
 
 class _AnimatedBarcodeState extends State<_AnimatedBarcode>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _c =
-      AnimationController(vsync: this, duration: widget.duration)..forward();
+  late final AnimationController _c = AnimationController(
+    vsync: this,
+    duration: widget.duration,
+  )..forward();
 
   @override
   void dispose() {
@@ -160,7 +162,7 @@ class _AnimatedBarcodeState extends State<_AnimatedBarcode>
 
   @override
   Widget build(BuildContext context) => AnimatedBuilder(
-        animation: _c,
-        builder: (context, child) => widget.builder(_c.value),
-      );
+    animation: _c,
+    builder: (context, child) => widget.builder(_c.value),
+  );
 }

@@ -8,11 +8,7 @@ import 'enums.dart';
 /// A foreground gradient applied across the barcode bounds.
 @immutable
 class BarcodeGradient {
-  const BarcodeGradient({
-    required this.type,
-    required this.colors,
-    this.stops,
-  });
+  const BarcodeGradient({required this.type, required this.colors, this.stops});
 
   final GradientType type;
   final List<Color> colors;
@@ -23,15 +19,18 @@ class BarcodeGradient {
   ui.Shader createShader(Rect bounds) {
     switch (type) {
       case GradientType.radial:
-        return RadialGradient(colors: colors, stops: stops)
-            .createShader(bounds);
+        return RadialGradient(
+          colors: colors,
+          stops: stops,
+        ).createShader(bounds);
       case GradientType.sweep:
-        return SweepGradient(colors: colors, stops: stops)
-            .createShader(bounds);
+        return SweepGradient(colors: colors, stops: stops).createShader(bounds);
       case GradientType.linear:
       case GradientType.none:
-        return LinearGradient(colors: colors, stops: stops)
-            .createShader(bounds);
+        return LinearGradient(
+          colors: colors,
+          stops: stops,
+        ).createShader(bounds);
     }
   }
 
@@ -43,8 +42,11 @@ class BarcodeGradient {
       _listEq(other.stops, stops);
 
   @override
-  int get hashCode => Object.hash(type, Object.hashAll(colors),
-      stops == null ? null : Object.hashAll(stops!));
+  int get hashCode => Object.hash(
+    type,
+    Object.hashAll(colors),
+    stops == null ? null : Object.hashAll(stops!),
+  );
 
   static bool _listEq<T>(List<T>? a, List<T>? b) {
     if (identical(a, b)) return true;
@@ -145,8 +147,18 @@ class BarcodeStyle {
 
   @override
   int get hashCode => Object.hashAll([
-        foreground, background, gradient, moduleShape, eyeShape, eyeColor,
-        borderRadius, quietZone, errorCorrection, logo, showText, fontSize,
-        fontWeight,
-      ]);
+    foreground,
+    background,
+    gradient,
+    moduleShape,
+    eyeShape,
+    eyeColor,
+    borderRadius,
+    quietZone,
+    errorCorrection,
+    logo,
+    showText,
+    fontSize,
+    fontWeight,
+  ]);
 }

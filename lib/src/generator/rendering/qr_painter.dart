@@ -168,7 +168,12 @@ class QrPainter {
       ui.Offset(origin.dx, origin.dy + (count - eye) * module),
     ];
     for (final pos in positions) {
-      final outer = ui.Rect.fromLTWH(pos.dx, pos.dy, eye * module, eye * module);
+      final outer = ui.Rect.fromLTWH(
+        pos.dx,
+        pos.dy,
+        eye * module,
+        eye * module,
+      );
       final inner = outer.deflate(module);
       final center = inner.deflate(module);
       _drawEyeRing(canvas, outer, inner, style.eyeShape, paint);

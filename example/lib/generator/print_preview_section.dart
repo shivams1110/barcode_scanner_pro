@@ -45,9 +45,9 @@ class _PrintPreviewSectionState extends State<PrintPreviewSection> {
       );
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Print error: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Print error: $e')));
     } finally {
       if (mounted) setState(() => _busy = false);
     }

@@ -7,10 +7,10 @@ class SectionScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(title: Text(title)),
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: child,
-        ),
-      );
+    appBar: AppBar(title: Text(title)),
+    body: SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: child,
+    ),
+  );
 }

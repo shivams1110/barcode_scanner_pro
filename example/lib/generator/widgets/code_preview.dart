@@ -6,15 +6,15 @@ class CodePreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Center(
-        child: Container(
-          margin: const EdgeInsets.symmetric(vertical: 16),
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: const [BoxShadow(blurRadius: 8, color: Colors.black26)],
-          ),
-          child: child,
-        ),
-      );
+    child: Container(
+      margin: const EdgeInsets.symmetric(vertical: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: const [BoxShadow(blurRadius: 8, color: Colors.black26)],
+      ),
+      child: child,
+    ),
+  );
 }

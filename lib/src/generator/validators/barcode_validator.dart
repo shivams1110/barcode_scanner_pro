@@ -25,7 +25,10 @@ abstract final class BarcodeValidator {
       case BarcodeFormat.ean8:
       case BarcodeFormat.upcA:
         if (!_allDigits(data)) {
-          throw BarcodeGenException('checksum input must be digits', format: format);
+          throw BarcodeGenException(
+            'checksum input must be digits',
+            format: format,
+          );
         }
         return _mod10(data);
       default:
@@ -38,13 +41,16 @@ abstract final class BarcodeValidator {
 
   /// Returns true iff [value] is a valid 13-digit EAN-13 barcode
   /// (correct length, all digits, check digit matches).
-  static bool isValidEAN13(String value) => _numericValid(value, 13, BarcodeFormat.ean13);
+  static bool isValidEAN13(String value) =>
+      _numericValid(value, 13, BarcodeFormat.ean13);
 
   /// Returns true iff [value] is a valid 8-digit EAN-8 barcode.
-  static bool isValidEAN8(String value) => _numericValid(value, 8, BarcodeFormat.ean8);
+  static bool isValidEAN8(String value) =>
+      _numericValid(value, 8, BarcodeFormat.ean8);
 
   /// Returns true iff [value] is a valid 12-digit UPC-A barcode.
-  static bool isValidUPC(String value) => _numericValid(value, 12, BarcodeFormat.upcA);
+  static bool isValidUPC(String value) =>
+      _numericValid(value, 12, BarcodeFormat.upcA);
 
   /// Returns true iff [value] contains only Code 128-encodable characters.
   /// Delegates to [bc.Barcode.code128().isValid].

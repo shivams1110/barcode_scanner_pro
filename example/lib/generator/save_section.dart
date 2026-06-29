@@ -29,32 +29,33 @@ class _SaveSectionState extends State<SaveSection> {
     try {
       final file = await op();
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('$label saved: ${file.path}')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('$label saved: ${file.path}')));
     } on BarcodeGenException catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(e.message)));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.message)));
     } finally {
       if (mounted) setState(() => _busy = false);
     }
   }
 
   Future<void> _savePng() => _save('PNG', () async {
-        final dir = await getApplicationDocumentsDirectory();
-        return _gen.saveAsPNG(_req, '${dir.path}/demo_qr.png');
-      });
+    final dir = await getApplicationDocumentsDirectory();
+    return _gen.saveAsPNG(_req, '${dir.path}/demo_qr.png');
+  });
 
   Future<void> _saveSvg() => _save('SVG', () async {
-        final dir = await getApplicationDocumentsDirectory();
-        return _gen.saveAsSVG(_req, '${dir.path}/demo_qr.svg');
-      });
+    final dir = await getApplicationDocumentsDirectory();
+    return _gen.saveAsSVG(_req, '${dir.path}/demo_qr.svg');
+  });
 
   Future<void> _savePdf() => _save('PDF', () async {
-        final dir = await getApplicationDocumentsDirectory();
-        return _gen.saveAsPDF([_req], '${dir.path}/demo_qr.pdf');
-      });
+    final dir = await getApplicationDocumentsDirectory();
+    return _gen.saveAsPDF([_req], '${dir.path}/demo_qr.pdf');
+  });
 
   @override
   Widget build(BuildContext context) {

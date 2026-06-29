@@ -15,7 +15,8 @@ class RasterExporter {
   static const BarcodeRenderer _renderer = BarcodeRenderer();
 
   Future<({ui.Image image, Uint8List png, Size pixelSize})> rasterize(
-      BarcodeRequest request) async {
+    BarcodeRequest request,
+  ) async {
     final edge = request.options.pixelSize;
     final pixels = Size(edge, edge);
     final w = edge.floor();

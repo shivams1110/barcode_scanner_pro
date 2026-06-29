@@ -8,7 +8,11 @@ import 'package:url_launcher/url_launcher.dart';
 /// Full-featured demo screen: live preview, overlay, camera controls, format
 /// switching, and a scan history with copy / open-URL actions.
 class ScannerPage extends StatefulWidget {
-  const ScannerPage({super.key, required this.isDark, required this.onToggleTheme});
+  const ScannerPage({
+    super.key,
+    required this.isDark,
+    required this.onToggleTheme,
+  });
 
   final bool isDark;
   final VoidCallback onToggleTheme;
@@ -76,8 +80,9 @@ class _ScannerPageState extends State<ScannerPage> {
 
   void _onError(ScannerException e) {
     if (!mounted) return;
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(e.message)));
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(e.message)));
   }
 
   Future<void> _onScannerCreated(BarcodeScannerController controller) async {
@@ -195,10 +200,8 @@ class _ScannerPageState extends State<ScannerPage> {
               Expanded(
                 child: ValueListenableBuilder<double>(
                   valueListenable: _controller.zoom,
-                  builder: (_, zoom, _) => Slider(
-                    value: zoom,
-                    onChanged: _controller.setZoom,
-                  ),
+                  builder: (_, zoom, _) =>
+                      Slider(value: zoom, onChanged: _controller.setZoom),
                 ),
               ),
               const Icon(Icons.zoom_in),
@@ -266,17 +269,19 @@ class _HistoryList extends StatelessWidget {
                 icon: const Icon(Icons.copy, size: 20),
                 onPressed: () {
                   Clipboard.setData(ClipboardData(text: b.value));
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Copied')),
-                  );
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(const SnackBar(content: Text('Copied')));
                 },
               ),
               if (_isUrl(b.value))
                 IconButton(
                   tooltip: 'Open',
                   icon: const Icon(Icons.open_in_new, size: 20),
-                  onPressed: () =>
-                      launchUrl(Uri.parse(b.value), mode: LaunchMode.externalApplication),
+                  onPressed: () => launchUrl(
+                    Uri.parse(b.value),
+                    mode: LaunchMode.externalApplication,
+                  ),
                 ),
             ],
           ),

@@ -10,8 +10,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('returns results in input order; cache collapses duplicates',
-      (tester) async {
+  testWidgets('returns results in input order; cache collapses duplicates', (
+    tester,
+  ) async {
     final r = ui.PictureRecorder();
     Canvas(r).drawRect(const Rect.fromLTWH(0, 0, 1, 1), Paint());
     final img = await r.endRecording().toImage(1, 1);
@@ -36,8 +37,12 @@ void main() {
     ];
 
     final out = await tester.runAsync(() async {
-      return const BatchGenerator()
-          .run(reqs, fakeGen, concurrency: 2, cache: RenderCache());
+      return const BatchGenerator().run(
+        reqs,
+        fakeGen,
+        concurrency: 2,
+        cache: RenderCache(),
+      );
     });
 
     expect(out!.length, 4);

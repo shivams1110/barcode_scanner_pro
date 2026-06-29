@@ -64,8 +64,6 @@ abstract final class QrPayloads {
       Uri.encodeQueryComponent(s).replaceAll('+', '%20');
 
   /// Escapes WiFi special chars: \ ; , : " → prefixed with backslash.
-  static String _wifiEsc(String s) => s.replaceAllMapped(
-        RegExp(r'([\\;,:"])'),
-        (m) => '\\${m[1]}',
-      );
+  static String _wifiEsc(String s) =>
+      s.replaceAllMapped(RegExp(r'([\\;,:"])'), (m) => '\\${m[1]}');
 }

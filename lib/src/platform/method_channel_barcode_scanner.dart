@@ -42,18 +42,25 @@ class MethodChannelBarcodeScanner extends BarcodeScannerPlatform {
   }
 
   @override
-  Future<bool> checkPermission() => _guard(() async =>
-      await _global.invokeMethod<bool>(ScannerMethod.checkPermission) ?? false);
+  Future<bool> checkPermission() => _guard(
+    () async =>
+        await _global.invokeMethod<bool>(ScannerMethod.checkPermission) ??
+        false,
+  );
 
   @override
-  Future<bool> requestPermission() => _guard(() async =>
-      await _global.invokeMethod<bool>(ScannerMethod.requestPermission) ??
-      false);
+  Future<bool> requestPermission() => _guard(
+    () async =>
+        await _global.invokeMethod<bool>(ScannerMethod.requestPermission) ??
+        false,
+  );
 
   @override
-  Future<void> initialize(int viewId, ScannerConfiguration config) =>
-      _guard(() => _method(viewId)
-          .invokeMethod<void>(ScannerMethod.initialize, config.toMap()));
+  Future<void> initialize(int viewId, ScannerConfiguration config) => _guard(
+    () => _method(
+      viewId,
+    ).invokeMethod<void>(ScannerMethod.initialize, config.toMap()),
+  );
 
   @override
   Future<void> start(int viewId) =>
@@ -74,44 +81,63 @@ class MethodChannelBarcodeScanner extends BarcodeScannerPlatform {
   @override
   Future<void> dispose(int viewId) async {
     await _guard(
-        () => _method(viewId).invokeMethod<void>(ScannerMethod.dispose));
+      () => _method(viewId).invokeMethod<void>(ScannerMethod.dispose),
+    );
     _methodChannels.remove(viewId);
     _eventStreams.remove(viewId);
   }
 
   @override
-  Future<void> setFlash(int viewId, bool enabled) => _guard(() => _method(viewId)
-      .invokeMethod<void>(ScannerMethod.setFlash, {'enabled': enabled}));
+  Future<void> setFlash(int viewId, bool enabled) => _guard(
+    () => _method(
+      viewId,
+    ).invokeMethod<void>(ScannerMethod.setFlash, {'enabled': enabled}),
+  );
 
   @override
-  Future<bool> toggleFlash(int viewId) => _guard(() async =>
-      await _method(viewId).invokeMethod<bool>(ScannerMethod.toggleFlash) ??
-      false);
+  Future<bool> toggleFlash(int viewId) => _guard(
+    () async =>
+        await _method(viewId).invokeMethod<bool>(ScannerMethod.toggleFlash) ??
+        false,
+  );
 
   @override
   Future<void> switchCamera(int viewId) => _guard(
-      () => _method(viewId).invokeMethod<void>(ScannerMethod.switchCamera));
+    () => _method(viewId).invokeMethod<void>(ScannerMethod.switchCamera),
+  );
 
   @override
-  Future<void> setZoom(int viewId, double zoom) => _guard(() => _method(viewId)
-      .invokeMethod<void>(ScannerMethod.setZoom, {'zoom': zoom}));
+  Future<void> setZoom(int viewId, double zoom) => _guard(
+    () => _method(
+      viewId,
+    ).invokeMethod<void>(ScannerMethod.setZoom, {'zoom': zoom}),
+  );
 
   @override
-  Future<void> setExposure(int viewId, double exposure) => _guard(() =>
-      _method(viewId)
-          .invokeMethod<void>(ScannerMethod.setExposure, {'exposure': exposure}));
+  Future<void> setExposure(int viewId, double exposure) => _guard(
+    () => _method(
+      viewId,
+    ).invokeMethod<void>(ScannerMethod.setExposure, {'exposure': exposure}),
+  );
 
   @override
-  Future<void> setFocus(int viewId, Offset point) => _guard(() => _method(viewId)
-      .invokeMethod<void>(ScannerMethod.setFocus, {'x': point.dx, 'y': point.dy}));
+  Future<void> setFocus(int viewId, Offset point) => _guard(
+    () => _method(viewId).invokeMethod<void>(ScannerMethod.setFocus, {
+      'x': point.dx,
+      'y': point.dy,
+    }),
+  );
 
   @override
-  Future<Uint8List?> captureFrame(int viewId) => _guard(() =>
-      _method(viewId).invokeMethod<Uint8List>(ScannerMethod.captureFrame));
+  Future<Uint8List?> captureFrame(int viewId) => _guard(
+    () => _method(viewId).invokeMethod<Uint8List>(ScannerMethod.captureFrame),
+  );
 
   @override
   Future<List<Map<Object?, Object?>>> decodeImage(
-      Uint8List bytes, int formatsMask) async {
+    Uint8List bytes,
+    int formatsMask,
+  ) async {
     // Intentionally NOT wrapped in _guard: decodeImage surfaces errors as
     // BarcodeGenException at the generator layer, so PlatformException must
     // propagate here rather than being converted to ScannerException.

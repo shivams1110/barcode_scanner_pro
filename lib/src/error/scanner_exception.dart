@@ -31,17 +31,27 @@ sealed class ScannerException implements Exception {
   ]) {
     final msg = message ?? code;
     return switch (code) {
-      ScannerErrorCode.permissionDenied =>
-        CameraPermissionDenied(msg, details: details),
-      ScannerErrorCode.cameraUnavailable =>
-        CameraUnavailable(msg, details: details),
-      ScannerErrorCode.initializationFailed =>
-        CameraInitializationFailed(msg, details: details),
+      ScannerErrorCode.permissionDenied => CameraPermissionDenied(
+        msg,
+        details: details,
+      ),
+      ScannerErrorCode.cameraUnavailable => CameraUnavailable(
+        msg,
+        details: details,
+      ),
+      ScannerErrorCode.initializationFailed => CameraInitializationFailed(
+        msg,
+        details: details,
+      ),
       ScannerErrorCode.scannerBusy => ScannerBusy(msg, details: details),
-      ScannerErrorCode.invalidConfiguration =>
-        InvalidConfiguration(msg, details: details),
-      ScannerErrorCode.unsupportedDevice =>
-        UnsupportedDevice(msg, details: details),
+      ScannerErrorCode.invalidConfiguration => InvalidConfiguration(
+        msg,
+        details: details,
+      ),
+      ScannerErrorCode.unsupportedDevice => UnsupportedDevice(
+        msg,
+        details: details,
+      ),
       _ => DecodingError(msg, details: details),
     };
   }

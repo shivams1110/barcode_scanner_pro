@@ -4,7 +4,10 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group('BarcodeFormat', () {
     test('encode is the OR of member bits', () {
-      final mask = BarcodeFormat.encode({BarcodeFormat.qr, BarcodeFormat.ean13});
+      final mask = BarcodeFormat.encode({
+        BarcodeFormat.qr,
+        BarcodeFormat.ean13,
+      });
       expect(mask, BarcodeFormat.qr.bit | BarcodeFormat.ean13.bit);
     });
 
@@ -48,8 +51,9 @@ void main() {
     });
 
     test('duplicateTimeout serializes to milliseconds', () {
-      const config =
-          ScannerConfiguration(duplicateTimeout: Duration(milliseconds: 750));
+      const config = ScannerConfiguration(
+        duplicateTimeout: Duration(milliseconds: 750),
+      );
       expect(config.toMap()['duplicateTimeoutMs'], 750);
     });
   });

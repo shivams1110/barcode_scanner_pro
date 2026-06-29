@@ -91,7 +91,11 @@ class LinearPainter {
       if (element is bc.BarcodeBar && element.black) {
         canvas.drawRect(
           Rect.fromLTWH(
-              element.left, element.top, element.width, element.height),
+            element.left,
+            element.top,
+            element.width,
+            element.height,
+          ),
           fg,
         );
       }

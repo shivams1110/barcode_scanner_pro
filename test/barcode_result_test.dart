@@ -5,21 +5,21 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   Map<String, dynamic> sampleMap() => {
-        'value': 'hello',
-        'format': BarcodeFormat.qr.bit,
-        'boundingBox': {'left': 10, 'top': 20, 'width': 100, 'height': 50},
-        'cornerPoints': [
-          {'x': 10, 'y': 20},
-          {'x': 110, 'y': 20},
-          {'x': 110, 'y': 70},
-          {'x': 10, 'y': 70},
-        ],
-        'timestamp': 1700000000000,
-        'imageWidth': 1280,
-        'imageHeight': 720,
-        'rotation': 90,
-        'confidence': 0.95,
-      };
+    'value': 'hello',
+    'format': BarcodeFormat.qr.bit,
+    'boundingBox': {'left': 10, 'top': 20, 'width': 100, 'height': 50},
+    'cornerPoints': [
+      {'x': 10, 'y': 20},
+      {'x': 110, 'y': 20},
+      {'x': 110, 'y': 70},
+      {'x': 10, 'y': 70},
+    ],
+    'timestamp': 1700000000000,
+    'imageWidth': 1280,
+    'imageHeight': 720,
+    'rotation': 90,
+    'confidence': 0.95,
+  };
 
   test('fromMap parses all fields', () {
     final r = BarcodeResult.fromMap(sampleMap());

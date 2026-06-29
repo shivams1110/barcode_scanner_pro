@@ -25,7 +25,8 @@ export 'src/controller.dart';
 export 'src/scanner_view.dart';
 
 // Overlay
-export 'src/overlay/scanner_overlay.dart' show ScannerOverlay, ScannerOverlayStyle;
+export 'src/overlay/scanner_overlay.dart'
+    show ScannerOverlay, ScannerOverlayStyle;
 
 // Platform interface (exposed for advanced use / testing)
 export 'src/platform/barcode_scanner_platform.dart';

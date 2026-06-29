@@ -13,16 +13,23 @@ void main() {
     expect(barcodeFor(BarcodeFormat.ean13).name, bc.Barcode.ean13().name);
     expect(barcodeFor(BarcodeFormat.pdf417).name, bc.Barcode.pdf417().name);
     expect(barcodeFor(BarcodeFormat.aztec).name, bc.Barcode.aztec().name);
-    expect(barcodeFor(BarcodeFormat.dataMatrix).name,
-        bc.Barcode.dataMatrix().name);
-    expect(() => barcodeFor(BarcodeFormat.qr),
-        throwsA(isA<BarcodeGenException>()));
+    expect(
+      barcodeFor(BarcodeFormat.dataMatrix).name,
+      bc.Barcode.dataMatrix().name,
+    );
+    expect(
+      () => barcodeFor(BarcodeFormat.qr),
+      throwsA(isA<BarcodeGenException>()),
+    );
   });
 
   testWidgets('paint draws without throwing for valid data', (tester) async {
     final recorder = PictureRecorder();
     final canvas = Canvas(recorder);
-    const req = BarcodeRequest(data: '012345678905', format: BarcodeFormat.upcA);
+    const req = BarcodeRequest(
+      data: '012345678905',
+      format: BarcodeFormat.upcA,
+    );
     LinearPainter().paint(canvas, const Size(200, 100), req);
     final pic = recorder.endRecording();
     expect(pic, isNotNull);
@@ -31,7 +38,9 @@ void main() {
   testWidgets('invalid data surfaces BarcodeGenException', (tester) async {
     final canvas = Canvas(PictureRecorder());
     const req = BarcodeRequest(data: 'NOT-EAN', format: BarcodeFormat.ean13);
-    expect(() => LinearPainter().paint(canvas, const Size(200, 100), req),
-        throwsA(isA<BarcodeGenException>()));
+    expect(
+      () => LinearPainter().paint(canvas, const Size(200, 100), req),
+      throwsA(isA<BarcodeGenException>()),
+    );
   });
 }

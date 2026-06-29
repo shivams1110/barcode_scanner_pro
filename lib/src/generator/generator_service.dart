@@ -28,9 +28,9 @@ class BarcodeGenerator {
     RasterExporter exporter = const RasterExporter(),
     SvgRenderer svgRenderer = const SvgRenderer(),
     PdfRenderer pdfRenderer = const PdfRenderer(),
-  })  : _exporter = exporter,
-        _svgRenderer = svgRenderer,
-        _pdfRenderer = pdfRenderer;
+  }) : _exporter = exporter,
+       _svgRenderer = svgRenderer,
+       _pdfRenderer = pdfRenderer;
 
   final RasterExporter _exporter;
   final SvgRenderer _svgRenderer;
@@ -97,15 +97,13 @@ class BarcodeGenerator {
   Future<String> generateSvg(
     BarcodeRequest request, {
     BarcodeExportOptions options = const BarcodeExportOptions(),
-  }) =>
-      _svgRenderer.render(request, options: options);
+  }) => _svgRenderer.render(request, options: options);
 
   Future<Uint8List> generatePdf(
     List<BarcodeRequest> requests, {
     BarcodePdfLayout layout = const BarcodePdfLayout.single(),
     BarcodeExportOptions options = const BarcodeExportOptions(),
-  }) =>
-      _pdfRenderer.render(requests, layout, options: options);
+  }) => _pdfRenderer.render(requests, layout, options: options);
 
   Future<File> save(BarcodeRequest request, String path) {
     final lower = path.toLowerCase();
@@ -113,7 +111,8 @@ class BarcodeGenerator {
     if (lower.endsWith('.svg')) return saveAsSVG(request, path);
     if (lower.endsWith('.pdf')) return saveAsPDF([request], path);
     throw BarcodeGenException(
-        'Unsupported file extension for "$path" (use .png, .svg, or .pdf)');
+      'Unsupported file extension for "$path" (use .png, .svg, or .pdf)',
+    );
   }
 
   Future<File> saveAsSVG(
@@ -138,9 +137,12 @@ class BarcodeGenerator {
   Future<List<BarcodeGenResult>> generateBatch(
     List<BarcodeRequest> requests, {
     int concurrency = 4,
-  }) =>
-      const BatchGenerator()
-          .run(requests, generate, concurrency: concurrency, cache: RenderCache());
+  }) => const BatchGenerator().run(
+    requests,
+    generate,
+    concurrency: concurrency,
+    cache: RenderCache(),
+  );
 
   /// Decodes all barcodes found in [bytes] (PNG/JPEG/bitmap) via the native
   /// scanner. Pass [formats] to restrict symbologies (null => all). Returns an
@@ -150,11 +152,16 @@ class BarcodeGenerator {
     Set<BarcodeFormat>? formats,
   }) async {
     if (bytes.isEmpty) {
-      throw const BarcodeGenException('decodeImage requires non-empty image bytes');
+      throw const BarcodeGenException(
+        'decodeImage requires non-empty image bytes',
+      );
     }
     final mask = formats == null ? 0 : BarcodeFormat.encode(formats);
     try {
-      final maps = await BarcodeScannerPlatform.instance.decodeImage(bytes, mask);
+      final maps = await BarcodeScannerPlatform.instance.decodeImage(
+        bytes,
+        mask,
+      );
       return maps.map(BarcodeDecodeResult.fromMap).toList();
     } on PlatformException catch (e) {
       throw BarcodeGenException(e.message ?? 'Failed to decode image');
@@ -193,9 +200,14 @@ class BarcodeGenerator {
     String? password,
     String security = 'WPA',
     bool hidden = false,
-  }) =>
-      _qr(QrPayloads.wifi(
-          ssid: ssid, password: password, security: security, hidden: hidden));
+  }) => _qr(
+    QrPayloads.wifi(
+      ssid: ssid,
+      password: password,
+      security: security,
+      hidden: hidden,
+    ),
+  );
   static BarcodeRequest contact(Map<String, String> fields) =>
       _qr(QrPayloads.contact(fields));
   static BarcodeRequest calendar(Map<String, String> fields) =>

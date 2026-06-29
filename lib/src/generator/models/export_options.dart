@@ -15,7 +15,11 @@ class BarcodeExportOptions {
   final int pdfDpi;
   final double cellPadding;
 
-  BarcodeExportOptions copyWith({int? svgDpi, int? pdfDpi, double? cellPadding}) {
+  BarcodeExportOptions copyWith({
+    int? svgDpi,
+    int? pdfDpi,
+    double? cellPadding,
+  }) {
     return BarcodeExportOptions(
       svgDpi: svgDpi ?? this.svgDpi,
       pdfDpi: pdfDpi ?? this.pdfDpi,

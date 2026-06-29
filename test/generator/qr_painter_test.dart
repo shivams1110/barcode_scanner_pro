@@ -50,8 +50,11 @@ void main() {
       ),
     );
     expect(
-      () => QrPainter()
-          .paint(Canvas(ui.PictureRecorder()), const Size(100, 100), req),
+      () => QrPainter().paint(
+        Canvas(ui.PictureRecorder()),
+        const Size(100, 100),
+        req,
+      ),
       throwsA(isA<BarcodeGenException>()),
     );
   });
@@ -67,8 +70,11 @@ void main() {
       ),
     );
     expect(
-      () => QrPainter()
-          .paint(Canvas(ui.PictureRecorder()), const Size(100, 100), req),
+      () => QrPainter().paint(
+        Canvas(ui.PictureRecorder()),
+        const Size(100, 100),
+        req,
+      ),
       throwsA(isA<BarcodeGenException>()),
     );
   });

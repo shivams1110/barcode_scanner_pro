@@ -24,8 +24,8 @@ class BarcodeScannerController with WidgetsBindingObserver {
   BarcodeScannerController({
     ScannerConfiguration configuration = const ScannerConfiguration(),
     BarcodeScannerPlatform? platform,
-  })  : _config = configuration,
-        _platform = platform ?? BarcodeScannerPlatform.instance;
+  }) : _config = configuration,
+       _platform = platform ?? BarcodeScannerPlatform.instance;
 
   final BarcodeScannerPlatform _platform;
   final ScannerConfiguration _config;
@@ -46,13 +46,15 @@ class BarcodeScannerController with WidgetsBindingObserver {
   /// Stream of recoverable/non-recoverable errors emitted by the scanner.
   Stream<ScannerException> get errors => _errors.stream;
 
-  final ValueNotifier<ScannerState> state =
-      ValueNotifier(ScannerState.uninitialized);
+  final ValueNotifier<ScannerState> state = ValueNotifier(
+    ScannerState.uninitialized,
+  );
   final ValueNotifier<bool> initialized = ValueNotifier(false);
   final ValueNotifier<bool> flashEnabled = ValueNotifier(false);
   final ValueNotifier<double> zoom = ValueNotifier(0);
-  final ValueNotifier<CameraFacing> cameraFacing =
-      ValueNotifier(CameraFacing.back);
+  final ValueNotifier<CameraFacing> cameraFacing = ValueNotifier(
+    CameraFacing.back,
+  );
 
   ScannerConfiguration get configuration => _config;
   int? get viewId => _viewId;
@@ -195,7 +197,8 @@ class BarcodeScannerController with WidgetsBindingObserver {
       case AppLifecycleState.inactive:
       case AppLifecycleState.paused:
       case AppLifecycleState.hidden:
-        _wasScanningBeforeBackground = this.state.value == ScannerState.scanning;
+        _wasScanningBeforeBackground =
+            this.state.value == ScannerState.scanning;
         if (_wasScanningBeforeBackground) {
           pause().catchError((_) {});
         }

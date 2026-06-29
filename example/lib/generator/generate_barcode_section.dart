@@ -82,22 +82,28 @@ final class _NoChecksum extends _Validity {
 _Validity _validate(BarcodeFormat format, String data) {
   if (data.isEmpty) return const _Invalid('data is empty');
   return switch (format) {
-    BarcodeFormat.ean13 => BarcodeValidator.isValidEAN13(data)
-        ? const _Valid()
-        : const _Invalid('must be 13 digits with valid check digit'),
-    BarcodeFormat.ean8 => BarcodeValidator.isValidEAN8(data)
-        ? const _Valid()
-        : const _Invalid('must be 8 digits with valid check digit'),
-    BarcodeFormat.upcA => BarcodeValidator.isValidUPC(data)
-        ? const _Valid()
-        : const _Invalid('must be 12 digits with valid check digit'),
-    BarcodeFormat.code128 => BarcodeValidator.isValidCode128(data)
-        ? const _Valid()
-        : const _Invalid('contains characters not encodable in Code 128'),
-    BarcodeFormat.code39 => BarcodeValidator.isValidCode39(data)
-        ? const _Valid()
-        : const _Invalid(
-            'must be uppercase A-Z, digits, or -, ., \$, /, +, %, space'),
+    BarcodeFormat.ean13 =>
+      BarcodeValidator.isValidEAN13(data)
+          ? const _Valid()
+          : const _Invalid('must be 13 digits with valid check digit'),
+    BarcodeFormat.ean8 =>
+      BarcodeValidator.isValidEAN8(data)
+          ? const _Valid()
+          : const _Invalid('must be 8 digits with valid check digit'),
+    BarcodeFormat.upcA =>
+      BarcodeValidator.isValidUPC(data)
+          ? const _Valid()
+          : const _Invalid('must be 12 digits with valid check digit'),
+    BarcodeFormat.code128 =>
+      BarcodeValidator.isValidCode128(data)
+          ? const _Valid()
+          : const _Invalid('contains characters not encodable in Code 128'),
+    BarcodeFormat.code39 =>
+      BarcodeValidator.isValidCode39(data)
+          ? const _Valid()
+          : const _Invalid(
+              'must be uppercase A-Z, digits, or -, ., \$, /, +, %, space',
+            ),
     _ => const _NoChecksum(),
   };
 }
@@ -146,18 +152,15 @@ class _GenerateBarcodeSectionState extends State<GenerateBarcodeSection> {
     final validity = _validate(_format, _text);
 
     final validityLine = switch (validity) {
-      _Valid() => const Text(
-          'Valid',
-          style: TextStyle(color: Colors.green),
-        ),
+      _Valid() => const Text('Valid', style: TextStyle(color: Colors.green)),
       _Invalid(:final reason) => Text(
-          'Invalid: $reason',
-          style: const TextStyle(color: Colors.red),
-        ),
+        'Invalid: $reason',
+        style: const TextStyle(color: Colors.red),
+      ),
       _NoChecksum() => const Text(
-          'No checksum validation for this format',
-          style: TextStyle(color: Colors.grey),
-        ),
+        'No checksum validation for this format',
+        style: TextStyle(color: Colors.grey),
+      ),
     };
 
     // Formats with a validator: only attempt render when valid.
@@ -202,8 +205,7 @@ class _GenerateBarcodeSectionState extends State<GenerateBarcodeSection> {
           }
           if (snap.hasError) {
             final e = snap.error;
-            final msg =
-                e is BarcodeGenException ? e.message : '$e';
+            final msg = e is BarcodeGenException ? e.message : '$e';
             return SizedBox(
               width: 280,
               height: 120,
@@ -235,12 +237,7 @@ class _GenerateBarcodeSectionState extends State<GenerateBarcodeSection> {
             isExpanded: true,
             value: _format,
             items: _linearFormats
-                .map(
-                  (f) => DropdownMenuItem(
-                    value: f,
-                    child: Text(_label(f)),
-                  ),
-                )
+                .map((f) => DropdownMenuItem(value: f, child: Text(_label(f))))
                 .toList(),
             onChanged: _onFormatChanged,
           ),

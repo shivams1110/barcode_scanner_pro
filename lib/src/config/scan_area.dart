@@ -10,10 +10,10 @@ class ScanArea {
     required this.top,
     required this.width,
     required this.height,
-  })  : assert(left >= 0 && left <= 1),
-        assert(top >= 0 && top <= 1),
-        assert(width > 0 && left + width <= 1.0000001),
-        assert(height > 0 && top + height <= 1.0000001);
+  }) : assert(left >= 0 && left <= 1),
+       assert(top >= 0 && top <= 1),
+       assert(width > 0 && left + width <= 1.0000001),
+       assert(height > 0 && top + height <= 1.0000001);
 
   final double left;
   final double top;
@@ -26,21 +26,15 @@ class ScanArea {
   /// A centered square occupying [fraction] of the smaller dimension.
   factory ScanArea.centeredSquare({double fraction = 0.7}) {
     final inset = (1 - fraction) / 2;
-    return ScanArea(
-      left: inset,
-      top: inset,
-      width: fraction,
-      height: fraction,
-    );
+    return ScanArea(left: inset, top: inset, width: fraction, height: fraction);
   }
 
-  bool get isFull =>
-      left == 0 && top == 0 && width == 1 && height == 1;
+  bool get isFull => left == 0 && top == 0 && width == 1 && height == 1;
 
   Map<String, double> toMap() => {
-        'left': left,
-        'top': top,
-        'width': width,
-        'height': height,
-      };
+    'left': left,
+    'top': top,
+    'width': width,
+    'height': height,
+  };
 }

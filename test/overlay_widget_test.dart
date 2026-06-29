@@ -21,8 +21,9 @@ void main() {
     );
   }
 
-  testWidgets('static overlay (no laser) paints without scheduling frames',
-      (tester) async {
+  testWidgets('static overlay (no laser) paints without scheduling frames', (
+    tester,
+  ) async {
     final controller = BarcodeScannerController()..attach(1);
     addTearDown(controller.dispose);
 
