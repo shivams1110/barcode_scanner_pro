@@ -25,8 +25,26 @@ bc.Barcode barcodeFor(BarcodeFormat format) {
       return bc.Barcode.upcE();
     case BarcodeFormat.itf:
       return bc.Barcode.itf();
+    case BarcodeFormat.itf14:
+      return bc.Barcode.itf14();
+    case BarcodeFormat.itf16:
+      return bc.Barcode.itf16();
     case BarcodeFormat.codabar:
       return bc.Barcode.codabar();
+    case BarcodeFormat.gs128:
+      return bc.Barcode.gs128();
+    case BarcodeFormat.ean5:
+      return bc.Barcode.ean5();
+    case BarcodeFormat.ean2:
+      return bc.Barcode.ean2();
+    case BarcodeFormat.isbn:
+      return bc.Barcode.isbn();
+    case BarcodeFormat.telepen:
+      return bc.Barcode.telepen();
+    case BarcodeFormat.rm4scc:
+      return bc.Barcode.rm4scc();
+    case BarcodeFormat.postnet:
+      return bc.Barcode.postnet();
     case BarcodeFormat.pdf417:
       return bc.Barcode.pdf417();
     case BarcodeFormat.aztec:
