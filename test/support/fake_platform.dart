@@ -94,4 +94,18 @@ class FakeBarcodeScannerPlatform extends BarcodeScannerPlatform
     calls.add('captureFrame');
     return Uint8List.fromList([1, 2, 3]);
   }
+
+  List<Map<Object?, Object?>> decodeImageResult = const [];
+  Object? decodeImageError; // if set, thrown
+  int? lastDecodeMask;
+
+  @override
+  Future<List<Map<Object?, Object?>>> decodeImage(
+      Uint8List bytes, int formatsMask) async {
+    calls.add('decodeImage');
+    lastDecodeMask = formatsMask;
+    final err = decodeImageError;
+    if (err != null) throw err;
+    return decodeImageResult;
+  }
 }

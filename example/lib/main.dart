@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'scanner_page.dart';
+import 'demo_hub_page.dart';
 
 void main() => runApp(const BarcodeScannerDemoApp());
 
@@ -37,7 +37,7 @@ class _BarcodeScannerDemoAppState extends State<BarcodeScannerDemoApp> {
         brightness: Brightness.dark,
         useMaterial3: true,
       ),
-      home: ScannerPage(
+      home: DemoHubPage(
         isDark: _themeMode == ThemeMode.dark,
         onToggleTheme: _toggleTheme,
       ),

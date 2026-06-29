@@ -100,6 +100,92 @@ flutter test test/benchmark        # parse-throughput benchmark
 cd example && flutter test integration_test   # on-device smoke test
 ```
 
+## Barcode & QR Code Generation
+
+`barcode_scanner_pro` ships a complete, **fully offline** barcode and QR code
+generator alongside its scanner. You can produce PNG, SVG, or print-ready PDF
+output (300/600/1200 DPI), style QR codes with custom module shapes, eye
+shapes, gradients, and logos, run batch jobs, validate common symbologies, and
+decode barcodes from native images — all with the same package import, no extra
+dependencies.
+
+### Supported formats
+
+| Format | `BarcodeFormat` value | Type |
+|--------|----------------------|------|
+| QR Code | `qr` | QR |
+| Code 128 | `code128` | 1D |
+| Code 39 | `code39` | 1D |
+| Code 93 | `code93` | 1D |
+| EAN-8 | `ean8` | 1D |
+| EAN-13 | `ean13` | 1D |
+| UPC-A | `upcA` | 1D |
+| UPC-E | `upcE` | 1D |
+| PDF417 | `pdf417` | 2D |
+| Aztec | `aztec` | 2D |
+| Data Matrix | `dataMatrix` | 2D |
+| ITF | `itf` | 1D |
+| Codabar | `codabar` | 1D |
+
+### Quick start
+
+**(a) Generate a QR code as PNG bytes**
+
+```dart
+import 'package:barcode_scanner_pro/barcode_scanner_pro.dart';
+
+const gen = BarcodeGenerator();
+
+final bytes = await gen.generateBytes(
+  const BarcodeRequest(
+    data: 'https://karnival.com',
+    format: BarcodeFormat.qr,
+  ),
+);
+```
+
+**(b) Display a barcode inline with `BarcodeWidget`**
+
+```dart
+BarcodeWidget(
+  data: 'https://karnival.com',
+  format: BarcodeFormat.qr,
+  width: 200,
+  height: 200,
+)
+```
+
+**(c) Styled QR with rounded modules, circular eyes, and high error correction**
+
+```dart
+BarcodeWidget(
+  data: 'https://karnival.com',
+  format: BarcodeFormat.qr,
+  width: 200,
+  height: 200,
+  moduleShape: ModuleShape.rounded,
+  eyeShape: EyeShape.circular,
+  errorCorrectionLevel: ErrorCorrection.high,
+)
+```
+
+### Output types
+
+- `Uint8List` — PNG raster bytes (via `generateBytes`)
+- `ui.Image` — Flutter image object (via `generateImage`)
+- `String` — base64-encoded PNG (via `BarcodeGenResult.toBase64()`)
+- `MemoryImage` / `ImageProvider` — drop-in widget image (via `BarcodeGenResult.toMemoryImage()`)
+- `String` — SVG markup (via `generateSvg`)
+- `Uint8List` — PDF bytes, single or batch grid layout (via `generatePdf`)
+
+### Guides
+
+- [doc/generator/GENERATOR.md](doc/generator/GENERATOR.md) — overview and architecture
+- [doc/generator/CUSTOMIZATION.md](doc/generator/CUSTOMIZATION.md) — module shapes, eye shapes, gradients, logos
+- [doc/generator/EXPORT.md](doc/generator/EXPORT.md) — PNG/SVG/PDF export with print DPI
+- [doc/generator/PERFORMANCE.md](doc/generator/PERFORMANCE.md) — batch generation, isolate offloading
+- [doc/generator/MIGRATION.md](doc/generator/MIGRATION.md) — migrating from other generator packages
+
 ## License
 
 See [LICENSE](LICENSE).

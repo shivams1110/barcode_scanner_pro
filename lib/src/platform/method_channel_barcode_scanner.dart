@@ -108,4 +108,19 @@ class MethodChannelBarcodeScanner extends BarcodeScannerPlatform {
   @override
   Future<Uint8List?> captureFrame(int viewId) => _guard(() =>
       _method(viewId).invokeMethod<Uint8List>(ScannerMethod.captureFrame));
+
+  @override
+  Future<List<Map<Object?, Object?>>> decodeImage(
+      Uint8List bytes, int formatsMask) async {
+    // Intentionally NOT wrapped in _guard: decodeImage surfaces errors as
+    // BarcodeGenException at the generator layer, so PlatformException must
+    // propagate here rather than being converted to ScannerException.
+    final result = await _global.invokeMethod<List<Object?>>(
+      ScannerMethod.decodeImage,
+      {'bytes': bytes, 'formats': formatsMask},
+    );
+    return (result ?? const <Object?>[])
+        .map((e) => (e as Map).cast<Object?, Object?>())
+        .toList();
+  }
 }

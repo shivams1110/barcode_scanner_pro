@@ -30,3 +30,25 @@ export 'src/overlay/scanner_overlay.dart' show ScannerOverlay, ScannerOverlaySty
 // Platform interface (exposed for advanced use / testing)
 export 'src/platform/barcode_scanner_platform.dart';
 export 'src/platform/scanner_event.dart';
+
+// Generator
+export 'src/generator/models/enums.dart';
+export 'src/generator/models/barcode_logo.dart';
+export 'src/generator/models/barcode_style.dart';
+export 'src/generator/models/barcode_options.dart';
+export 'src/generator/models/barcode_request.dart';
+export 'src/generator/models/barcode_gen_result.dart';
+export 'src/generator/generator_service.dart';
+export 'src/generator/widgets/barcode_widget.dart';
+export 'src/error/barcode_gen_exception.dart';
+
+// Generator — export formats (Phase 2)
+export 'src/generator/models/pdf_layout.dart';
+export 'src/generator/models/export_options.dart';
+export 'package:pdf/pdf.dart' show PdfPageFormat;
+
+// Generator — decode contract (Phase 3a; native body in 3b)
+export 'src/generator/models/barcode_decode_result.dart';
+
+// Generator — validation helpers (Phase 3a)
+export 'src/generator/validators/barcode_validator.dart';
