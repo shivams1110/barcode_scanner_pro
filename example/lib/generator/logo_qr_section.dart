@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:barcode_scanner_pro/barcode_scanner_pro.dart';
@@ -74,10 +75,10 @@ class _LogoQrSectionState extends State<LogoQrSection> {
 
     final path = Path();
     for (var i = 0; i < points * 2; i++) {
-      final angle = (i * 3.14159265 / points) - 3.14159265 / 2;
+      final angle = (i * math.pi / points) - math.pi / 2;
       final r = i.isEven ? outerR : innerR;
-      final x = cx + r * _cos(angle);
-      final y = cy + r * _sin(angle);
+      final x = cx + r * math.cos(angle);
+      final y = cy + r * math.sin(angle);
       if (i == 0) {
         path.moveTo(x, y);
       } else {
@@ -91,35 +92,6 @@ class _LogoQrSectionState extends State<LogoQrSection> {
     final image = await picture.toImage(size.toInt(), size.toInt());
     picture.dispose();
     return image;
-  }
-
-  double _cos(double a) => _approxTrig(a, isCos: true);
-  double _sin(double a) => _approxTrig(a, isCos: false);
-
-  /// Uses [dart:math] via import alias to avoid a top-level import clash.
-  double _approxTrig(double a, {required bool isCos}) {
-    // ignore: avoid_multiple_declarations_per_line
-    double x = a;
-    // Normalize to [-pi, pi].
-    const pi = 3.14159265358979;
-    while (x > pi) {
-      x -= 2 * pi;
-    }
-    while (x < -pi) {
-      x += 2 * pi;
-    }
-    // Taylor approximation sufficient for drawing.
-    if (isCos) {
-      return 1 -
-          (x * x) / 2 +
-          (x * x * x * x) / 24 -
-          (x * x * x * x * x * x) / 720;
-    } else {
-      return x -
-          (x * x * x) / 6 +
-          (x * x * x * x * x) / 120 -
-          (x * x * x * x * x * x * x) / 5040;
-    }
   }
 
   Future<void> _tryMediumEcc() async {

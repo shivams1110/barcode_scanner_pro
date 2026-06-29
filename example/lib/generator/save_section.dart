@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:barcode_scanner_pro/barcode_scanner_pro.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
@@ -22,14 +24,13 @@ class _SaveSectionState extends State<SaveSection> {
 
   bool _busy = false;
 
-  Future<void> _savePng() async {
+  Future<void> _save(String label, Future<File> Function() op) async {
     setState(() => _busy = true);
     try {
-      final dir = await getApplicationDocumentsDirectory();
-      final file = await _gen.saveAsPNG(_req, '${dir.path}/demo_qr.png');
+      final file = await op();
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('PNG saved: ${file.path}')),
+        SnackBar(content: Text('$label saved: ${file.path}')),
       );
     } on BarcodeGenException catch (e) {
       if (!mounted) return;
@@ -40,41 +41,20 @@ class _SaveSectionState extends State<SaveSection> {
     }
   }
 
-  Future<void> _saveSvg() async {
-    setState(() => _busy = true);
-    try {
-      final dir = await getApplicationDocumentsDirectory();
-      final file = await _gen.saveAsSVG(_req, '${dir.path}/demo_qr.svg');
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('SVG saved: ${file.path}')),
-      );
-    } on BarcodeGenException catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(e.message)));
-    } finally {
-      if (mounted) setState(() => _busy = false);
-    }
-  }
+  Future<void> _savePng() => _save('PNG', () async {
+        final dir = await getApplicationDocumentsDirectory();
+        return _gen.saveAsPNG(_req, '${dir.path}/demo_qr.png');
+      });
 
-  Future<void> _savePdf() async {
-    setState(() => _busy = true);
-    try {
-      final dir = await getApplicationDocumentsDirectory();
-      final file = await _gen.saveAsPDF([_req], '${dir.path}/demo_qr.pdf');
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('PDF saved: ${file.path}')),
-      );
-    } on BarcodeGenException catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(e.message)));
-    } finally {
-      if (mounted) setState(() => _busy = false);
-    }
-  }
+  Future<void> _saveSvg() => _save('SVG', () async {
+        final dir = await getApplicationDocumentsDirectory();
+        return _gen.saveAsSVG(_req, '${dir.path}/demo_qr.svg');
+      });
+
+  Future<void> _savePdf() => _save('PDF', () async {
+        final dir = await getApplicationDocumentsDirectory();
+        return _gen.saveAsPDF([_req], '${dir.path}/demo_qr.pdf');
+      });
 
   @override
   Widget build(BuildContext context) {

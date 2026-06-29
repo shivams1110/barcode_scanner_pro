@@ -23,6 +23,7 @@ class BatchSectionState extends State<BatchSection> {
   bool _busy = false;
   int? _elapsedMs;
   List<BarcodeGenResult>? _results;
+  String? _errorMessage;
 
   /// Stores the in-flight [_generate] future. Tests may await this to
   /// deterministically wait for rasterization without any fixed sleep.
@@ -36,6 +37,7 @@ class BatchSectionState extends State<BatchSection> {
       _busy = true;
       _elapsedMs = null;
       _results = null;
+      _errorMessage = null;
     });
 
     final count = _count.round();
@@ -48,16 +50,24 @@ class BatchSectionState extends State<BatchSection> {
     );
 
     final stopwatch = Stopwatch()..start();
-    final results =
-        await const BarcodeGenerator().generateBatch(requests, concurrency: 8);
-    stopwatch.stop();
-
-    if (!mounted) return;
-    setState(() {
-      _busy = false;
-      _elapsedMs = stopwatch.elapsedMilliseconds;
-      _results = results;
-    });
+    try {
+      final results = await const BarcodeGenerator()
+          .generateBatch(requests, concurrency: 8);
+      stopwatch.stop();
+      if (!mounted) return;
+      setState(() {
+        _busy = false;
+        _elapsedMs = stopwatch.elapsedMilliseconds;
+        _results = results;
+      });
+    } catch (e) {
+      stopwatch.stop();
+      if (!mounted) return;
+      setState(() {
+        _busy = false;
+        _errorMessage = e.toString();
+      });
+    }
   }
 
   @override
@@ -88,6 +98,15 @@ class BatchSectionState extends State<BatchSection> {
           if (_busy) ...[
             const SizedBox(height: 16),
             const Center(child: CircularProgressIndicator()),
+          ],
+          if (_errorMessage != null) ...[
+            const SizedBox(height: 12),
+            Text(
+              _errorMessage!,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+            ),
           ],
           if (_elapsedMs != null && _results != null) ...[
             const SizedBox(height: 12),
