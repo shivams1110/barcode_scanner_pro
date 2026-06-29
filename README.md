@@ -152,7 +152,7 @@ const gen = BarcodeGenerator();
 
 final bytes = await gen.generateBytes(
   const BarcodeRequest(
-    data: 'https://karnival.com',
+    data: 'https://example.com',
     format: BarcodeFormat.qr,
   ),
 );
@@ -162,7 +162,7 @@ final bytes = await gen.generateBytes(
 
 ```dart
 BarcodeWidget(
-  data: 'https://karnival.com',
+  data: 'https://example.com',
   format: BarcodeFormat.qr,
   width: 200,
   height: 200,
@@ -173,7 +173,7 @@ BarcodeWidget(
 
 ```dart
 BarcodeWidget(
-  data: 'https://karnival.com',
+  data: 'https://example.com',
   format: BarcodeFormat.qr,
   width: 200,
   height: 200,
