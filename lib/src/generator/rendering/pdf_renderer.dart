@@ -15,8 +15,9 @@ import 'raster_exporter.dart';
 /// API note (pdf 3.11 / barcode 2.2.9):
 /// - `pw.Barcode` re-exports the `barcode` package's `Barcode` class.
 /// - Factory names match the `barcode` package directly: `.code128()`, `.code39()`,
-///   `.code93()`, `.ean8()`, `.ean13()`, `.upcA()`, `.upcE()`, `.itf()`,
-///   `.codabar()`, `.pdf417()`, `.aztec()`, `.dataMatrix()`.
+///   `.code93()`, `.ean8()`, `.ean13()`, `.upcA()`, `.upcE()`, `.itf()`, `.itf14()`,
+///   `.itf16()`, `.codabar()`, `.gs128()`, `.ean5()`, `.ean2()`, `.isbn()`,
+///   `.telepen()`, `.rm4scc()`, `.postnet()`, `.pdf417()`, `.aztec()`, `.dataMatrix()`.
 pw.Barcode pwBarcodeFor(BarcodeFormat format) {
   switch (format) {
     case BarcodeFormat.code128:
@@ -35,8 +36,26 @@ pw.Barcode pwBarcodeFor(BarcodeFormat format) {
       return pw.Barcode.upcE();
     case BarcodeFormat.itf:
       return pw.Barcode.itf();
+    case BarcodeFormat.itf14:
+      return pw.Barcode.itf14();
+    case BarcodeFormat.itf16:
+      return pw.Barcode.itf16();
     case BarcodeFormat.codabar:
       return pw.Barcode.codabar();
+    case BarcodeFormat.gs128:
+      return pw.Barcode.gs128();
+    case BarcodeFormat.ean5:
+      return pw.Barcode.ean5();
+    case BarcodeFormat.ean2:
+      return pw.Barcode.ean2();
+    case BarcodeFormat.isbn:
+      return pw.Barcode.isbn();
+    case BarcodeFormat.telepen:
+      return pw.Barcode.telepen();
+    case BarcodeFormat.rm4scc:
+      return pw.Barcode.rm4scc();
+    case BarcodeFormat.postnet:
+      return pw.Barcode.postnet();
     case BarcodeFormat.pdf417:
       return pw.Barcode.pdf417();
     case BarcodeFormat.aztec:
