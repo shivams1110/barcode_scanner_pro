@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'widgets/code_preview.dart';
 import 'widgets/section_scaffold.dart';
 
-const String _kData = 'https://karnival.com';
+const String _kData = 'https://example.com';
 
 /// Demonstrates QR codes with an embedded center logo.
 ///

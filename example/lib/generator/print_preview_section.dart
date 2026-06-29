@@ -7,7 +7,7 @@ import 'widgets/section_scaffold.dart';
 /// Sample requests used for the print preview: two QR codes and two linear
 /// codes to demonstrate mixed-symbology grid layout.
 const _requests = <BarcodeRequest>[
-  BarcodeRequest(data: 'https://karnival.com', format: BarcodeFormat.qr),
+  BarcodeRequest(data: 'https://example.com', format: BarcodeFormat.qr),
   BarcodeRequest(data: 'HELLO-WORLD', format: BarcodeFormat.code128),
   BarcodeRequest(data: 'https://flutter.dev', format: BarcodeFormat.qr),
   BarcodeRequest(data: '0123456789', format: BarcodeFormat.code39),

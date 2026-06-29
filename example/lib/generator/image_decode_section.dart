@@ -30,7 +30,7 @@ class _ImageDecodeSectionState extends State<ImageDecodeSection> {
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController(text: 'https://karnival.com');
+    _controller = TextEditingController(text: 'https://example.com');
   }
 
   @override

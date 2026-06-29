@@ -23,7 +23,7 @@ class _GenerateQrSectionState extends State<GenerateQrSection> {
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController(text: 'https://karnival.com');
+    _controller = TextEditingController(text: 'https://example.com');
     _controller.addListener(() => setState(() {}));
   }
 

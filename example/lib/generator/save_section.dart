@@ -17,7 +17,7 @@ class SaveSection extends StatefulWidget {
 
 class _SaveSectionState extends State<SaveSection> {
   static const _req = BarcodeRequest(
-    data: 'https://karnival.com',
+    data: 'https://example.com',
     format: BarcodeFormat.qr,
   );
   static const _gen = BarcodeGenerator();
@@ -66,7 +66,7 @@ class _SaveSectionState extends State<SaveSection> {
         children: [
           const CodePreview(
             child: BarcodeWidget(
-              data: 'https://karnival.com',
+              data: 'https://example.com',
               format: BarcodeFormat.qr,
               width: 200,
               height: 200,
