@@ -1,10 +1,28 @@
-## Unreleased
+## 0.2.0
+
+**Expanded symbology support — 22 formats**
+
+* Added 9 symbologies to `BarcodeFormat`: GS1-128, ITF-14, ITF-16, EAN-5,
+  EAN-2, ISBN, Telepen, RM4SCC, and POSTNET (was 13, now 22).
+* All new formats are supported for **generation** across PNG, SVG, and PDF
+  export paths.
+* Native scanners (ML Kit / Vision): GS1-128, ITF-14, ITF-16, and ISBN are
+  detected via their parent symbology (Code128, ITF, EAN-13 respectively), so
+  a scan reports the parent format. EAN-2, EAN-5, Telepen, RM4SCC, and POSTNET
+  are **generate-only** — the engines cannot detect them.
+* New `BarcodeFormat.scannable`, `BarcodeFormat.generateOnly`, and
+  `isScannable` so consumers can distinguish scannable from generate-only
+  formats.
+
+**Tooling**
+
+* Added GitHub Actions CI: strict `dart format`, `flutter analyze`,
+  `flutter test` with coverage, plus Android and iOS example builds on every
+  push and pull request.
 
 **Barcode & QR Code Generator module**
 
-* Offline generation of all 13 symbologies (`BarcodeFormat` — QR, Code128,
-  Code39, Code93, EAN-8, EAN-13, UPC-A, UPC-E, PDF417, Aztec, DataMatrix,
-  ITF, Codabar).
+* Offline generation of all linear/2D symbologies (`BarcodeFormat`).
 * Styled QR codes: five module shapes (`ModuleShape`), four eye shapes
   (`EyeShape`), four error-correction levels (`ErrorCorrection`), foreground
   gradients (`GradientType`), and embedded logo support (`BarcodeLogo`).

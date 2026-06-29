@@ -1,6 +1,6 @@
 name: barcode_scanner_pro
 description: "High-performance, offline barcode & QR scanner for Flutter using CameraX + ML Kit (Android) and AVFoundation + Vision (iOS) via native PlatformViews."
-version: 0.1.0
+version: 0.2.0
 homepage: https://github.com/karnival/barcode_scanner_pro
 
 environment:
