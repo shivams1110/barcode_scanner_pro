@@ -30,6 +30,7 @@ final class ScannerPlatformView: NSObject, FlutterPlatformView {
   private var config: ScannerConfig
   private var cameraManager: CameraManager?
   private var analyzer: FrameAnalyzer?
+  private var feedback: FeedbackController?
 
   init(frame: CGRect, viewId: Int64, args: Any?, messenger: FlutterBinaryMessenger) {
     let params = (args as? [String: Any?]) ?? [:]
@@ -126,10 +127,15 @@ final class ScannerPlatformView: NSObject, FlutterPlatformView {
         details: nil))
       return
     }
+    let feedback = FeedbackController(
+      soundEnabled: config.enableSound, vibrationEnabled: config.enableVibration)
+    self.feedback = feedback
+
     // Rebuild the analyzer/manager with a config-bound emission closure.
     let analyzer = FrameAnalyzer(
       config: config,
       onBarcodes: { [weak self] list in
+        self?.feedback?.onDetection()
         self?.events.send(["type": EventType.barcodeDetected, "barcodes": list])
       },
       onError: { [weak self] msg in
@@ -155,6 +161,7 @@ final class ScannerPlatformView: NSObject, FlutterPlatformView {
     cameraManager?.dispose()
     cameraManager = nil
     analyzer = nil
+    feedback = nil
     events.dispose()
     methodChannel.setMethodCallHandler(nil)
     eventChannel.setStreamHandler(nil)

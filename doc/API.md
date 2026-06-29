@@ -69,7 +69,7 @@ gestures when enabled in the configuration.
 | `duplicateTimeout` | `Duration` | 1000 ms |
 | `enableAutoFocus` | `bool` | `true` |
 | `enableAutoZoom` | `bool` | `false` |
-| `enableSound` | `bool` | `false` |
+| `enableSound` | `bool` | `true` |
 | `enableVibration` | `bool` | `true` |
 | `enableTorchButton` | `bool` | `false` |
 | `enablePinchZoom` | `bool` | `true` |

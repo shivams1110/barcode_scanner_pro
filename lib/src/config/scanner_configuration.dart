@@ -20,7 +20,7 @@ class ScannerConfiguration {
     this.duplicateTimeout = const Duration(milliseconds: 1000),
     this.enableAutoFocus = true,
     this.enableAutoZoom = false,
-    this.enableSound = false,
+    this.enableSound = true,
     this.enableVibration = true,
     this.enableTorchButton = false,
     this.enablePinchZoom = true,

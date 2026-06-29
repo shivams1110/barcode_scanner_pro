@@ -64,7 +64,7 @@ struct ScannerConfig {
       continuousScanning: b(map["continuousScanning"], true),
       duplicateTimeoutMs: d(map["duplicateTimeoutMs"], 1000),
       enableAutoFocus: b(map["enableAutoFocus"], true),
-      enableSound: b(map["enableSound"], false),
+      enableSound: b(map["enableSound"], true),
       enableVibration: b(map["enableVibration"], true),
       frameRateLimit: i(map["frameRateLimit"], 15),
       returnImage: b(map["returnImage"], false),

@@ -45,6 +45,7 @@ internal class ScannerPlatformView(
     private var config: ScannerConfig =
         ScannerConfig.fromMap(creationParams ?: emptyMap())
     private var cameraManager: CameraManager? = null
+    private var feedback: FeedbackController? = null
 
     init {
         methodChannel.setMethodCallHandler(this)
@@ -131,10 +132,18 @@ internal class ScannerPlatformView(
             .build()
         val scanner = BarcodeScanning.getClient(options)
 
+        feedback?.dispose()
+        feedback = FeedbackController(
+            context = context,
+            soundEnabled = config.enableSound,
+            vibrationEnabled = config.enableVibration,
+        )
+
         val analyzer = FrameAnalyzer(
             scanner = scanner,
             config = config,
             onBarcodes = { list ->
+                feedback?.onDetection()
                 events.send(mapOf("type" to EventType.BARCODE_DETECTED, "barcodes" to list))
             },
             onError = { msg -> events.sendError(ErrorCode.DECODING_ERROR, msg) },
@@ -157,6 +166,8 @@ internal class ScannerPlatformView(
     private fun disposeInternal() {
         cameraManager?.dispose()
         cameraManager = null
+        feedback?.dispose()
+        feedback = null
         registry.currentState = Lifecycle.State.DESTROYED
         events.dispose()
         methodChannel.setMethodCallHandler(null)

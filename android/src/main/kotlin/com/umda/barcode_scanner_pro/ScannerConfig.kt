@@ -69,7 +69,7 @@ internal data class ScannerConfig(
                 duplicateTimeoutMs = (map["duplicateTimeoutMs"] as? Number)?.toLong() ?: 1000L,
                 enableAutoFocus = map["enableAutoFocus"] as? Boolean ?: true,
                 enableAutoZoom = map["enableAutoZoom"] as? Boolean ?: false,
-                enableSound = map["enableSound"] as? Boolean ?: false,
+                enableSound = map["enableSound"] as? Boolean ?: true,
                 enableVibration = map["enableVibration"] as? Boolean ?: true,
                 enablePinchZoom = map["enablePinchZoom"] as? Boolean ?: true,
                 enableTapFocus = map["enableTapFocus"] as? Boolean ?: true,
