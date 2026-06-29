@@ -1,4 +1,4 @@
-package com.karnival.barcode_scanner_pro
+package com.umda.barcode_scanner_pro
 
 import android.os.SystemClock
 import androidx.camera.core.ExperimentalGetImage

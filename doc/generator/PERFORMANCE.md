@@ -15,7 +15,7 @@ rebuilding with the same props — do not repaint the canvas.
 ```dart
 // These two builds produce the same BarcodeRequest; the canvas never repaints.
 BarcodeWidget(
-  data: 'https://karnival.com',
+  data: 'https://umda.com',
   format: BarcodeFormat.qr,
   width: 200,
   height: 200,

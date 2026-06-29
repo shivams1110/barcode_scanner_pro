@@ -1,4 +1,4 @@
-group = "com.karnival.barcode_scanner_pro"
+group = "com.umda.barcode_scanner_pro"
 version = "1.0-SNAPSHOT"
 
 buildscript {
@@ -27,7 +27,7 @@ plugins {
 }
 
 android {
-    namespace = "com.karnival.barcode_scanner_pro"
+    namespace = "com.umda.barcode_scanner_pro"
 
     compileSdk = 36
 

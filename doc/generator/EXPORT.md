@@ -59,7 +59,7 @@ scales that to the target print resolution. `scale` is an additional multiplier
 // 300 DPI print-ready PNG
 final Uint8List printPng = await gen.generateBytes(
   const BarcodeRequest(
-    data: 'https://karnival.com',
+    data: 'https://umda.com',
     format: BarcodeFormat.qr,
     options: BarcodeOptions(
       size: 200,
@@ -71,7 +71,7 @@ final Uint8List printPng = await gen.generateBytes(
 // 600 DPI for high-resolution printing
 final Uint8List hiResPng = await gen.generateBytes(
   const BarcodeRequest(
-    data: 'https://karnival.com',
+    data: 'https://umda.com',
     format: BarcodeFormat.qr,
     options: BarcodeOptions(
       size: 200,
@@ -137,7 +137,7 @@ final String svg = await gen.generateSvg(
 // Write to file
 final File svgFile = await gen.saveAsSVG(
   const BarcodeRequest(
-    data: 'https://karnival.com',
+    data: 'https://umda.com',
     format: BarcodeFormat.qr,
   ),
   '/output/qr.svg',
@@ -169,7 +169,7 @@ Raise it for high-resolution print output.
 // Higher-DPI embedded PNG for a QR SVG destined for print
 final String printSvg = await gen.generateSvg(
   const BarcodeRequest(
-    data: 'https://karnival.com',
+    data: 'https://umda.com',
     format: BarcodeFormat.qr,
     options: BarcodeOptions(size: 200),
   ),
@@ -193,7 +193,7 @@ const gen = BarcodeGenerator();
 
 // Single QR, default layout (single per A4 page)
 final Uint8List pdfBytes = await gen.generatePdf(
-  const [BarcodeRequest(data: 'https://karnival.com', format: BarcodeFormat.qr)],
+  const [BarcodeRequest(data: 'https://umda.com', format: BarcodeFormat.qr)],
 );
 
 // Write to file
@@ -212,7 +212,7 @@ The `layout` parameter controls how codes are arranged across pages.
 
 ```dart
 final Uint8List pdf = await gen.generatePdf(
-  const [BarcodeRequest(data: 'https://karnival.com', format: BarcodeFormat.qr)],
+  const [BarcodeRequest(data: 'https://umda.com', format: BarcodeFormat.qr)],
   layout: const BarcodePdfLayout.single(),
 );
 ```
@@ -258,7 +258,7 @@ suitable for most standard thermal receipt printers.
 
 ```dart
 final Uint8List pdf = await gen.generatePdf(
-  const [BarcodeRequest(data: 'https://karnival.com', format: BarcodeFormat.qr)],
+  const [BarcodeRequest(data: 'https://umda.com', format: BarcodeFormat.qr)],
   layout: const BarcodePdfLayout.thermal(),
 );
 ```
@@ -402,7 +402,7 @@ string. Useful for embedding in HTML `<img>` tags or JSON payloads.
 ```dart
 final String b64 = await gen.toBase64(
   const BarcodeRequest(
-    data: 'https://karnival.com',
+    data: 'https://umda.com',
     format: BarcodeFormat.qr,
   ),
 );

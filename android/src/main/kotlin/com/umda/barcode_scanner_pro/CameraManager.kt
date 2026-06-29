@@ -1,4 +1,4 @@
-package com.karnival.barcode_scanner_pro
+package com.umda.barcode_scanner_pro
 
 import android.content.Context
 import android.graphics.Bitmap

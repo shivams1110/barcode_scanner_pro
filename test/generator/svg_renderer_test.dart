@@ -22,7 +22,7 @@ void main() {
     await tester.runAsync(() async {
       svg = await const SvgRenderer().render(
         const BarcodeRequest(
-          data: 'https://karnival.com',
+          data: 'https://umda.com',
           format: BarcodeFormat.qr,
         ),
       );

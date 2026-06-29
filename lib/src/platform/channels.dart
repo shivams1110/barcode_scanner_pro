@@ -6,7 +6,7 @@
 class Channels {
   Channels._();
 
-  static const String _base = 'com.karnival.barcode_scanner_pro';
+  static const String _base = 'com.umda.barcode_scanner_pro';
 
   /// View identifier registered with the platform-view factory.
   static const String viewType = '$_base/view';

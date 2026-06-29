@@ -1,4 +1,4 @@
-package com.karnival.barcode_scanner_pro
+package com.umda.barcode_scanner_pro
 
 /**
  * Suppresses repeat emissions of the same (value+format) within a timeout

@@ -11,7 +11,7 @@ void main() {
   );
 
   const qrReq = BarcodeRequest(
-    data: 'https://karnival.com',
+    data: 'https://umda.com',
     format: BarcodeFormat.qr,
   );
 

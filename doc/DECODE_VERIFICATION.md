@@ -7,10 +7,10 @@ them manually on a real Android device and an iOS simulator/device.
 Run the example app (`cd example && flutter run`).
 
 ## Round-trip checks (do each on Android AND iOS)
-1. **QR round-trip** — generate a QR for `https://karnival.com`:
-   `final png = await const BarcodeGenerator().generateBytes(BarcodeGenerator.url('https://karnival.com'));`
+1. **QR round-trip** — generate a QR for `https://umda.com`:
+   `final png = await const BarcodeGenerator().generateBytes(BarcodeGenerator.url('https://umda.com'));`
    then `final codes = await const BarcodeGenerator().decodeImage(png);`
-   - Expect: `codes.length == 1`, `codes.first.value == 'https://karnival.com'`,
+   - Expect: `codes.length == 1`, `codes.first.value == 'https://umda.com'`,
      `codes.first.format == BarcodeFormat.qr`.
 2. **EAN-13 round-trip** — generate `BarcodeRequest(data: '4006381333931', format: BarcodeFormat.ean13)`,
    export PNG, decode.

@@ -14,7 +14,7 @@ void main() {
 
   testWidgets('BENCH single QR generate', (tester) async {
     const request = BarcodeRequest(
-      data: 'https://karnival.com',
+      data: 'https://umda.com',
       format: BarcodeFormat.qr,
     );
 

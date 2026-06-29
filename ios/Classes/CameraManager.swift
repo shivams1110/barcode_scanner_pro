@@ -13,7 +13,7 @@ import UIKit
 final class CameraManager: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
 
   private let session = AVCaptureSession()
-  private let sessionQueue = DispatchQueue(label: "com.karnival.barcode_scanner_pro.session")
+  private let sessionQueue = DispatchQueue(label: "com.umda.barcode_scanner_pro.session")
   private let videoOutput = AVCaptureVideoDataOutput()
   private let analyzer: FrameAnalyzer
   private let events: EventDispatcher

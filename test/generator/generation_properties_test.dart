@@ -25,7 +25,7 @@ import 'package:flutter_test/flutter_test.dart';
 //   characters with ASCII code < 0x41. 'A' is 0x41, which triggers
 //   BarcodeException. Pure-digit data like '1234567890' is always valid.
 const _samples = <BarcodeFormat, String>{
-  BarcodeFormat.qr: 'https://karnival.com',
+  BarcodeFormat.qr: 'https://umda.com',
   BarcodeFormat.code128: 'ABC-123',
   BarcodeFormat.code39: 'HELLO 123',
   BarcodeFormat.code93: 'HELLO93',
@@ -65,7 +65,7 @@ void main() {
       for (final dpi in [300, 600, 1200]) {
         final result = await gen.generate(
           BarcodeRequest(
-            data: 'https://karnival.com',
+            data: 'https://umda.com',
             format: BarcodeFormat.qr,
             options: BarcodeOptions(size: 100, dpi: dpi),
           ),

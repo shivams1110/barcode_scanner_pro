@@ -17,7 +17,7 @@ const gen = BarcodeGenerator();
 
 final result = await gen.generate(
   const BarcodeRequest(
-    data: 'https://karnival.com',
+    data: 'https://umda.com',
     format: BarcodeFormat.qr,
     style: BarcodeStyle(
       foreground: Color(0xFF1A237E), // dark indigo modules
@@ -33,7 +33,7 @@ final result = await gen.generate(
 
 ```dart
 BarcodeWidget(
-  data: 'https://karnival.com',
+  data: 'https://umda.com',
   format: BarcodeFormat.qr,
   width: 200,
   height: 200,
@@ -55,7 +55,7 @@ Both map to the same `BarcodeStyle.foreground` / `BarcodeStyle.background` field
 
 ```dart
 const BarcodeRequest(
-  data: 'https://karnival.com',
+  data: 'https://umda.com',
   format: BarcodeFormat.qr,
   style: BarcodeStyle(
     gradient: BarcodeGradient(
@@ -87,7 +87,7 @@ internally:
 
 ```dart
 BarcodeWidget(
-  data: 'https://karnival.com',
+  data: 'https://umda.com',
   format: BarcodeFormat.qr,
   width: 200,
   height: 200,
@@ -106,7 +106,7 @@ Linear symbologies (Code 128, EAN-13, etc.) ignore this field.
 
 ```dart
 const BarcodeRequest(
-  data: 'https://karnival.com',
+  data: 'https://umda.com',
   format: BarcodeFormat.qr,
   style: BarcodeStyle(moduleShape: ModuleShape.rounded),
 )
@@ -130,7 +130,7 @@ linear symbologies.
 
 ```dart
 const BarcodeRequest(
-  data: 'https://karnival.com',
+  data: 'https://umda.com',
   format: BarcodeFormat.qr,
   style: BarcodeStyle(
     moduleShape: ModuleShape.circular,
@@ -164,7 +164,7 @@ import 'dart:ui' as ui;
 // final ui.Image logoImage = ...
 
 const BarcodeRequest(
-  data: 'https://karnival.com',
+  data: 'https://umda.com',
   format: BarcodeFormat.qr,
   style: BarcodeStyle(
     errorCorrection: ErrorCorrection.quartile, // minimum required — see below
@@ -196,7 +196,7 @@ that data via error correction. Setting a logo with `errorCorrection` below
 ```dart
 // Throws BarcodeGenException — errorCorrection.medium is below quartile
 const BarcodeRequest(
-  data: 'https://karnival.com',
+  data: 'https://umda.com',
   format: BarcodeFormat.qr,
   style: BarcodeStyle(
     errorCorrection: ErrorCorrection.medium, // too low
@@ -206,7 +206,7 @@ const BarcodeRequest(
 
 // Correct — use quartile (Q) or high (H)
 const BarcodeRequest(
-  data: 'https://karnival.com',
+  data: 'https://umda.com',
   format: BarcodeFormat.qr,
   style: BarcodeStyle(
     errorCorrection: ErrorCorrection.quartile,
@@ -255,7 +255,7 @@ In `BarcodeWidget` the equivalent prop is `errorCorrectionLevel`:
 
 ```dart
 BarcodeWidget(
-  data: 'https://karnival.com',
+  data: 'https://umda.com',
   format: BarcodeFormat.qr,
   width: 200,
   height: 200,
@@ -286,7 +286,7 @@ The field is ignored for all other module shapes and for linear symbologies.
 
 ```dart
 const BarcodeRequest(
-  data: 'https://karnival.com',
+  data: 'https://umda.com',
   format: BarcodeFormat.qr,
   style: BarcodeStyle(
     moduleShape: ModuleShape.classy,

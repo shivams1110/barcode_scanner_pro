@@ -9,7 +9,7 @@ void main() {
     await tester.runAsync(() async {
       final bytes = await gen.generateBytes(
         const BarcodeRequest(
-          data: 'https://karnival.com',
+          data: 'https://umda.com',
           format: BarcodeFormat.qr,
         ),
       );
@@ -64,7 +64,7 @@ void main() {
       const MaterialApp(
         home: Center(
           child: BarcodeWidget(
-            data: 'https://karnival.com',
+            data: 'https://umda.com',
             format: BarcodeFormat.qr,
             width: 200,
             height: 200,

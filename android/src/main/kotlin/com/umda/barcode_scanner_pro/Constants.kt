@@ -1,11 +1,11 @@
-package com.karnival.barcode_scanner_pro
+package com.umda.barcode_scanner_pro
 
 /**
  * Single source of truth for channel names and identifiers. These MUST stay in
  * sync with the Dart `Channels` / `ScannerMethod` definitions.
  */
 internal object Channels {
-    private const val BASE = "com.karnival.barcode_scanner_pro"
+    private const val BASE = "com.umda.barcode_scanner_pro"
     const val VIEW_TYPE = "$BASE/view"
     const val GLOBAL = "$BASE/global"
     fun methods(id: Int) = "$BASE/methods/$id"

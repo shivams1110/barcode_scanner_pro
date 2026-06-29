@@ -2,7 +2,7 @@ import Foundation
 
 /// Channel naming + identifiers. MUST mirror the Dart `Channels` definitions.
 enum Channels {
-  static let base = "com.karnival.barcode_scanner_pro"
+  static let base = "com.umda.barcode_scanner_pro"
   static let viewType = "\(base)/view"
   static let global = "\(base)/global"
   static func methods(_ id: Int64) -> String { "\(base)/methods/\(id)" }

@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
 A production-grade Flutter barcode scanner plugin using AVFoundation capture and
 the Vision framework for fully on-device, offline barcode detection. No third-party SDKs.
                        DESC
-  s.homepage         = 'https://github.com/karnival/barcode_scanner_pro'
+  s.homepage         = 'https://github.com/umda/barcode_scanner_pro'
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'Your Company' => 'email@example.com' }
   s.source           = { :path => '.' }

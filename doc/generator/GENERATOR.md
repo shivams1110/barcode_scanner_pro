@@ -46,7 +46,7 @@ final result = await gen.generate(
 ```dart
 final Uint8List bytes = await gen.generateBytes(
   const BarcodeRequest(
-    data: 'https://karnival.com',
+    data: 'https://umda.com',
     format: BarcodeFormat.qr,
   ),
 );
@@ -101,7 +101,7 @@ when the resolved `BarcodeRequest` changes.
 
 ```dart
 BarcodeWidget(
-  data: 'https://karnival.com',
+  data: 'https://umda.com',
   format: BarcodeFormat.qr,
   width: 200,
   height: 200,
@@ -143,8 +143,8 @@ All nine helpers are `static` methods on `BarcodeGenerator` that return a
 ### `url`
 
 ```dart
-final req = BarcodeGenerator.url('https://karnival.com');
-// data: 'https://karnival.com'
+final req = BarcodeGenerator.url('https://umda.com');
+// data: 'https://umda.com'
 ```
 
 ### `text`
@@ -301,11 +301,11 @@ const gen = BarcodeGenerator();
 
 // Generate a QR, then decode it back
 final png = await gen.generateBytes(
-  BarcodeGenerator.url('https://karnival.com'),
+  BarcodeGenerator.url('https://umda.com'),
 );
 final List<BarcodeDecodeResult> codes = await gen.decodeImage(png);
 
-print(codes.first.value);  // 'https://karnival.com'
+print(codes.first.value);  // 'https://umda.com'
 print(codes.first.format); // BarcodeFormat.qr
 ```
 

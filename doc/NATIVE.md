@@ -21,7 +21,7 @@ ProcessCameraProvider
                                      └── BarcodeMapper → EventDispatcher
 ```
 
-Key files (`android/src/main/kotlin/com/karnival/barcode_scanner_pro/`):
+Key files (`android/src/main/kotlin/com/umda/barcode_scanner_pro/`):
 
 | File | Role |
 |------|------|
