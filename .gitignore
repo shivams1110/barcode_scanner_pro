@@ -34,3 +34,6 @@ migrate_working_dir/
 
 # subagent-driven-development scratch
 .superpowers/
+
+# Claude/superpowers planning docs (not for distribution)
+docs/superpowers/
