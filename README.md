@@ -12,7 +12,7 @@ A high-performance, **fully offline** barcode & QR scanner plugin for Flutter.
 ## Features
 
 - Live native preview via `PlatformView` (never a Flutter camera image)
-- 13 symbologies: QR, Code128/39/93, EAN-8/13, UPC-A/E, PDF417, Aztec, DataMatrix, ITF, Codabar
+- 22 symbologies: QR, Code128/39/93, EAN-8/13, UPC-A/E, PDF417, Aztec, DataMatrix, ITF, Codabar, GS1-128, ITF-14/16, EAN-5/2, ISBN, Telepen, RM4SCC, POSTNET (9 generate-focused formats added in 0.2.0)
 - Scan modes: **single**, **continuous**, **multi-barcode**
 - Camera controls: flash/torch, switch camera, pinch-to-zoom, tap-to-focus, exposure
 - **Frame skipping** (decode FPS cap) + **duplicate filtering** + **scan-area cropping**
@@ -25,7 +25,7 @@ A high-performance, **fully offline** barcode & QR scanner plugin for Flutter.
 
 ```yaml
 dependencies:
-  barcode_scanner_pro: ^0.1.0
+  barcode_scanner_pro: ^0.2.0
 ```
 
 ### Platform setup
@@ -111,21 +111,35 @@ dependencies.
 
 ### Supported formats
 
-| Format | `BarcodeFormat` value | Type |
-|--------|----------------------|------|
-| QR Code | `qr` | QR |
-| Code 128 | `code128` | 1D |
-| Code 39 | `code39` | 1D |
-| Code 93 | `code93` | 1D |
-| EAN-8 | `ean8` | 1D |
-| EAN-13 | `ean13` | 1D |
-| UPC-A | `upcA` | 1D |
-| UPC-E | `upcE` | 1D |
-| PDF417 | `pdf417` | 2D |
-| Aztec | `aztec` | 2D |
-| Data Matrix | `dataMatrix` | 2D |
-| ITF | `itf` | 1D |
-| Codabar | `codabar` | 1D |
+| Format | `BarcodeFormat` value | Type | Generate | Scan |
+|--------|----------------------|------|----------|------|
+| QR Code | `qr` | QR | ✅ | ✅ |
+| Code 128 | `code128` | 1D | ✅ | ✅ |
+| Code 39 | `code39` | 1D | ✅ | ✅ |
+| Code 93 | `code93` | 1D | ✅ | ✅ |
+| EAN-8 | `ean8` | 1D | ✅ | ✅ |
+| EAN-13 | `ean13` | 1D | ✅ | ✅ |
+| UPC-A | `upcA` | 1D | ✅ | ✅ |
+| UPC-E | `upcE` | 1D | ✅ | ✅ |
+| PDF417 | `pdf417` | 2D | ✅ | ✅ |
+| Aztec | `aztec` | 2D | ✅ | ✅ |
+| Data Matrix | `dataMatrix` | 2D | ✅ | ✅ |
+| ITF | `itf` | 1D | ✅ | ✅ |
+| Codabar | `codabar` | 1D | ✅ | ✅ |
+| GS1-128 | `gs128` | 1D | ✅ | as `code128` |
+| ITF-14 | `itf14` | 1D | ✅ | as `itf` |
+| ITF-16 | `itf16` | 1D | ✅ | as `itf` |
+| ISBN | `isbn` | 1D | ✅ | as `ean13` |
+| EAN-5 | `ean5` | 1D | ✅ | — |
+| EAN-2 | `ean2` | 1D | ✅ | — |
+| Telepen | `telepen` | 1D | ✅ | — |
+| RM4SCC | `rm4scc` | 1D | ✅ | — |
+| POSTNET | `postnet` | 1D | ✅ | — |
+
+> **Scan column:** native scanners (ML Kit / Vision) have no dedicated detector
+> for GS1-128, ITF-14/16, and ISBN, so a scan reports the parent symbology shown.
+> EAN-5, EAN-2, Telepen, RM4SCC, and POSTNET are generate-only (—) — the engines
+> cannot detect them. Use `BarcodeFormat.scannable` / `.generateOnly` to filter.
 
 ### Quick start
 
