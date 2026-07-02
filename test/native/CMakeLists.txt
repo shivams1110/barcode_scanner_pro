@@ -1,0 +1,16 @@
+cmake_minimum_required(VERSION 3.16)
+project(decoder_test CXX)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+include(FetchContent)
+FetchContent_Declare(ZXing
+  GIT_REPOSITORY https://github.com/zxing-cpp/zxing-cpp.git
+  GIT_TAG v3.0.2)
+set(ZXING_READERS ON CACHE BOOL "" FORCE)
+set(ZXING_WRITERS OFF CACHE STRING "" FORCE)
+set(ZXING_C_API OFF CACHE BOOL "" FORCE)
+set(ZXING_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(ZXing)
+add_executable(decoder_test decoder_test.cpp)
+target_link_libraries(decoder_test PRIVATE ZXing::ZXing)
