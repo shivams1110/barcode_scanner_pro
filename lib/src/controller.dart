@@ -232,6 +232,7 @@ class BarcodeScannerController with WidgetsBindingObserver {
         // Best-effort teardown; native side may already be gone.
       }
     }
+    _textureId = null;
     await _barcodes.close();
     await _errors.close();
     state.dispose();

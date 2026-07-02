@@ -34,6 +34,11 @@ class BarcodeScannerView extends StatefulWidget {
 
   /// Invoked once the native view is created and the controller is attached.
   /// A good place to call `controller.initialize()` then `start()`.
+  ///
+  /// On Windows/Linux the view drives `controller.initialize()` itself before
+  /// invoking this callback (it needs the texture id to render the preview),
+  /// so on those platforms `onScannerCreated` should call `start()` only —
+  /// calling `initialize()` again is redundant.
   final void Function(BarcodeScannerController controller)? onScannerCreated;
 
   @override
@@ -43,6 +48,16 @@ class BarcodeScannerView extends StatefulWidget {
 class _BarcodeScannerViewState extends State<BarcodeScannerView> {
   double _zoomAtGestureStart = 0;
 
+  // Desktop (Windows/Linux) has no PlatformView and no
+  // `onPlatformViewCreated` callback, so the view itself must allocate a
+  // view id and drive `initialize()` to obtain a texture id before it can
+  // build a `Texture` widget. `_desktopViewIdSeq` is a process-wide
+  // monotonic counter used as the view id in lieu of one assigned by an
+  // embedder-side platform view registry.
+  static int _desktopViewIdSeq = 0;
+  int? _desktopTextureId;
+  bool _desktopInitStarted = false;
+
   BarcodeScannerController get _controller => widget.controller;
 
   String get _viewType => BarcodeScannerPlatform.instance.viewType;
@@ -51,6 +66,28 @@ class _BarcodeScannerViewState extends State<BarcodeScannerView> {
 
   void _onPlatformViewCreated(int id) {
     _controller.attach(id);
+    widget.onScannerCreated?.call(_controller);
+  }
+
+  /// Desktop-only init flow: allocate a view id, attach the controller, then
+  /// drive `initialize()` through the controller so the full state machine
+  /// runs (`state` → ready, `initialized` → true) and `controller.textureId`
+  /// is populated — matching mobile behavior exactly. The resolved texture id
+  /// is needed to build a `Texture` widget. Unlike the mobile/web paths,
+  /// `onScannerCreated` is NOT expected to call `initialize()` again — it
+  /// already happened here. Callers' `onScannerCreated` should call `start()`
+  /// instead.
+  ///
+  /// If `controller.initialize()` throws a `ScannerException`, it is
+  /// rethrown here (and surfaced via the controller's `errors` stream); we
+  /// leave `_desktopInitStarted` set so init is not silently retried on every
+  /// rebuild — a retry would need the view to be recreated.
+  Future<void> _initDesktop() async {
+    final id = _desktopViewIdSeq++;
+    _controller.attach(id);
+    await _controller.initialize();
+    if (!mounted) return;
+    setState(() => _desktopTextureId = _controller.textureId);
     widget.onScannerCreated?.call(_controller);
   }
 
@@ -123,6 +160,18 @@ class _BarcodeScannerViewState extends State<BarcodeScannerView> {
         onPlatformViewCreated: _onPlatformViewCreated,
       );
     }
+    if (defaultTargetPlatform == TargetPlatform.windows ||
+        defaultTargetPlatform == TargetPlatform.linux) {
+      if (!_desktopInitStarted) {
+        _desktopInitStarted = true;
+        WidgetsBinding.instance.addPostFrameCallback((_) => _initDesktop());
+      }
+      final id = _desktopTextureId;
+      if (id == null) {
+        return const ColoredBox(color: Color(0xFF000000));
+      }
+      return Texture(textureId: id);
+    }
     return const _UnsupportedPlatform();
   }
 
@@ -156,7 +205,7 @@ class _UnsupportedPlatform extends StatelessWidget {
     color: Color(0xFF000000),
     child: Center(
       child: Text(
-        'barcode_scanner_pro supports Android and iOS only.',
+        'barcode_scanner_pro does not support this platform.',
         textDirection: TextDirection.ltr,
         style: TextStyle(color: Color(0xFFFFFFFF)),
       ),
