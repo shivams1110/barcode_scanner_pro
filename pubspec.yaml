@@ -10,10 +10,13 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_web_plugins:
+    sdk: flutter
   plugin_platform_interface: ^2.1.8
   barcode: ^2.2.9
   qr: ^3.0.2
   pdf: ^3.13.0
+  web: ^1.1.0
 
 dev_dependencies:
   flutter_test:
@@ -46,6 +49,9 @@ flutter:
       macos:
         pluginClass: BarcodeScannerProPlugin
         sharedDarwinSource: true
+      web:
+        pluginClass: BarcodeScannerProWeb
+        fileName: src/web/barcode_scanner_pro_web.dart
 
   # To add assets to your plugin package, add an assets section, like this:
   # assets:
