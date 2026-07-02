@@ -12,11 +12,17 @@ project(${PROJECT_NAME} LANGUAGES CXX)
 # versions of CMake.
 cmake_policy(VERSION 3.14...3.25)
 
+# ZXing-C++ requires C++20; MSVC needs this set explicitly since the stub
+# does not otherwise pin a standard.
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 # This value is used when generating builds using this plugin, so it must
 # not be changed
 set(PLUGIN_NAME "barcode_scanner_pro_plugin")
 
 # Any new source files that you add to the plugin should be added here.
+# NOTE: Tasks 5/6 add texture_bridge.cpp/.h and camera_session_mf.cpp/.h here.
 list(APPEND PLUGIN_SOURCES
   "barcode_scanner_pro_plugin.cpp"
   "barcode_scanner_pro_plugin.h"
@@ -47,6 +53,24 @@ target_compile_definitions(${PLUGIN_NAME} PRIVATE FLUTTER_PLUGIN_IMPL)
 target_include_directories(${PLUGIN_NAME} INTERFACE
   "${CMAKE_CURRENT_SOURCE_DIR}/include")
 target_link_libraries(${PLUGIN_NAME} PRIVATE flutter flutter_wrapper_plugin)
+
+# --- ZXing-C++ (static) for barcode decoding ---
+include(FetchContent)
+FetchContent_Declare(ZXing
+  GIT_REPOSITORY https://github.com/zxing-cpp/zxing-cpp.git
+  GIT_TAG v3.0.2)
+set(ZXING_READERS ON CACHE BOOL "" FORCE)
+set(ZXING_WRITERS OFF CACHE STRING "" FORCE)
+set(ZXING_C_API OFF CACHE BOOL "" FORCE)
+set(ZXING_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(ZXing)
+
+# PRIVATE include dir for the plugin's own sources (decoder.h, format_map.h),
+# in addition to the INTERFACE include above (kept for the C API public header).
+target_include_directories(${PLUGIN_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include")
+target_link_libraries(${PLUGIN_NAME} PRIVATE
+  ZXing::ZXing mfplat mfreadwrite mf mfuuid ole32 strmiids)
 
 # List of absolute paths to libraries that should be bundled with the plugin.
 # This list could contain prebuilt libraries, or libraries created by an
