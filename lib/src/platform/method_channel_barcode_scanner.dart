@@ -56,10 +56,10 @@ class MethodChannelBarcodeScanner extends BarcodeScannerPlatform {
   );
 
   @override
-  Future<void> initialize(int viewId, ScannerConfiguration config) => _guard(
+  Future<int?> initialize(int viewId, ScannerConfiguration config) => _guard(
     () => _method(
       viewId,
-    ).invokeMethod<void>(ScannerMethod.initialize, config.toMap()),
+    ).invokeMethod<int>(ScannerMethod.initialize, config.toMap()),
   );
 
   @override

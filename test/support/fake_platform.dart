@@ -41,9 +41,13 @@ class FakeBarcodeScannerPlatform extends BarcodeScannerPlatform
     return permission;
   }
 
+  int? initializeReturn;
+
   @override
-  Future<void> initialize(int viewId, ScannerConfiguration config) async =>
-      calls.add('initialize');
+  Future<int?> initialize(int viewId, ScannerConfiguration config) async {
+    calls.add('initialize');
+    return initializeReturn;
+  }
 
   @override
   Future<void> start(int viewId) async => calls.add('start');

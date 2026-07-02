@@ -59,6 +59,13 @@ class BarcodeScannerController with WidgetsBindingObserver {
   ScannerConfiguration get configuration => _config;
   int? get viewId => _viewId;
 
+  int? _textureId;
+
+  /// The native texture id to render via a `Texture` widget on desktop
+  /// platforms (Windows/Linux); null on platforms that host a native
+  /// PlatformView / HtmlElementView instead.
+  int? get textureId => _textureId;
+
   // --- View binding ---------------------------------------------------------
 
   /// Called by [BarcodeScannerView] once the native view is created. Wires the
@@ -112,7 +119,7 @@ class BarcodeScannerController with WidgetsBindingObserver {
     _ensureAttached();
     state.value = ScannerState.initializing;
     try {
-      await _platform.initialize(_viewId!, _config);
+      _textureId = await _platform.initialize(_viewId!, _config);
       initialized.value = true;
       state.value = ScannerState.ready;
     } on ScannerException catch (e) {

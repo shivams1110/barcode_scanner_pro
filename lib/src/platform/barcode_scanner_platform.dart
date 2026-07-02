@@ -47,7 +47,10 @@ abstract class BarcodeScannerPlatform extends PlatformInterface {
 
   // --- View-scoped lifecycle ----------------------------------------------
 
-  Future<void> initialize(int viewId, ScannerConfiguration config);
+  /// Configures the native session. On desktop (Windows/Linux) returns the
+  /// texture id to render via a `Texture` widget; returns null on platforms
+  /// that host a native PlatformView / HtmlElementView instead.
+  Future<int?> initialize(int viewId, ScannerConfiguration config);
   Future<void> start(int viewId);
   Future<void> stop(int viewId);
   Future<void> pause(int viewId);

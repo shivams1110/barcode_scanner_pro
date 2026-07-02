@@ -405,8 +405,10 @@ class BarcodeScannerProWeb extends BarcodeScannerPlatform {
   }
 
   @override
-  Future<void> initialize(int viewId, ScannerConfiguration config) =>
-      _views[viewId]?.initialize(config) ?? Future.value();
+  Future<int?> initialize(int viewId, ScannerConfiguration config) async {
+    await _views[viewId]?.initialize(config);
+    return null;
+  }
 
   @override
   Future<void> start(int viewId) async => _views[viewId]?.start();
