@@ -1,3 +1,18 @@
+## 0.3.0
+
+**Scan-accept feedback**
+
+* Added on-device beep + haptic tick fired on each accepted barcode
+  detection, via a native `FeedbackController` on Android and iOS.
+* Throttled to 200ms to avoid pile-ups in continuous/multi-barcode modes.
+* Wired into the platform-view emission path and disposed with the view.
+* `enableSound` now defaults to `true` across Dart/Android/iOS config.
+* Android manifest now declares the `VIBRATE` permission.
+
+**Licensing**
+
+* Added MIT license.
+
 ## 0.2.0
 
 **Expanded symbology support — 22 formats**

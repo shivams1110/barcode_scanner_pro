@@ -18,6 +18,8 @@ A high-performance, **fully offline** barcode & QR scanner plugin for Flutter.
 - **Frame skipping** (decode FPS cap) + **duplicate filtering** + **scan-area cropping**
 - Configurable Flutter overlay: dark mask, rounded window, corner indicators,
   animated laser, live detection highlights
+- **Scan-accept feedback**: beep + haptic tick on each accepted detection
+  (`enableSound`, throttled 200ms, native on Android/iOS)
 - Typed error model and a reactive controller (`Stream` + `ValueNotifier`s)
 - Automatic app-lifecycle handling (pause on background, resume on foreground)
 
@@ -25,7 +27,7 @@ A high-performance, **fully offline** barcode & QR scanner plugin for Flutter.
 
 ```yaml
 dependencies:
-  barcode_scanner_pro: ^0.2.0
+  barcode_scanner_pro: ^0.3.0
 ```
 
 ### Platform setup
@@ -202,4 +204,4 @@ BarcodeWidget(
 
 ## License
 
-See [LICENSE](LICENSE).
+MIT © 2026 Shivam Sharma. See [LICENSE](LICENSE).
