@@ -1,5 +1,6 @@
 import CoreMedia
 import ImageIO
+import QuartzCore
 import Vision
 
 /// The decoding hot path on iOS. Invoked per video frame on the capture queue.
@@ -37,7 +38,7 @@ final class FrameAnalyzer {
     self.onError = onError
     self.request = VNDetectBarcodesRequest()
     self.request.symbologies = FormatMapper.toSymbologies(config.formatMask)
-    if #available(iOS 17.0, *) {
+    if #available(iOS 17.0, macOS 13.0, *) {
       // Hint Vision toward low-latency single-frame decoding.
       self.request.revision = VNDetectBarcodesRequestRevision3
     }

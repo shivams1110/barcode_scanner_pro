@@ -4,16 +4,16 @@ version: 0.3.0
 homepage: https://github.com/shivams1110/barcode_scanner_pro
 
 environment:
-  sdk: ^3.11.5
-  flutter: '>=3.3.0'
+  sdk: ^3.12.0
+  flutter: '>=3.44.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  plugin_platform_interface: ^2.0.2
+  plugin_platform_interface: ^2.1.8
   barcode: ^2.2.9
   qr: ^3.0.2
-  pdf: ^3.11.0
+  pdf: ^3.13.0
 
 dev_dependencies:
   flutter_test:
@@ -42,6 +42,10 @@ flutter:
         pluginClass: BarcodeScannerProPlugin
       ios:
         pluginClass: BarcodeScannerProPlugin
+        sharedDarwinSource: true
+      macos:
+        pluginClass: BarcodeScannerProPlugin
+        sharedDarwinSource: true
 
   # To add assets to your plugin package, add an assets section, like this:
   # assets:

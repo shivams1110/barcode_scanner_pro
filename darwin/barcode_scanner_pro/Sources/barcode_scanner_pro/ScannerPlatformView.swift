@@ -1,27 +1,55 @@
 import AVFoundation
+#if os(iOS)
 import Flutter
 import UIKit
+typealias PlatformView = UIView
+#elseif os(macOS)
+import AppKit
+import FlutterMacOS
+typealias PlatformView = NSView
+#endif
 
-/// A `UIView` that keeps the `AVCaptureVideoPreviewLayer` sized to its bounds.
-final class PreviewContainerView: UIView {
+/// A platform view that keeps the `AVCaptureVideoPreviewLayer` sized to its bounds.
+///
+/// On iOS `UIView.layer` is implicit; on macOS the view must be layer-backed
+/// (`wantsLayer`) and its layer is optional. `owner` gives the returned NSView a
+/// strong reference back to its `ScannerPlatformView` controller on macOS, where
+/// the factory hands Flutter only the view.
+final class PreviewContainerView: PlatformView {
   private let previewLayer: AVCaptureVideoPreviewLayer
+  var owner: AnyObject?
+
   init(previewLayer: AVCaptureVideoPreviewLayer) {
     self.previewLayer = previewLayer
     super.init(frame: .zero)
+    #if os(iOS)
     layer.addSublayer(previewLayer)
     backgroundColor = .black
+    #elseif os(macOS)
+    wantsLayer = true
+    layer?.backgroundColor = NSColor.black.cgColor
+    layer?.addSublayer(previewLayer)
+    #endif
   }
   required init?(coder: NSCoder) { fatalError("init(coder:) not supported") }
+
+  #if os(iOS)
   override func layoutSubviews() {
     super.layoutSubviews()
     previewLayer.frame = bounds
   }
+  #elseif os(macOS)
+  override func layout() {
+    super.layout()
+    previewLayer.frame = bounds
+  }
+  #endif
 }
 
 /// One native scanner instance hosted in a Flutter PlatformView. Wires the
 /// per-view method/event channels and delegates camera work to `CameraManager`
 /// and decoding to `FrameAnalyzer`.
-final class ScannerPlatformView: NSObject, FlutterPlatformView {
+final class ScannerPlatformView: NSObject {
   private let container: PreviewContainerView
   private let methodChannel: FlutterMethodChannel
   private let eventChannel: FlutterEventChannel
@@ -50,13 +78,22 @@ final class ScannerPlatformView: NSObject, FlutterPlatformView {
     self.container = PreviewContainerView(previewLayer: manager.previewLayer)
     super.init()
 
+    #if os(macOS)
+    // Retain self through the view Flutter holds.
+    container.owner = self
+    #endif
+
     eventChannel.setStreamHandler(events)
     methodChannel.setMethodCallHandler { [weak self] call, result in
       self?.handle(call, result)
     }
   }
 
+  #if os(iOS)
   func view() -> UIView { container }
+  #elseif os(macOS)
+  var platformView: NSView { container }
+  #endif
 
   private func hasPermission() -> Bool {
     AVCaptureDevice.authorizationStatus(for: .video) == .authorized
@@ -144,8 +181,13 @@ final class ScannerPlatformView: NSObject, FlutterPlatformView {
     let manager = CameraManager(analyzer: analyzer, events: events)
     self.analyzer = analyzer
     self.cameraManager = manager
+    #if os(iOS)
     container.layer.sublayers?.forEach { $0.removeFromSuperlayer() }
     container.layer.addSublayer(manager.previewLayer)
+    #elseif os(macOS)
+    container.layer?.sublayers?.forEach { $0.removeFromSuperlayer() }
+    container.layer?.addSublayer(manager.previewLayer)
+    #endif
     manager.previewLayer.frame = container.bounds
 
     manager.start(
@@ -165,7 +207,16 @@ final class ScannerPlatformView: NSObject, FlutterPlatformView {
     events.dispose()
     methodChannel.setMethodCallHandler(nil)
     eventChannel.setStreamHandler(nil)
+    #if os(macOS)
+    container.owner = nil
+    #endif
   }
 
   deinit { disposeInternal() }
 }
+
+#if os(iOS)
+// Conformance declared separately so the class header need not be split across
+// a `#if`, which Swift disallows. `view()` is defined as an iOS member above.
+extension ScannerPlatformView: FlutterPlatformView {}
+#endif

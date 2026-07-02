@@ -53,7 +53,7 @@ enum FormatMapper {
     if mask & aztec != 0 { out.append(.aztec) }
     if mask & dataMatrix != 0 { out.append(.dataMatrix) }
     if mask & itf != 0 { out.append(.itf14); out.append(.i2of5) }
-    if #available(iOS 15.0, *), mask & codabar != 0 { out.append(.codabar) }
+    if #available(iOS 15.0, macOS 12.0, *), mask & codabar != 0 { out.append(.codabar) }
     // Subset formats collapse onto their detectable parent symbology.
     if mask & gs128 != 0 { out.append(.code128) }
     if mask & itf14 != 0 { out.append(.itf14) }
@@ -80,7 +80,7 @@ enum FormatMapper {
     case .dataMatrix: return dataMatrix
     case .itf14, .i2of5, .i2of5Checksum: return itf
     default:
-      if #available(iOS 15.0, *), sym == .codabar { return codabar }
+      if #available(iOS 15.0, macOS 12.0, *), sym == .codabar { return codabar }
       return qr
     }
   }

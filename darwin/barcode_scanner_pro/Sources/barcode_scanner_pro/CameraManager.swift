@@ -1,7 +1,10 @@
 import AVFoundation
+import CoreGraphics
 import CoreImage
 import ImageIO
+#if os(iOS)
 import UIKit
+#endif
 
 /// Owns the AVFoundation capture pipeline for one scanner view:
 ///
@@ -31,10 +34,15 @@ final class CameraManager: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
     self.previewLayer = AVCaptureVideoPreviewLayer(session: session)
     super.init()
     self.previewLayer.videoGravity = .resizeAspectFill
+    #if os(iOS)
     NotificationCenter.default.addObserver(
       self, selector: #selector(orientationChanged),
       name: UIDevice.orientationDidChangeNotification, object: nil)
     updateOrientation()
+    #elseif os(macOS)
+    // Mac cameras have a fixed landscape orientation; no rotation to track.
+    analyzer.orientation = .up
+    #endif
   }
 
   // MARK: - Lifecycle
@@ -99,10 +107,13 @@ final class CameraManager: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
   }
 
   private static func device(for position: AVCaptureDevice.Position) -> AVCaptureDevice? {
-    AVCaptureDevice.DiscoverySession(
+    let discovered = AVCaptureDevice.DiscoverySession(
       deviceTypes: [.builtInWideAngleCamera],
       mediaType: .video, position: position
     ).devices.first
+    // Macs report their camera with an unspecified position, so the positional
+    // discovery above returns nil; fall back to the default video device.
+    return discovered ?? AVCaptureDevice.default(for: .video)
   }
 
   func switchCamera(config: ScannerConfig) {
@@ -156,21 +167,28 @@ final class CameraManager: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
     return !on
   }
 
-  /// [value] normalized in `[0,1]`.
+  /// [value] normalized in `[0,1]`. Hardware zoom is iOS-only; on macOS the
+  /// device APIs are unavailable, so only the state event is emitted.
   func setZoom(_ value: Double) {
     sessionQueue.async { [weak self] in
-      guard let d = self?.device else { return }
-      let maxFactor = min(d.activeFormat.videoMaxZoomFactor, 8.0)
-      let factor = 1.0 + CGFloat(max(0, min(1, value))) * (maxFactor - 1.0)
-      try? d.lockForConfiguration()
-      d.videoZoomFactor = factor
-      d.unlockForConfiguration()
-      self?.events.send(["type": EventType.zoomChanged, "zoom": value])
+      guard let self = self else { return }
+      #if os(iOS)
+      if let d = self.device {
+        let maxFactor = min(d.activeFormat.videoMaxZoomFactor, 8.0)
+        let factor = 1.0 + CGFloat(max(0, min(1, value))) * (maxFactor - 1.0)
+        try? d.lockForConfiguration()
+        d.videoZoomFactor = factor
+        d.unlockForConfiguration()
+      }
+      #endif
+      self.events.send(["type": EventType.zoomChanged, "zoom": value])
     }
   }
 
-  /// [value] in `[-1,1]` mapped onto the device exposure-bias range.
+  /// [value] in `[-1,1]` mapped onto the device exposure-bias range. The
+  /// exposure-bias APIs are unavailable on macOS, so this is a no-op there.
   func setExposure(_ value: Double) {
+    #if os(iOS)
     sessionQueue.async { [weak self] in
       guard let d = self?.device else { return }
       let bias: Float =
@@ -181,6 +199,7 @@ final class CameraManager: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
       d.setExposureTargetBias(bias, completionHandler: nil)
       d.unlockForConfiguration()
     }
+    #endif
   }
 
   /// [nx]/[ny] normalized `[0,1]` in preview space. Conversion to device space
@@ -204,16 +223,26 @@ final class CameraManager: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
     }
   }
 
-  /// Captures the latest frame as JPEG bytes (best-effort).
+  /// Captures the latest frame as JPEG bytes (best-effort). Uses ImageIO so the
+  /// path is identical on iOS and macOS without a UIKit/AppKit image type.
   func captureFrame() -> Data? {
     guard let pb = latestPixelBuffer else { return nil }
     let ci = CIImage(cvPixelBuffer: pb)
     guard let cg = ciContext.createCGImage(ci, from: ci.extent) else { return nil }
-    return UIImage(cgImage: cg).jpegData(compressionQuality: 0.85)
+    let out = NSMutableData()
+    guard
+      let dest = CGImageDestinationCreateWithData(
+        out as CFMutableData, "public.jpeg" as CFString, 1, nil)
+    else { return nil }
+    CGImageDestinationAddImage(
+      dest, cg, [kCGImageDestinationLossyCompressionQuality: 0.85] as CFDictionary)
+    guard CGImageDestinationFinalize(dest) else { return nil }
+    return out as Data
   }
 
-  // MARK: - Orientation
+  // MARK: - Orientation (iOS only; Mac cameras do not rotate)
 
+  #if os(iOS)
   @objc private func orientationChanged() { updateOrientation() }
 
   private func updateOrientation() {
@@ -231,6 +260,7 @@ final class CameraManager: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
       conn.videoOrientation = video
     }
   }
+  #endif
 
   // MARK: - Sample buffer delegate
 

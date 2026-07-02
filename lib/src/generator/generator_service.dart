@@ -1,3 +1,7 @@
+// Public named ctor params intentionally back private fields; initializing
+// formals are impossible (named params cannot start with '_').
+// ignore_for_file: prefer_initializing_formals
+
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
@@ -24,6 +28,8 @@ import 'validators/barcode_validator.dart';
 /// methods belonging to later phases throw [UnimplementedError] but keep the
 /// public surface stable.
 class BarcodeGenerator {
+  // Public named params map to private fields; initializing formals can't be
+  // used here (named params may not start with '_').
   const BarcodeGenerator({
     RasterExporter exporter = const RasterExporter(),
     SvgRenderer svgRenderer = const SvgRenderer(),

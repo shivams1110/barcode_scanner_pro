@@ -1,5 +1,9 @@
-import Flutter
 import Foundation
+#if os(iOS)
+import Flutter
+#elseif os(macOS)
+import FlutterMacOS
+#endif
 
 /// Thread-safe bridge to a Flutter `FlutterEventChannel`. Frame analysis runs on
 /// a background queue, but the event sink must be invoked on the main thread —

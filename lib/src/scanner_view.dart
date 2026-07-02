@@ -16,7 +16,8 @@ typedef OverlayBuilder =
 /// gestures, and configuration — all pixels come from the platform.
 ///
 /// On Android the preview uses Hybrid Composition so the CameraX surface
-/// composites correctly; on iOS a `UiKitView` hosts the `AVCaptureVideoPreviewLayer`.
+/// composites correctly; on iOS a `UiKitView` and on macOS an `AppKitView`
+/// host the `AVCaptureVideoPreviewLayer`.
 class BarcodeScannerView extends StatefulWidget {
   const BarcodeScannerView({
     super.key,
@@ -101,6 +102,14 @@ class _BarcodeScannerViewState extends State<BarcodeScannerView> {
     }
     if (defaultTargetPlatform == TargetPlatform.iOS) {
       return UiKitView(
+        viewType: _viewType,
+        creationParams: _creationParams,
+        creationParamsCodec: const StandardMessageCodec(),
+        onPlatformViewCreated: _onPlatformViewCreated,
+      );
+    }
+    if (defaultTargetPlatform == TargetPlatform.macOS) {
+      return AppKitView(
         viewType: _viewType,
         creationParams: _creationParams,
         creationParamsCodec: const StandardMessageCodec(),

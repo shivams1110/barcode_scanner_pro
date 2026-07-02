@@ -1,7 +1,12 @@
 import AVFoundation
-import Flutter
-import UIKit
+import CoreGraphics
+import ImageIO
 import Vision
+#if os(iOS)
+import Flutter
+#elseif os(macOS)
+import FlutterMacOS
+#endif
 
 /// Plugin entry point. Registers the platform-view factory for the camera
 /// preview and a single global method channel for camera-permission handling.
@@ -9,11 +14,17 @@ import Vision
 /// `ScannerPlatformView`; this class holds no scanner state.
 public class BarcodeScannerProPlugin: NSObject, FlutterPlugin {
   public static func register(with registrar: FlutterPluginRegistrar) {
-    let factory = ScannerViewFactory(messenger: registrar.messenger())
+    // The registrar exposes the messenger as a method on iOS and a property on macOS.
+    #if os(iOS)
+    let messenger = registrar.messenger()
+    #elseif os(macOS)
+    let messenger = registrar.messenger
+    #endif
+
+    let factory = ScannerViewFactory(messenger: messenger)
     registrar.register(factory, withId: Channels.viewType)
 
-    let channel = FlutterMethodChannel(
-      name: Channels.global, binaryMessenger: registrar.messenger())
+    let channel = FlutterMethodChannel(name: Channels.global, binaryMessenger: messenger)
     let instance = BarcodeScannerProPlugin()
     registrar.addMethodCallDelegate(instance, channel: channel)
   }
@@ -45,7 +56,8 @@ public class BarcodeScannerProPlugin: NSObject, FlutterPlugin {
       let args = call.arguments as? [String: Any],
       let data = (args["bytes"] as? FlutterStandardTypedData)?.data,
       !data.isEmpty,
-      let image = UIImage(data: data)?.cgImage
+      let source = CGImageSourceCreateWithData(data as CFData, nil),
+      let image = CGImageSourceCreateImageAtIndex(source, 0, nil)
     else {
       result(FlutterError(code: ErrorCode.decodingError,
                           message: "Could not decode image bytes", details: nil))
