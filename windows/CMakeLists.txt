@@ -26,6 +26,8 @@ set(PLUGIN_NAME "barcode_scanner_pro_plugin")
 list(APPEND PLUGIN_SOURCES
   "barcode_scanner_pro_plugin.cpp"
   "barcode_scanner_pro_plugin.h"
+  "texture_bridge.cpp"
+  "texture_bridge.h"
 )
 
 # Define the plugin library target. Its name must not be changed (see comment
