@@ -1,0 +1,3 @@
+${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/barcode_scanner_pro.framework
+${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/printing.framework
+${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/url_launcher_macos.framework

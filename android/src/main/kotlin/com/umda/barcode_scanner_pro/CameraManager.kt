@@ -62,11 +62,16 @@ internal class CameraManager(
     private fun bindUseCases(config: ScannerConfig) {
         val provider = cameraProvider ?: return
         val res = config.targetResolution
-        val resolutionSelector = ResolutionSelector.Builder()
-            .setResolutionStrategy(
-                ResolutionStrategy(Size(res.width, res.height),
-                    ResolutionStrategy.FALLBACK_RULE_CLOSEST_HIGHER_THEN_LOWER),
+        val strategy = if (config.useHighestResolution) {
+            ResolutionStrategy.HIGHEST_AVAILABLE_STRATEGY
+        } else {
+            ResolutionStrategy(
+                Size(res.width, res.height),
+                ResolutionStrategy.FALLBACK_RULE_CLOSEST_HIGHER_THEN_LOWER,
             )
+        }
+        val resolutionSelector = ResolutionSelector.Builder()
+            .setResolutionStrategy(strategy)
             .build()
 
         preview = Preview.Builder().build().also {
@@ -117,6 +122,19 @@ internal class CameraManager(
     fun setZoom(value: Float) {
         camera?.cameraControl?.setLinearZoom(value.coerceIn(0f, 1f))
         events.send(mapOf("type" to EventType.ZOOM_CHANGED, "zoom" to value.toDouble()))
+    }
+
+    /**
+     * Applies an absolute zoom [ratio] (ML Kit auto-zoom), clamped to what the
+     * lens supports. Returns false when no camera is bound yet.
+     */
+    // ponytail: zoom stays where auto-zoom left it; reset via setZoom(0) if
+    // scanning near codes right after far ones becomes awkward.
+    fun setZoomRatio(ratio: Float): Boolean {
+        val cam = camera ?: return false
+        val max = cam.cameraInfo.zoomState.value?.maxZoomRatio ?: 1f
+        cam.cameraControl.setZoomRatio(ratio.coerceIn(1f, max))
+        return true
     }
 
     /** [value] in `[-1,1]` mapped onto the device EV range. */

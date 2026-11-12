@@ -21,6 +21,7 @@ struct ScannerConfig {
   let scanArea: ScanAreaConfig
   let continuousScanning: Bool
   let duplicateTimeoutMs: Double
+  let confirmations: Int
   let enableAutoFocus: Bool
   let enableSound: Bool
   let enableVibration: Bool
@@ -32,13 +33,17 @@ struct ScannerConfig {
     cameraFacing == 1 ? .front : .back
   }
 
-  /// Session preset mapped from the resolution enum.
-  var sessionPreset: AVCaptureSession.Preset {
+  /// Session presets mapped from the resolution enum, best first. The camera
+  /// manager applies the first one the session accepts.
+  ///
+  /// `max` asks for 4K before 1080p: more pixels per barcode module is what
+  /// decides whether a dense or small 1D code decodes correctly.
+  var sessionPresets: [AVCaptureSession.Preset] {
     switch resolution {
-    case 0: return .vga640x480
-    case 1: return .hd1280x720
-    case 2: return .hd1920x1080
-    default: return .hd1920x1080
+    case 0: return [.vga640x480]
+    case 1: return [.hd1280x720]
+    case 2: return [.hd1920x1080]
+    default: return [.hd4K3840x2160, .hd1920x1080]
     }
   }
 
@@ -63,6 +68,7 @@ struct ScannerConfig {
       ),
       continuousScanning: b(map["continuousScanning"], true),
       duplicateTimeoutMs: d(map["duplicateTimeoutMs"], 1000),
+      confirmations: i(map["confirmations"], 2),
       enableAutoFocus: b(map["enableAutoFocus"], true),
       enableSound: b(map["enableSound"], true),
       enableVibration: b(map["enableVibration"], true),

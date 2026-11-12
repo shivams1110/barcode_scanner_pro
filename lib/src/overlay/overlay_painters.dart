@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/widgets.dart';
 
 import '../config/scan_area.dart';
@@ -149,8 +151,11 @@ class DetectionPainter extends CustomPainter {
     required this.barcodes,
     required this.color,
     required this.fillColor,
+    this.mirror = false,
   });
 
+  /// True for the front camera, whose preview is shown mirrored.
+  final bool mirror;
   final List<BarcodeResult> barcodes;
   final Color color;
   final Color fillColor;
@@ -168,13 +173,20 @@ class DetectionPainter extends CustomPainter {
     for (final b in barcodes) {
       // Map from image pixel space to widget space, honoring rotation so the
       // analyzed image's longer axis aligns with the preview.
+      // The native preview fills the widget and crops the overflow (centered),
+      // so use one uniform "cover" scale rather than stretching each axis.
       final imageSize = _orientedImageSize(b);
-      final scaleX = size.width / imageSize.width;
-      final scaleY = size.height / imageSize.height;
+      final scale = math.max(
+        size.width / imageSize.width,
+        size.height / imageSize.height,
+      );
+      final dx = (size.width - imageSize.width * scale) / 2;
+      final dy = (size.height - imageSize.height * scale) / 2;
 
       Offset map(Offset p) {
         final r = _rotatePoint(p, b.rotation, b.imageSize);
-        return Offset(r.dx * scaleX, r.dy * scaleY);
+        final x = r.dx * scale + dx;
+        return Offset(mirror ? size.width - x : x, r.dy * scale + dy);
       }
 
       final path = Path();
@@ -210,5 +222,5 @@ class DetectionPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant DetectionPainter old) =>
-      old.barcodes != barcodes || old.color != color;
+      old.barcodes != barcodes || old.color != color || old.mirror != mirror;
 }

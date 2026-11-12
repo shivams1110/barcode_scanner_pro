@@ -66,8 +66,8 @@ final class CameraManager: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
     session.beginConfiguration()
     defer { session.commitConfiguration() }
 
-    if session.canSetSessionPreset(config.sessionPreset) {
-      session.sessionPreset = config.sessionPreset
+    if let preset = config.sessionPresets.first(where: session.canSetSessionPreset) {
+      session.sessionPreset = preset
     }
 
     // Remove any previous I/O (e.g. on camera switch).

@@ -17,6 +17,7 @@ ProcessCameraProvider
                                      ├── frame skip (FPS cap)
                                      ├── ML Kit BarcodeScanner.process()
                                      ├── CoordinateMapper (scan-area filter)
+                                     ├── ConfirmationGate (multi-frame vote)
                                      ├── DuplicateFilter
                                      └── BarcodeMapper → EventDispatcher
 ```
@@ -30,15 +31,20 @@ Key files (`android/src/main/kotlin/com/umda/barcode_scanner_pro/`):
 | `ScannerPlatformView.kt` | `PlatformView` + `MethodCallHandler` + self-driven `LifecycleOwner` |
 | `CameraManager.kt` | CameraX setup + torch/zoom/exposure/focus/switch/capture |
 | `FrameAnalyzer.kt` | the decode hot path (`ImageAnalysis.Analyzer`) |
+| `ConfirmationGate.kt` | trusts a payload only once it outvotes competing reads across frames |
 | `DuplicateFilter`, `CoordinateMapper`, `FormatMapper`, `BarcodeMapper`, `EventDispatcher` | focused helpers |
 
 - **ML Kit** is the `com.google.mlkit:barcode-scanning` dependency (bundled
   model) — fully on-device, no Play Services download, works offline. The
   Flutter `google_mlkit_*` wrapper is **not** used.
-- **Coordinates**: ML Kit reports geometry in the unrotated buffer space; we
-  forward `imageWidth/Height` + `rotationDegrees` and the Flutter overlay applies
-  the rotation. Scan-area filtering rotates each detection's center into upright
-  normalized space (no per-frame bitmap allocation).
+- **Coordinates**: given an `InputImage` built with its rotation degrees, ML Kit
+  reports geometry in the **upright** image. We forward the upright
+  `imageWidth/Height` and `rotation = 0` (same as iOS), and scan-area filtering
+  only normalizes each detection's center by the upright size (no per-frame
+  bitmap allocation). Do not rotate these points again.
+- **Auto-zoom**: with `enableAutoZoom`, the scanner is built with
+  `ZoomSuggestionOptions`; the callback applies the suggested ratio through
+  `CameraManager.setZoomRatio`, clamped to the lens maximum.
 - **Permissions**: `requestPermission` on the global channel uses
   `ActivityCompat.requestPermissions` with a `RequestPermissionsResultListener`.
 
@@ -54,6 +60,7 @@ AVCaptureSession  (configured on a serial DispatchQueue)
                                      ├── frame skip (FPS cap)
                                      ├── VNDetectBarcodesRequest (Vision)
                                      ├── CoordinateMapper (scan-area filter)
+                                     ├── ConfirmationGate (multi-frame vote)
                                      ├── DuplicateFilter
                                      └── BarcodeMapper → EventDispatcher
 ```
@@ -67,7 +74,7 @@ Key files (`ios/Classes/`):
 | `ScannerPlatformView.swift` | `FlutterPlatformView` + method handler; hosts the preview layer |
 | `CameraManager.swift` | session setup + controls + sample-buffer delegate |
 | `FrameAnalyzer.swift` | the decode hot path (Vision) |
-| helpers | mirror the Android `DuplicateFilter` / `CoordinateMapper` / mappers |
+| helpers | mirror the Android `ConfirmationGate` / `DuplicateFilter` / `CoordinateMapper` / mappers |
 
 - **Vision** runs fully offline. Frames are presented upright via
   `CGImagePropertyOrientation`, so detections come back in oriented space; we
@@ -79,6 +86,7 @@ Key files (`ios/Classes/`):
 
 ## Cross-platform parity
 
-The duplicate filter, frame-skip cadence, scan-area semantics, error codes, and
+The confirmation vote, duplicate filter, frame-skip cadence, scan-area semantics,
+coordinate convention (upright image, `rotation = 0`), error codes, and
 event payload shapes are intentionally identical so the Dart layer is
 platform-agnostic.

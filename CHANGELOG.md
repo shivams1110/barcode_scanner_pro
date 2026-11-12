@@ -1,3 +1,46 @@
+## 0.4.0
+
+**Misread protection**
+
+* Added `ScannerConfiguration.confirmations` (default `2`): a payload must
+  decode that many times within about a second, and more often than all
+  competing readings combined, before it is emitted. When the decoder flips
+  between values with no majority, nothing is emitted.
+  Fixes wrong values from checksum-free symbologies (Code 39, Code 93, ITF,
+  Codabar), where a blurred or clipped frame decodes into a structurally valid
+  but incorrect payload — a substituted character, or another enabled
+  symbology matching part of the bar pattern.
+* The gate runs ahead of the duplicate filter and ahead of `ScanMode.single`'s
+  stop, so a wrong first decode no longer ends the scan.
+* New `ConfirmationGate` on Android (Kotlin, unit-tested) and iOS (Swift).
+
+**Auto-zoom (Android)**
+
+* `enableAutoZoom` was accepted but had no effect. It now enables ML Kit zoom
+  suggestions, zooming in on codes that are located but too small to decode.
+  iOS ignores the flag.
+
+**Fixes**
+
+* Android: detections were dropped when a `scanArea` was set. ML Kit reports
+  geometry in the upright image, and the scan-area check rotated it a second
+  time, so a centered code on a portrait device fell outside the area. Android
+  now reports upright image dimensions and `rotation = 0`, matching iOS.
+* Overlay: detection highlights were stretched to the widget instead of
+  following the preview's fill-and-crop, so they were offset from the code.
+  They are also mirrored for the front camera now.
+* iOS: the preview layer created by `initialize` was never resized with its
+  view and could stay at zero size.
+
+**`ResolutionPreset.max` now means highest available**
+
+* `max` previously resolved to 1080p — identical to `high` — on both platforms.
+  Android now uses `ResolutionStrategy.HIGHEST_AVAILABLE_STRATEGY`; iOS tries
+  `.hd4K3840x2160` and falls back to 1080p when the session refuses it.
+* Matters for checksum-free 1D symbologies: too few pixels per narrow bar makes
+  the decoder shift a wide-element boundary onto its neighbour, producing a
+  valid-but-wrong payload instead of a failed scan.
+
 ## 0.3.0
 
 **Scan-accept feedback**

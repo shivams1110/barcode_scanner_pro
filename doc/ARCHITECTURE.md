@@ -54,7 +54,8 @@ in `Constants.kt` / `Constants.swift`.
 
  Native (per platform):
    Camera ► Analysis use case ► background queue ► detector
-          ► frame-skip ► scan-area filter ► duplicate filter
+          ► frame-skip ► scan-area filter ► confirmation vote
+          ► duplicate filter
           ► serialize ► EventChannel
 ```
 

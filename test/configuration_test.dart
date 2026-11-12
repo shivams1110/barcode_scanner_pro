@@ -56,5 +56,25 @@ void main() {
       );
       expect(config.toMap()['duplicateTimeoutMs'], 750);
     });
+
+    test('confirmations defaults to 2 and round-trips through toMap', () {
+      expect(const ScannerConfiguration().confirmations, 2);
+      expect(const ScannerConfiguration().toMap()['confirmations'], 2);
+      expect(
+        const ScannerConfiguration(confirmations: 3).toMap()['confirmations'],
+        3,
+      );
+      expect(
+        const ScannerConfiguration().copyWith(confirmations: 1).confirmations,
+        1,
+      );
+    });
+
+    test('confirmations below 1 is rejected', () {
+      expect(
+        () => ScannerConfiguration(confirmations: 0),
+        throwsA(isA<AssertionError>()),
+      );
+    });
   });
 }

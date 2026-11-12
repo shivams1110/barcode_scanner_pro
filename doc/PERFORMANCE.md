@@ -53,6 +53,9 @@ fewer events, no accidental scans, and the user gets a clear target.
 |------|---------|
 | Lower battery / heat | `frameRateLimit: 8–10`, `resolution: ResolutionPreset.low` |
 | Dense / small codes (PDF417) | `resolution: ResolutionPreset.high` |
+| Small / far codes (Android) | `enableAutoZoom: true` |
+| No wrong values from Code 39/93, ITF, Codabar | `confirmations: 3`, `resolution: ResolutionPreset.high`, restrict `formats` |
+| Fastest first read (QR / DataMatrix only) | `confirmations: 1` |
 | Fewer repeat events | raise `duplicateTimeout` |
 | Snappier continuous UX | lower `duplicateTimeout`, `frameRateLimit: 20` |
 | Tight target box | `scanArea: ScanArea.centeredSquare(fraction: 0.6)` |

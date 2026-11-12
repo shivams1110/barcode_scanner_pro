@@ -16,6 +16,7 @@ import com.google.mlkit.vision.common.InputImage
  *  - reuses a single [BarcodeScanner] instance (no per-frame allocation of the
  *    detector);
  *  - filters detections to the configured **scan area**;
+ *  - requires **multi-frame confirmation** before a payload is trusted;
  *  - applies the **duplicate filter**;
  *  - honors **scan mode** (single / continuous / multi).
  *
@@ -30,13 +31,17 @@ internal class FrameAnalyzer(
 ) : ImageAnalysis.Analyzer {
 
     private val dupFilter = DuplicateFilter(config.duplicateTimeoutMs)
+    private val confirmGate = ConfirmationGate(config.confirmations)
     private var lastAnalyzedMs = 0L
 
     /** Gate toggled by start/pause/stop. When false, frames are dropped cheaply. */
     @Volatile
     var active: Boolean = false
 
-    fun resetDuplicates() = dupFilter.reset()
+    fun resetDuplicates() {
+        dupFilter.reset()
+        confirmGate.reset()
+    }
 
     @ExperimentalGetImage
     override fun analyze(imageProxy: ImageProxy) {
@@ -58,12 +63,15 @@ internal class FrameAnalyzer(
         }
         val rotation = imageProxy.imageInfo.rotationDegrees
         val input = InputImage.fromMediaImage(mediaImage, rotation)
-        val width = mediaImage.width
-        val height = mediaImage.height
+        // ML Kit reports geometry in the upright (rotated) image, so hand the
+        // rest of the pipeline upright dimensions and no residual rotation.
+        val sideways = rotation == 90 || rotation == 270
+        val width = if (sideways) mediaImage.height else mediaImage.width
+        val height = if (sideways) mediaImage.width else mediaImage.height
 
         scanner.process(input)
             .addOnSuccessListener { barcodes ->
-                handle(barcodes, width, height, rotation, now)
+                handle(barcodes, width, height, 0, now)
             }
             .addOnFailureListener { e ->
                 onError(e.localizedMessage ?: "Barcode decoding failed")
@@ -84,11 +92,21 @@ internal class FrameAnalyzer(
 
         val inArea = barcodes.filter {
             val box = it.boundingBox ?: return@filter false
-            CoordinateMapper.isInside(box, config.scanArea, width, height, rotation)
+            CoordinateMapper.isInside(
+                box.exactCenterX(), box.exactCenterY(), config.scanArea, width, height,
+            )
         }
         if (inArea.isEmpty()) return
 
-        val fresh = inArea.filter {
+        // Trust a payload only once it has out-voted competing reads across
+        // frames; see [ConfirmationGate]. Must run before the duplicate filter,
+        // which would otherwise swallow the repeats that confirm a code.
+        val confirmed = inArea.filter {
+            confirmGate.confirm(BarcodeMapper.dedupKey(it), nowMs)
+        }
+        if (confirmed.isEmpty()) return
+
+        val fresh = confirmed.filter {
             dupFilter.shouldEmit(BarcodeMapper.dedupKey(it), nowMs)
         }
         if (fresh.isEmpty()) return

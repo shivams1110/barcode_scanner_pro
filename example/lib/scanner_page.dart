@@ -61,6 +61,12 @@ class _ScannerPageState extends State<ScannerPage> {
         scanMode: _continuous ? ScanMode.continuous : ScanMode.single,
         continuousScanning: _continuous,
         scanArea: ScanArea.centeredSquare(fraction: 0.75),
+        // More pixels per bar: 1D codes without a check digit misread at 720p.
+        resolution: ResolutionPreset.high,
+        // Code 39 has no check digit; ask for a third agreeing read.
+        confirmations: 3,
+        // Android: zoom in automatically on codes too small to decode.
+        enableAutoZoom: true,
         enablePinchZoom: true,
         enableTapFocus: true,
       ),

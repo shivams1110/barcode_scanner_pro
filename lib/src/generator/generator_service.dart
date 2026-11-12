@@ -72,7 +72,7 @@ class BarcodeGenerator {
   Future<File> _writeBytes(String path, Uint8List bytes) async {
     try {
       await _ensureParentDir(path);
-      return File(path).writeAsBytes(bytes);
+      return await File(path).writeAsBytes(bytes);
     } on FileSystemException catch (e) {
       throw BarcodeGenException('Failed to write "$path": ${e.message}');
     }
@@ -81,7 +81,7 @@ class BarcodeGenerator {
   Future<File> _writeString(String path, String contents) async {
     try {
       await _ensureParentDir(path);
-      return File(path).writeAsString(contents);
+      return await File(path).writeAsString(contents);
     } on FileSystemException catch (e) {
       throw BarcodeGenException('Failed to write "$path": ${e.message}');
     }

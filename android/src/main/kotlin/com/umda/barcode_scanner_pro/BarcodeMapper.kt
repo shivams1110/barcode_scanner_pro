@@ -6,9 +6,8 @@ import com.google.mlkit.vision.barcode.common.Barcode
  * Converts an ML Kit [Barcode] into the cross-platform result map consumed by
  * Dart `BarcodeResult.fromMap`.
  *
- * Geometry is reported in the **unrotated** image buffer coordinate space along
- * with [rotation] and the buffer dimensions, matching ML Kit's convention; the
- * Flutter overlay applies the rotation when mapping to widget space.
+ * Geometry is reported as ML Kit returns it: in the **upright** image, so the
+ * caller passes upright dimensions and a `rotation` of 0 (same as iOS).
  */
 internal object BarcodeMapper {
 

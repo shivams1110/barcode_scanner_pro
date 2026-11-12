@@ -2,11 +2,10 @@ import AVFoundation
 import Flutter
 import UIKit
 
-/// A `UIView` that keeps the `AVCaptureVideoPreviewLayer` sized to its bounds.
+/// A `UIView` that keeps its preview layer sized to its bounds. `initialize`
+/// swaps the layer for a new session's, so size whatever is currently attached.
 final class PreviewContainerView: UIView {
-  private let previewLayer: AVCaptureVideoPreviewLayer
   init(previewLayer: AVCaptureVideoPreviewLayer) {
-    self.previewLayer = previewLayer
     super.init(frame: .zero)
     layer.addSublayer(previewLayer)
     backgroundColor = .black
@@ -14,7 +13,7 @@ final class PreviewContainerView: UIView {
   required init?(coder: NSCoder) { fatalError("init(coder:) not supported") }
   override func layoutSubviews() {
     super.layoutSubviews()
-    previewLayer.frame = bounds
+    layer.sublayers?.forEach { $0.frame = bounds }
   }
 }
 

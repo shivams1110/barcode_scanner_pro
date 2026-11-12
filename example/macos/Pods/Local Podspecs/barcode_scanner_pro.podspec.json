@@ -1,0 +1,51 @@
+{
+  "name": "barcode_scanner_pro",
+  "version": "0.0.1",
+  "summary": "High-performance offline barcode scanner (AVFoundation + Vision).",
+  "description": "A production-grade Flutter barcode scanner plugin using AVFoundation capture and\nthe Vision framework for fully on-device, offline barcode detection. No third-party SDKs.\nShared Darwin sources support both iOS and macOS.",
+  "homepage": "https://github.com/umda/barcode_scanner_pro",
+  "license": {
+    "file": "../LICENSE"
+  },
+  "authors": {
+    "Your Company": "email@example.com"
+  },
+  "source": {
+    "path": "."
+  },
+  "source_files": "barcode_scanner_pro/Sources/barcode_scanner_pro/**/*.swift",
+  "resource_bundles": {
+    "barcode_scanner_pro_privacy": [
+      "barcode_scanner_pro/Sources/barcode_scanner_pro/PrivacyInfo.xcprivacy"
+    ]
+  },
+  "ios": {
+    "dependencies": {
+      "Flutter": []
+    },
+    "frameworks": "UIKit"
+  },
+  "osx": {
+    "dependencies": {
+      "FlutterMacOS": []
+    },
+    "frameworks": "AppKit"
+  },
+  "platforms": {
+    "ios": "13.0",
+    "osx": "10.15"
+  },
+  "frameworks": [
+    "AVFoundation",
+    "Vision",
+    "CoreMedia",
+    "CoreVideo",
+    "CoreImage"
+  ],
+  "pod_target_xcconfig": {
+    "DEFINES_MODULE": "YES",
+    "EXCLUDED_ARCHS[sdk=iphonesimulator*]": "i386"
+  },
+  "swift_versions": "5.0",
+  "swift_version": "5.0"
+}

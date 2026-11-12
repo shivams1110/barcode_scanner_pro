@@ -11,6 +11,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
+import com.google.mlkit.vision.barcode.ZoomSuggestionOptions
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
@@ -129,8 +130,16 @@ internal class ScannerPlatformView(
 
         val options = BarcodeScannerOptions.Builder()
             .setBarcodeFormats(FormatMapper.toMlKitFlags(config.formatMask))
-            .build()
-        val scanner = BarcodeScanning.getClient(options)
+        if (config.enableAutoZoom) {
+            // ML Kit locates a code that is too small to decode and asks for the
+            // zoom ratio that would make it readable.
+            options.setZoomSuggestionOptions(
+                ZoomSuggestionOptions.Builder { ratio ->
+                    cameraManager?.setZoomRatio(ratio) ?: false
+                }.build(),
+            )
+        }
+        val scanner = BarcodeScanning.getClient(options.build())
 
         feedback?.dispose()
         feedback = FeedbackController(

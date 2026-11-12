@@ -13,7 +13,10 @@ enum ResolutionPreset {
   /// 1080p — better for dense/small codes.
   high,
 
-  /// Highest available — maximum detail, highest cost.
+  /// Highest available analysis size the sensor offers — maximum detail,
+  /// highest cost. Use for dense codes and for checksum-free 1D symbologies
+  /// (Code 39/93, ITF, Codabar), where too few pixels per narrow bar causes
+  /// element-shift misreads rather than a failed scan.
   max;
 
   static ResolutionPreset fromIndex(int i) =>

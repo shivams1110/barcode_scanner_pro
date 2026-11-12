@@ -42,11 +42,11 @@ class BarcodeResult {
   /// Raw decoded bytes when available (e.g. binary QR). Null otherwise.
   final Uint8List? rawBytes;
 
-  /// Size of the analyzed image in pixels.
+  /// Size of the analyzed image in pixels, as seen upright.
   final Size imageSize;
 
-  /// Clockwise rotation in degrees (0/90/180/270) needed to view the image
-  /// upright relative to the device's natural orientation.
+  /// Clockwise rotation in degrees needed to view the image upright. Both
+  /// platforms report geometry in the already-upright image, so this is `0`.
   final int rotation;
 
   /// Detector confidence in `[0, 1]` when reported by the platform; null if the

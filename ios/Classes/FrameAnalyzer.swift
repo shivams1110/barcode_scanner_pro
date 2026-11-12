@@ -7,6 +7,7 @@ import Vision
 ///  - **skips frames** to honor the FPS cap (preview is unaffected);
 ///  - reuses a single `VNDetectBarcodesRequest` (no per-frame allocation);
 ///  - filters detections to the configured **scan area**;
+///  - requires **multi-frame confirmation** before a payload is trusted;
 ///  - applies the **duplicate filter** and honors the **scan mode**.
 ///
 /// Results are emitted via [onBarcodes] as already-serialized dictionaries.
@@ -14,6 +15,7 @@ final class FrameAnalyzer {
   private let config: ScannerConfig
   private let request: VNDetectBarcodesRequest
   private let dupFilter: DuplicateFilter
+  private let confirmGate: ConfirmationGate
   private let onBarcodes: ([[String: Any?]]) -> Void
   private let onError: (String) -> Void
 
@@ -33,6 +35,7 @@ final class FrameAnalyzer {
   ) {
     self.config = config
     self.dupFilter = DuplicateFilter(timeoutMs: config.duplicateTimeoutMs)
+    self.confirmGate = ConfirmationGate(required: config.confirmations)
     self.onBarcodes = onBarcodes
     self.onError = onError
     self.request = VNDetectBarcodesRequest()
@@ -43,7 +46,10 @@ final class FrameAnalyzer {
     }
   }
 
-  func resetDuplicates() { dupFilter.reset() }
+  func resetDuplicates() {
+    dupFilter.reset()
+    confirmGate.reset()
+  }
 
   func analyze(_ sampleBuffer: CMSampleBuffer) {
     guard active else { return }
@@ -77,7 +83,13 @@ final class FrameAnalyzer {
     let inArea = results.filter {
       CoordinateMapper.isInside(box: $0.boundingBox, area: config.scanArea)
     }
-    let fresh = inArea.filter {
+    // Trust a payload only once it has out-voted competing reads across
+    // frames; see ConfirmationGate. Must run before the duplicate filter, which
+    // would otherwise swallow the repeats that confirm a code.
+    let confirmed = inArea.filter {
+      confirmGate.confirm(BarcodeMapper.dedupKey($0), now: now)
+    }
+    let fresh = confirmed.filter {
       dupFilter.shouldEmit(BarcodeMapper.dedupKey($0), now: now)
     }
     if fresh.isEmpty { return }

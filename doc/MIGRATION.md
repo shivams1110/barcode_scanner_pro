@@ -62,5 +62,7 @@ Call `BarcodeScannerPlatform.instance.requestPermission()` before
 ## Scan area & coordinates
 
 Scan area is normalized `[0,1]` over the **upright preview**. `BarcodeResult`
-geometry is in image pixels with `imageSize` + `rotation`; use them (as the
-bundled overlay does) to map detections to widget space.
+geometry is in pixels of the **upright** image, with `imageSize` giving that
+image's size; `rotation` is `0` on both platforms. The native preview fills the
+widget and crops the overflow, so map detections with a single "cover" scale
+and a centered offset (as the bundled overlay does), not a per-axis stretch.

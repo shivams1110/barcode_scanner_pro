@@ -18,6 +18,7 @@ class ScannerConfiguration {
     this.scanArea = ScanArea.full,
     this.continuousScanning = true,
     this.duplicateTimeout = const Duration(milliseconds: 1000),
+    this.confirmations = 2,
     this.enableAutoFocus = true,
     this.enableAutoZoom = false,
     this.enableSound = true,
@@ -28,7 +29,8 @@ class ScannerConfiguration {
     this.frameRateLimit = 15,
     this.returnImage = false,
     this.detectInverted = false,
-  }) : assert(frameRateLimit > 0 && frameRateLimit <= 60);
+  }) : assert(frameRateLimit > 0 && frameRateLimit <= 60),
+       assert(confirmations >= 1 && confirmations <= 10);
 
   final CameraFacing camera;
   final ResolutionPreset resolution;
@@ -43,7 +45,26 @@ class ScannerConfiguration {
   /// Window during which an identical (value+format) detection is suppressed.
   final Duration duplicateTimeout;
 
+  /// How many decodes of a payload are needed, within about a second, before
+  /// it is emitted. The payload must also have been read more often than any
+  /// competing reading, so an occasional misread of a held code is outvoted.
+  ///
+  /// Barcode engines report decodes without a confidence score, and symbologies
+  /// with no mandatory check digit (Code 39, Code 93, ITF, Codabar) can return a
+  /// structurally valid but *wrong* payload from a blurred, tilted or clipped
+  /// frame. The genuine payload is read far more often than a misread, so
+  /// agreement across frames filters them out.
+  ///
+  /// `1` emits every decode (fastest, least safe). The default `2` costs roughly
+  /// one extra frame interval — about 67ms at [frameRateLimit] 15. Raise to `3`
+  /// for handheld scanning of checksum-free symbologies; lower to `1` only for
+  /// QR/DataMatrix, which carry their own error correction.
+  final int confirmations;
+
   final bool enableAutoFocus;
+
+  /// Android only: let ML Kit zoom the camera in on a code it has located but
+  /// that is too small or far away to decode. Ignored on iOS.
   final bool enableAutoZoom;
   final bool enableSound;
   final bool enableVibration;
@@ -74,6 +95,7 @@ class ScannerConfiguration {
     ScanArea? scanArea,
     bool? continuousScanning,
     Duration? duplicateTimeout,
+    int? confirmations,
     bool? enableAutoFocus,
     bool? enableAutoZoom,
     bool? enableSound,
@@ -93,6 +115,7 @@ class ScannerConfiguration {
       scanArea: scanArea ?? this.scanArea,
       continuousScanning: continuousScanning ?? this.continuousScanning,
       duplicateTimeout: duplicateTimeout ?? this.duplicateTimeout,
+      confirmations: confirmations ?? this.confirmations,
       enableAutoFocus: enableAutoFocus ?? this.enableAutoFocus,
       enableAutoZoom: enableAutoZoom ?? this.enableAutoZoom,
       enableSound: enableSound ?? this.enableSound,
@@ -115,6 +138,7 @@ class ScannerConfiguration {
     'scanArea': scanArea.toMap(),
     'continuousScanning': continuousScanning,
     'duplicateTimeoutMs': duplicateTimeout.inMilliseconds,
+    'confirmations': confirmations,
     'enableAutoFocus': enableAutoFocus,
     'enableAutoZoom': enableAutoZoom,
     'enableSound': enableSound,

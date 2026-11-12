@@ -25,6 +25,7 @@ internal data class ScannerConfig(
     val scanArea: ScanAreaConfig,
     val continuousScanning: Boolean,
     val duplicateTimeoutMs: Long,
+    val confirmations: Int,
     val enableAutoFocus: Boolean,
     val enableAutoZoom: Boolean,
     val enableSound: Boolean,
@@ -44,9 +45,15 @@ internal data class ScannerConfig(
         get() = when (resolution) {
             0 -> Size(480, 640)
             1 -> Size(720, 1280)
-            2 -> Size(1080, 1920)
             else -> Size(1080, 1920)
         }
+
+    /**
+     * `ResolutionPreset.max` asks for the sensor's best analysis size rather
+     * than a fixed target — more pixels per barcode module, which is what
+     * decides whether a dense or small 1D code decodes correctly.
+     */
+    val useHighestResolution: Boolean get() = resolution >= 3
 
     /** Minimum interval between decoded frames, derived from the FPS cap. */
     val frameIntervalMs: Long get() = (1000L / frameRateLimit.coerceAtLeast(1))
@@ -67,6 +74,7 @@ internal data class ScannerConfig(
                 ),
                 continuousScanning = map["continuousScanning"] as? Boolean ?: true,
                 duplicateTimeoutMs = (map["duplicateTimeoutMs"] as? Number)?.toLong() ?: 1000L,
+                confirmations = (map["confirmations"] as? Number)?.toInt() ?: 2,
                 enableAutoFocus = map["enableAutoFocus"] as? Boolean ?: true,
                 enableAutoZoom = map["enableAutoZoom"] as? Boolean ?: false,
                 enableSound = map["enableSound"] as? Boolean ?: true,

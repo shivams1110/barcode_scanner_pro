@@ -16,6 +16,12 @@ A high-performance, **fully offline** barcode & QR scanner plugin for Flutter.
 - Scan modes: **single**, **continuous**, **multi-barcode**
 - Camera controls: flash/torch, switch camera, pinch-to-zoom, tap-to-focus, exposure
 - **Frame skipping** (decode FPS cap) + **duplicate filtering** + **scan-area cropping**
+- **Misread protection**: `confirmations` requires N identical decodes that
+  outvote every competing reading before emitting, and emits nothing when the
+  decoder cannot settle on one value — essential for Code 39/93, ITF and
+  Codabar, which carry no mandatory check digit
+- **Auto-zoom** (Android): `enableAutoZoom` zooms in on codes that are located
+  but too small or far away to decode
 - Configurable Flutter overlay: dark mask, rounded window, corner indicators,
   animated laser, live detection highlights
 - **Scan-accept feedback**: beep + haptic tick on each accepted detection
@@ -27,7 +33,7 @@ A high-performance, **fully offline** barcode & QR scanner plugin for Flutter.
 
 ```yaml
 dependencies:
-  barcode_scanner_pro: ^0.3.0
+  barcode_scanner_pro: ^0.4.0
 ```
 
 ### Platform setup
@@ -41,6 +47,25 @@ dependencies:
 
 **Android** — the `CAMERA` permission is declared by the plugin and merged
 automatically. Request it at runtime (see below). minSdk must be ≥ 24.
+
+## Reliable scanning of 1D codes
+
+Code 39, Code 93, ITF and Codabar have no mandatory check digit, so a marginal
+frame can decode into a valid-looking but wrong value. For these, configure:
+
+```dart
+const ScannerConfiguration(
+  formats: {BarcodeFormat.code39},     // only what you actually scan
+  resolution: ResolutionPreset.high,   // more pixels per bar
+  confirmations: 3,                    // default is 2
+  enableAutoZoom: true,                // Android only
+)
+```
+
+If your values follow a known pattern (for example a letter plus six digits),
+also reject anything that does not match it in your `barcodes` listener. See
+[doc/API.md](doc/API.md#misread-protection--confirmations) for how the
+confirmation vote works and what it cannot catch.
 
 ## Quick start
 

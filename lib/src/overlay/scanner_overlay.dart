@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import '../config/scan_area.dart';
 import '../controller.dart';
 import '../domain/barcode_result.dart';
+import '../domain/camera_facing.dart';
 import 'overlay_painters.dart';
 
 /// Visual style for [ScannerOverlay]. Pure data so it can be const-constructed
@@ -142,6 +143,8 @@ class _ScannerOverlayState extends State<ScannerOverlay>
                 barcodes: _detections,
                 color: style.detectionColor,
                 fillColor: style.detectionFillColor,
+                mirror:
+                    widget.controller.cameraFacing.value == CameraFacing.front,
               ),
             ),
         ],
