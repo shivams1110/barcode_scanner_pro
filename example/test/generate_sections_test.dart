@@ -6,8 +6,9 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('GenerateQrSection', () {
-    testWidgets('renders a TextField and a CustomPaint for default data',
-        (tester) async {
+    testWidgets('renders a TextField and a CustomPaint for default data', (
+      tester,
+    ) async {
       await tester.pumpWidget(const MaterialApp(home: GenerateQrSection()));
       expect(find.byType(TextField), findsOneWidget);
       // BarcodeWidget wraps CustomPaint; it paints synchronously so at least
@@ -24,9 +25,9 @@ void main() {
   });
 
   group('GenerateBarcodeSection', () {
-    testWidgets(
-        'shows Invalid validity line and Cannot encode for bad EAN-13',
-        (tester) async {
+    testWidgets('shows Invalid validity line and Cannot encode for bad EAN-13', (
+      tester,
+    ) async {
       // Start on EAN-13 by tapping the dropdown and selecting it with pump()
       // (not pumpAndSettle — the FutureBuilder keeps microtasks alive).
       await tester.pumpWidget(

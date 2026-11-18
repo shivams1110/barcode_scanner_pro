@@ -65,8 +65,10 @@ class _ScannerPageState extends State<ScannerPage> {
         resolution: ResolutionPreset.high,
         // Code 39 has no check digit; ask for a third agreeing read.
         confirmations: 3,
-        // Android: zoom in automatically on codes too small to decode.
+        // Zoom in automatically on codes too small to decode (Android + iOS).
         enableAutoZoom: true,
+        // More decoded frames: auto-zoom and confirmations settle ~2x sooner.
+        frameRateLimit: 30,
         enablePinchZoom: true,
         enableTapFocus: true,
       ),

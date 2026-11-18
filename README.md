@@ -20,8 +20,8 @@ A high-performance, **fully offline** barcode & QR scanner plugin for Flutter.
   outvote every competing reading before emitting, and emits nothing when the
   decoder cannot settle on one value — essential for Code 39/93, ITF and
   Codabar, which carry no mandatory check digit
-- **Auto-zoom** (Android): `enableAutoZoom` zooms in on codes that are located
-  but too small or far away to decode
+- **Auto-zoom**: `enableAutoZoom` zooms in on codes that are located but too
+  small or far away to decode (ML Kit suggestions on Android, size heuristic on iOS)
 - Configurable Flutter overlay: dark mask, rounded window, corner indicators,
   animated laser, live detection highlights
 - **Scan-accept feedback**: beep + haptic tick on each accepted detection
@@ -58,7 +58,7 @@ const ScannerConfiguration(
   formats: {BarcodeFormat.code39},     // only what you actually scan
   resolution: ResolutionPreset.high,   // more pixels per bar
   confirmations: 3,                    // default is 2
-  enableAutoZoom: true,                // Android only
+  enableAutoZoom: true,                // zoom in on small/far codes
 )
 ```
 

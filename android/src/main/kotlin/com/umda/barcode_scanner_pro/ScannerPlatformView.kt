@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
+import com.google.mlkit.vision.barcode.BarcodeScanner
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.ZoomSuggestionOptions
@@ -128,19 +129,6 @@ internal class ScannerPlatformView(
             return
         }
 
-        val options = BarcodeScannerOptions.Builder()
-            .setBarcodeFormats(FormatMapper.toMlKitFlags(config.formatMask))
-        if (config.enableAutoZoom) {
-            // ML Kit locates a code that is too small to decode and asks for the
-            // zoom ratio that would make it readable.
-            options.setZoomSuggestionOptions(
-                ZoomSuggestionOptions.Builder { ratio ->
-                    cameraManager?.setZoomRatio(ratio) ?: false
-                }.build(),
-            )
-        }
-        val scanner = BarcodeScanning.getClient(options.build())
-
         feedback?.dispose()
         feedback = FeedbackController(
             context = context,
@@ -149,8 +137,8 @@ internal class ScannerPlatformView(
         )
 
         val analyzer = FrameAnalyzer(
-            scanner = scanner,
             config = config,
+            viewSize = { previewView.width to previewView.height },
             onBarcodes = { list ->
                 feedback?.onDetection()
                 events.send(mapOf("type" to EventType.BARCODE_DETECTED, "barcodes" to list))
@@ -164,12 +152,31 @@ internal class ScannerPlatformView(
 
         manager.start(
             config = config,
-            onReady = { result.success(null) },
+            onReady = {
+                analyzer.scanner = buildScanner(manager.maxZoomRatio)
+                result.success(null)
+            },
             onError = { code, msg ->
                 events.sendError(code, msg)
                 result.error(code, msg, null)
             },
         )
+    }
+
+    private fun buildScanner(maxZoomRatio: Float): BarcodeScanner {
+        val options = BarcodeScannerOptions.Builder()
+            .setBarcodeFormats(FormatMapper.toMlKitFlags(config.formatMask))
+        if (config.enableAutoZoom) {
+            // ML Kit spots a code too small to decode and asks for the zoom ratio
+            // that would make it readable. Without the lens' max ratio it can't
+            // plan a suggestion, which is why auto-zoom fired only sometimes.
+            options.setZoomSuggestionOptions(
+                ZoomSuggestionOptions.Builder { ratio ->
+                    cameraManager?.setZoomRatio(ratio) ?: false
+                }.setMaxSupportedZoomRatio(maxZoomRatio).build(),
+            )
+        }
+        return BarcodeScanning.getClient(options.build())
     }
 
     private fun disposeInternal() {

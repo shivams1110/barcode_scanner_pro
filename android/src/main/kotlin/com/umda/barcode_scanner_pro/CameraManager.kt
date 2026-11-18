@@ -8,6 +8,7 @@ import androidx.camera.core.CameraSelector
 import androidx.camera.core.FocusMeteringAction
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
+import androidx.camera.core.SurfaceOrientedMeteringPointFactory
 import androidx.camera.core.resolutionselector.ResolutionSelector
 import androidx.camera.core.resolutionselector.ResolutionStrategy
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -43,6 +44,14 @@ internal class CameraManager(
     private var preview: Preview? = null
 
     private var lensFacing = CameraSelector.LENS_FACING_BACK
+
+    /** True while the zoom is where ML Kit auto-zoom put it. */
+    @Volatile
+    private var autoZoomed = false
+
+    /** Max zoom of the bound lens; 1 before binding. */
+    val maxZoomRatio: Float
+        get() = camera?.cameraInfo?.zoomState?.value?.maxZoomRatio ?: 1f
 
     /** Starts the camera with [config]. [onReady]/[onError] are invoked on main. */
     fun start(config: ScannerConfig, onReady: () -> Unit, onError: (String, String) -> Unit) {
@@ -128,13 +137,35 @@ internal class CameraManager(
      * Applies an absolute zoom [ratio] (ML Kit auto-zoom), clamped to what the
      * lens supports. Returns false when no camera is bound yet.
      */
-    // ponytail: zoom stays where auto-zoom left it; reset via setZoom(0) if
-    // scanning near codes right after far ones becomes awkward.
+    // ponytail: in continuous mode zoom stays where auto-zoom left it until the
+    // next start/resume (ML Kit only zooms in); reset per detection if that bites.
     fun setZoomRatio(ratio: Float): Boolean {
         val cam = camera ?: return false
-        val max = cam.cameraInfo.zoomState.value?.maxZoomRatio ?: 1f
-        cam.cameraControl.setZoomRatio(ratio.coerceIn(1f, max))
+        val max = maxZoomRatio
+        val applied = ratio.coerceIn(1f, max)
+        cam.cameraControl.setZoomRatio(applied)
+        autoZoomed = true
+        sendZoom(applied, max)
+        // Zooming throws the lens out of focus; refocus on the centre (where the
+        // zoom lands) now instead of waiting for continuous AF to notice.
+        val center = SurfaceOrientedMeteringPointFactory(1f, 1f).createPoint(0.5f, 0.5f)
+        cam.cameraControl.startFocusAndMetering(
+            FocusMeteringAction.Builder(center)
+                .setAutoCancelDuration(3, TimeUnit.SECONDS)
+                .build(),
+        )
         return true
+    }
+
+    /**
+     * Reports a zoom [ratio] as the `[0,1]` value `setZoom` takes, so the Dart
+     * zoom slider follows auto-zoom. Same mapping as CameraX `setLinearZoom`.
+     */
+    private fun sendZoom(ratio: Float, max: Float) {
+        val linear = if (max <= 1f) 0f else (1f / ratio - 1f) / (1f / max - 1f)
+        events.send(
+            mapOf("type" to EventType.ZOOM_CHANGED, "zoom" to linear.coerceIn(0f, 1f).toDouble()),
+        )
     }
 
     /** [value] in `[-1,1]` mapped onto the device EV range. */
@@ -169,6 +200,13 @@ internal class CameraManager(
     }
 
     fun resumeAnalysis() {
+        // Start each scan wide again: ML Kit never suggests zooming out, so a
+        // near code after a far one would otherwise overflow the frame.
+        if (autoZoomed) {
+            camera?.cameraControl?.setZoomRatio(1f)
+            autoZoomed = false
+            sendZoom(1f, maxZoomRatio)
+        }
         analyzer.resetDuplicates()
         analyzer.active = true
     }
@@ -181,6 +219,7 @@ internal class CameraManager(
     fun dispose() {
         stop()
         analysisExecutor.shutdown()
+        analyzer.scanner = null
         camera = null
         cameraProvider = null
     }

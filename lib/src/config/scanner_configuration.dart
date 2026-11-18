@@ -42,7 +42,9 @@ class ScannerConfiguration {
   /// [scanMode]. Convenience flag layered on top of [ScanMode].
   final bool continuousScanning;
 
-  /// Window during which an identical (value+format) detection is suppressed.
+  /// How long an identical (value+format) detection must go unseen before it
+  /// is emitted again. Each sighting restarts the timer, so a code held in
+  /// view emits once; move it away for this long to scan it again.
   final Duration duplicateTimeout;
 
   /// How many decodes of a payload are needed, within about a second, before
@@ -55,6 +57,10 @@ class ScannerConfiguration {
   /// frame. The genuine payload is read far more often than a misread, so
   /// agreement across frames filters them out.
   ///
+  /// Applies only to checksum-free symbologies (Code 39, Code 93, ITF,
+  /// Codabar). QR, Data Matrix, Aztec, PDF417, EAN, UPC and Code 128 carry a
+  /// mandatory check digit or error correction and emit on the first decode.
+  ///
   /// `1` emits every decode (fastest, least safe). The default `2` costs roughly
   /// one extra frame interval — about 67ms at [frameRateLimit] 15. Raise to `3`
   /// for handheld scanning of checksum-free symbologies; lower to `1` only for
@@ -63,8 +69,12 @@ class ScannerConfiguration {
 
   final bool enableAutoFocus;
 
-  /// Android only: let ML Kit zoom the camera in on a code it has located but
-  /// that is too small or far away to decode. Ignored on iOS.
+  /// Zoom the camera in on a code that is located but too small or far away
+  /// to decode. Android uses ML Kit zoom suggestions. iOS (Vision only reports
+  /// codes it has already decoded) zooms a readable code covering under a
+  /// quarter of the frame, flips between 2x and the starting zoom while
+  /// nothing is found for 1.5s, and captures at least 1080p. A manual zoom
+  /// stops the flipping. Zoom resets on each start/resume.
   final bool enableAutoZoom;
   final bool enableSound;
   final bool enableVibration;

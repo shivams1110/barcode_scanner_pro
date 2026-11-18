@@ -22,12 +22,26 @@ enum CoordinateMapper {
     }
   }
 
-  /// True when the center of a Vision-normalized [box] is within [area].
-  static func isInside(box: CGRect, area: ScanAreaConfig) -> Bool {
+  /// True when the center of a Vision-normalized [box] (in an upright image of
+  /// [imageSize]) is within [area], which is normalized to the visible part of
+  /// an aspect-fill preview of [viewSize]. The preview scales the image to
+  /// cover the view and crops the overflow equally on both sides, so the
+  /// detection is mapped into that visible region first. A zero [viewSize]
+  /// (not laid out yet) falls back to the uncropped image.
+  static func isInside(
+    box: CGRect, area: ScanAreaConfig, imageSize: CGSize, viewSize: CGSize
+  ) -> Bool {
     if area.isFull { return true }
-    let nx = box.midX
-    // Flip Y to top-left origin.
-    let ny = 1.0 - box.midY
+    var visibleW = 1.0
+    var visibleH = 1.0
+    if viewSize.width > 0, viewSize.height > 0, imageSize.width > 0, imageSize.height > 0 {
+      let scale = max(viewSize.width / imageSize.width, viewSize.height / imageSize.height)
+      visibleW = Double(viewSize.width / scale / imageSize.width)
+      visibleH = Double(viewSize.height / scale / imageSize.height)
+    }
+    // Flip Y to top-left origin, then into visible-region coordinates.
+    let nx = (Double(box.midX) - (1 - visibleW) / 2) / visibleW
+    let ny = (Double(1.0 - box.midY) - (1 - visibleH) / 2) / visibleH
     return nx >= area.left && nx <= area.left + area.width
       && ny >= area.top && ny <= area.top + area.height
   }

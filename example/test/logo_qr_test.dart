@@ -4,12 +4,11 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('LogoQrSection', () {
-    testWidgets('renders without exception once the ui.Image resolves',
-        (tester) async {
+    testWidgets('renders without exception once the ui.Image resolves', (
+      tester,
+    ) async {
       await tester.runAsync(() async {
-        await tester.pumpWidget(
-          const MaterialApp(home: LogoQrSection()),
-        );
+        await tester.pumpWidget(const MaterialApp(home: LogoQrSection()));
 
         // Allow the ui.Image future (PictureRecorder -> toImage) to complete.
         await tester.pumpAndSettle();
@@ -23,21 +22,17 @@ void main() {
       expect(find.text('Logo QR'), findsOneWidget);
     });
 
-    testWidgets('shows the ECC note and the medium-ECC demo button',
-        (tester) async {
+    testWidgets('shows the ECC note and the medium-ECC demo button', (
+      tester,
+    ) async {
       await tester.runAsync(() async {
-        await tester.pumpWidget(
-          const MaterialApp(home: LogoQrSection()),
-        );
+        await tester.pumpWidget(const MaterialApp(home: LogoQrSection()));
         await tester.pumpAndSettle();
       });
 
       await tester.pump();
 
-      expect(
-        find.textContaining('error correction'),
-        findsAtLeast(1),
-      );
+      expect(find.textContaining('error correction'), findsAtLeast(1));
       expect(find.text('Try with medium ECC'), findsOneWidget);
     });
   });

@@ -4,9 +4,9 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('hub lists the generator section tiles', (tester) async {
-    await tester.pumpWidget(MaterialApp(
-      home: DemoHubPage(isDark: true, onToggleTheme: () {}),
-    ));
+    await tester.pumpWidget(
+      MaterialApp(home: DemoHubPage(isDark: true, onToggleTheme: () {})),
+    );
     expect(find.text('Generate QR'), findsOneWidget);
     expect(find.text('Generate Barcode'), findsOneWidget);
     expect(find.text('Batch Generation'), findsOneWidget);

@@ -9,9 +9,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: HistorySection(
-            history: [
-              BarcodeRequest(data: 'x', format: BarcodeFormat.qr),
-            ],
+            history: [BarcodeRequest(data: 'x', format: BarcodeFormat.qr)],
           ),
         ),
       );
@@ -20,9 +18,7 @@ void main() {
 
     testWidgets('shows empty-state text when history is empty', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
-          home: HistorySection(history: const []),
-        ),
+        MaterialApp(home: HistorySection(history: const [])),
       );
       expect(find.text('No codes yet — generate one.'), findsOneWidget);
     });

@@ -4,8 +4,9 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('ValidationSection', () {
-    testWidgets('shows valid indicator for default EAN-13 4006381333931',
-        (tester) async {
+    testWidgets('shows valid indicator for default EAN-13 4006381333931', (
+      tester,
+    ) async {
       await tester.pumpWidget(const MaterialApp(home: ValidationSection()));
       await tester.pump();
 
@@ -14,8 +15,9 @@ void main() {
       expect(find.text('invalid'), findsNothing);
     });
 
-    testWidgets('shows invalid indicator when check digit is wrong',
-        (tester) async {
+    testWidgets('shows invalid indicator when check digit is wrong', (
+      tester,
+    ) async {
       await tester.pumpWidget(const MaterialApp(home: ValidationSection()));
       await tester.pump();
 

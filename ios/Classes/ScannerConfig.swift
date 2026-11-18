@@ -23,6 +23,7 @@ struct ScannerConfig {
   let duplicateTimeoutMs: Double
   let confirmations: Int
   let enableAutoFocus: Bool
+  let enableAutoZoom: Bool
   let enableSound: Bool
   let enableVibration: Bool
   let frameRateLimit: Int
@@ -38,8 +39,11 @@ struct ScannerConfig {
   ///
   /// `max` asks for 4K before 1080p: more pixels per barcode module is what
   /// decides whether a dense or small 1D code decodes correctly.
+  ///
+  /// With auto-zoom on, at least 1080p: Vision can't locate a code it can't
+  /// decode yet, so more pixels per module is what lets it read far codes.
   var sessionPresets: [AVCaptureSession.Preset] {
-    switch resolution {
+    switch enableAutoZoom ? max(resolution, 2) : resolution {
     case 0: return [.vga640x480]
     case 1: return [.hd1280x720]
     case 2: return [.hd1920x1080]
@@ -70,6 +74,7 @@ struct ScannerConfig {
       duplicateTimeoutMs: d(map["duplicateTimeoutMs"], 1000),
       confirmations: i(map["confirmations"], 2),
       enableAutoFocus: b(map["enableAutoFocus"], true),
+      enableAutoZoom: b(map["enableAutoZoom"], false),
       enableSound: b(map["enableSound"], true),
       enableVibration: b(map["enableVibration"], true),
       frameRateLimit: i(map["frameRateLimit"], 15),

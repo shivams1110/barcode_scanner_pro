@@ -7,20 +7,22 @@ import 'package:flutter_test/flutter_test.dart';
 /// Print Preview / Image Decode / Scanner) are only asserted to exist in the
 /// hub tile list — not navigated into.
 void main() {
-  Widget buildHub() => MaterialApp(
-        home: DemoHubPage(isDark: true, onToggleTheme: () {}),
-      );
+  Widget buildHub() =>
+      MaterialApp(home: DemoHubPage(isDark: true, onToggleTheme: () {}));
 
   // ---------------------------------------------------------------------------
   // IO / native tiles: assert they exist (include off-screen items).
   // ---------------------------------------------------------------------------
 
-  testWidgets('hub shows IO/native tiles without navigating them',
-      (tester) async {
+  testWidgets('hub shows IO/native tiles without navigating them', (
+    tester,
+  ) async {
     await tester.pumpWidget(buildHub());
     // Use skipOffstage: false so tiles scrolled off the initial viewport count.
-    expect(find.text('Save (PNG / SVG / PDF)', skipOffstage: false),
-        findsOneWidget);
+    expect(
+      find.text('Save (PNG / SVG / PDF)', skipOffstage: false),
+      findsOneWidget,
+    );
     expect(find.text('Print Preview', skipOffstage: false), findsOneWidget);
     expect(find.text('Image Decode', skipOffstage: false), findsOneWidget);
     expect(find.text('Scanner', skipOffstage: false), findsOneWidget);
@@ -31,8 +33,9 @@ void main() {
   // Headlessly-safe sections: navigate in, assert, navigate back.
   // ---------------------------------------------------------------------------
 
-  testWidgets('smoke: Generate QR section renders without exception',
-      (tester) async {
+  testWidgets('smoke: Generate QR section renders without exception', (
+    tester,
+  ) async {
     await tester.pumpWidget(buildHub());
 
     await tester.tap(find.text('Generate QR'));
@@ -46,8 +49,9 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('smoke: Styled QR section renders without exception',
-      (tester) async {
+  testWidgets('smoke: Styled QR section renders without exception', (
+    tester,
+  ) async {
     await tester.pumpWidget(buildHub());
 
     await tester.tap(find.text('Styled QR'));
@@ -61,8 +65,9 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('smoke: Gradient QR section renders without exception',
-      (tester) async {
+  testWidgets('smoke: Gradient QR section renders without exception', (
+    tester,
+  ) async {
     await tester.pumpWidget(buildHub());
 
     await tester.tap(find.text('Gradient QR'));
@@ -76,8 +81,9 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('smoke: Validation section renders without exception',
-      (tester) async {
+  testWidgets('smoke: Validation section renders without exception', (
+    tester,
+  ) async {
     await tester.pumpWidget(buildHub());
 
     // Scroll the hub list until Validation is on-stage, then tap it.
@@ -96,8 +102,9 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('smoke: History section renders without exception',
-      (tester) async {
+  testWidgets('smoke: History section renders without exception', (
+    tester,
+  ) async {
     await tester.pumpWidget(buildHub());
 
     // History is near the bottom of the hub list; scroll to bring it on-stage.

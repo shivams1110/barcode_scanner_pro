@@ -24,8 +24,9 @@ import com.google.mlkit.vision.common.InputImage
  * platform view only has to forward them to the event channel.
  */
 internal class FrameAnalyzer(
-    private val scanner: BarcodeScanner,
     private val config: ScannerConfig,
+    /** Current preview view size (width, height); read on the main thread. */
+    private val viewSize: () -> Pair<Int, Int>,
     private val onBarcodes: (List<Map<String, Any?>>) -> Unit,
     private val onError: (String) -> Unit,
 ) : ImageAnalysis.Analyzer {
@@ -33,6 +34,17 @@ internal class FrameAnalyzer(
     private val dupFilter = DuplicateFilter(config.duplicateTimeoutMs)
     private val confirmGate = ConfirmationGate(config.confirmations)
     private var lastAnalyzedMs = 0L
+
+    /**
+     * Set once the camera is bound: auto-zoom needs the lens' max zoom ratio
+     * at build time. Frames are dropped until then. Replacing closes the old one.
+     */
+    @Volatile
+    var scanner: BarcodeScanner? = null
+        set(value) {
+            field?.close()
+            field = value
+        }
 
     /** Gate toggled by start/pause/stop. When false, frames are dropped cheaply. */
     @Volatile
@@ -45,7 +57,8 @@ internal class FrameAnalyzer(
 
     @ExperimentalGetImage
     override fun analyze(imageProxy: ImageProxy) {
-        if (!active) {
+        val scanner = scanner
+        if (!active || scanner == null) {
             imageProxy.close()
             return
         }
@@ -90,10 +103,12 @@ internal class FrameAnalyzer(
     ) {
         if (!active || barcodes.isEmpty()) return
 
+        // ML Kit delivers results on the main thread, so the view size is safe to read.
+        val (viewW, viewH) = viewSize()
         val inArea = barcodes.filter {
             val box = it.boundingBox ?: return@filter false
             CoordinateMapper.isInside(
-                box.exactCenterX(), box.exactCenterY(), config.scanArea, width, height,
+                box.exactCenterX(), box.exactCenterY(), config.scanArea, width, height, viewW, viewH,
             )
         }
         if (inArea.isEmpty()) return
@@ -101,8 +116,10 @@ internal class FrameAnalyzer(
         // Trust a payload only once it has out-voted competing reads across
         // frames; see [ConfirmationGate]. Must run before the duplicate filter,
         // which would otherwise swallow the repeats that confirm a code.
+        // Codes with a built-in checksum emit on the first decode; only the
+        // checksum-free symbologies wait for votes.
         val confirmed = inArea.filter {
-            confirmGate.confirm(BarcodeMapper.dedupKey(it), nowMs)
+            it.format in SELF_CHECKING || confirmGate.confirm(BarcodeMapper.dedupKey(it), nowMs)
         }
         if (confirmed.isEmpty()) return
 
@@ -132,5 +149,17 @@ internal class FrameAnalyzer(
                 )
             }
         }
+    }
+
+    private companion object {
+        /**
+         * Formats whose decode is already verified by ECC or a strong checksum.
+         * EAN/UPC are deliberately absent: a single mod-10 digit still lets
+         * misreads through (e.g. a partial EAN-13 decoded as UPC-E).
+         */
+        val SELF_CHECKING = setOf(
+            Barcode.FORMAT_QR_CODE, Barcode.FORMAT_DATA_MATRIX, Barcode.FORMAT_AZTEC,
+            Barcode.FORMAT_PDF417, Barcode.FORMAT_CODE_128,
+        )
     }
 }

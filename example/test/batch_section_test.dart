@@ -4,9 +4,9 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('BatchSection', () {
-    testWidgets(
-        'shows elapsed-ms text and grid after Generate with small count',
-        (tester) async {
+    testWidgets('shows elapsed-ms text and grid after Generate with small count', (
+      tester,
+    ) async {
       await tester.pumpWidget(const MaterialApp(home: BatchSection()));
 
       // The slider starts at 10 (min). No need to drag it — just tap Generate.
@@ -18,8 +18,9 @@ void main() {
       // the actual future — no fixed sleep.
       await tester.runAsync(() async {
         await tester.tap(generateBtn);
-        final state =
-            tester.state<BatchSectionState>(find.byType(BatchSection));
+        final state = tester.state<BatchSectionState>(
+          find.byType(BatchSection),
+        );
         await state.lastRun;
       });
 

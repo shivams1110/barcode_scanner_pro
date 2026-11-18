@@ -1,3 +1,67 @@
+## Unreleased
+
+**Auto-zoom**
+
+* iOS: `enableAutoZoom` now works. Vision has no zoom suggestion, so a code
+  covering under 25% of the frame is zoomed to about 50%, capped so an
+  off-centre code is not pushed out of view.
+* iOS: auto-zoom now also reaches codes too small to decode. Vision only
+  reports codes it has already decoded — a far 1D code produced no signal, so
+  auto-zoom never fired for it. While nothing is found in the scan area for
+  1.5s, the camera now flips between 2x and the starting zoom. A manual zoom
+  (pinch or slider) stops the flipping for the session.
+* iOS: with `enableAutoZoom` on, capture is at least 1080p, so far codes have
+  enough pixels per bar for Vision to decode.
+* Android: ML Kit is now told the lens' max zoom ratio; without it zoom
+  suggestions fired only sometimes.
+* Android: auto-zoom refocuses on the centre right after zooming instead of
+  waiting for continuous autofocus, so the zoomed code decodes sooner.
+* Both: zoom resets on each start/resume (to 1x, or the iOS minimum zoom
+  below), so a near code after a far one is not stuck over-zoomed.
+* Both: auto-zoom now emits `zoomChanged`, so `controller.zoom` (and a zoom
+  slider bound to it) follows auto-zoom and ML Kit's own reset to 1x.
+* Android: the ML Kit scanner is now closed on dispose.
+* Example: `frameRateLimit: 30` so auto-zoom and confirmations settle sooner.
+* iOS: with `enableAutoZoom` on, autofocus is no longer restricted to near
+  distances, so the distant codes auto-zoom targets can come into focus.
+
+**Scan accuracy**
+
+* Both: the scan area now matches what the user sees. The aspect-fill preview
+  crops the camera frame (on a tall phone a 4:3 frame loses ~40% of its
+  width), but detections were checked against the uncropped frame, so codes
+  outside the drawn box, or off-screen, were accepted.
+* Both: EAN-13, EAN-8, UPC-A and UPC-E now go through `confirmations` like
+  other checksum-light symbologies. A single mod-10 check digit still lets
+  misreads through (e.g. a partial EAN-13 decoded as UPC-E). Costs about one
+  frame. QR, Data Matrix, Aztec, PDF417 and Code 128 still emit on first read.
+* iOS: Vision is no longer pinned to request revision 3 on iOS 17+, which was
+  a downgrade from the OS default.
+
+**Focus (iOS)**
+
+* Tap-to-focus no longer locks focus and exposure until the next restart; it
+  re-centres on the tapped point and keeps tracking, so codes at other
+  distances still come into focus.
+* Close codes are sharp on lenses with a long minimum focus distance (iPhone
+  13 Pro and later, ~20cm). Following Apple's AVCamBarcode approach, the back
+  camera starts zoomed just enough that a code filling the scan area sits at
+  the focus limit. Zoom value `0` (slider start) now means this minimum zoom.
+  iOS 15+.
+
+**Duplicate filtering**
+
+* `duplicateTimeout` now restarts on every sighting: a code held in view emits
+  once instead of re-emitting (and beeping) every timeout. Move it out of view
+  for `duplicateTimeout` to scan it again.
+
+**Stability (iOS)**
+
+* Frames are decoded on their own queue, so torch, zoom and focus changes no
+  longer wait behind a slow Vision pass.
+* Camera settings (torch, exposure, zoom, focus) are skipped instead of
+  applied when the device lock fails, which raised an Objective-C exception.
+
 ## 0.4.0
 
 **Misread protection**

@@ -5,6 +5,9 @@ import UIKit
 /// A `UIView` that keeps its preview layer sized to its bounds. `initialize`
 /// swaps the layer for a new session's, so size whatever is currently attached.
 final class PreviewContainerView: UIView {
+  /// Called with the new bounds size on every layout pass.
+  var onResize: ((CGSize) -> Void)?
+
   init(previewLayer: AVCaptureVideoPreviewLayer) {
     super.init(frame: .zero)
     layer.addSublayer(previewLayer)
@@ -14,6 +17,7 @@ final class PreviewContainerView: UIView {
   override func layoutSubviews() {
     super.layoutSubviews()
     layer.sublayers?.forEach { $0.frame = bounds }
+    onResize?(bounds.size)
   }
 }
 
@@ -141,8 +145,14 @@ final class ScannerPlatformView: NSObject, FlutterPlatformView {
         self?.events.sendError(ErrorCode.decodingError, msg)
       })
     let manager = CameraManager(analyzer: analyzer, events: events)
+    if config.enableAutoZoom {
+      analyzer.onZoomSuggestion = { [weak manager] step in manager?.zoomIn(by: step) }
+      analyzer.onZoomSearch = { [weak manager] zoomed in manager?.searchZoom(zoomed) }
+    }
     self.analyzer = analyzer
     self.cameraManager = manager
+    container.onResize = { [weak analyzer] size in analyzer?.previewSize = size }
+    analyzer.previewSize = container.bounds.size
     container.layer.sublayers?.forEach { $0.removeFromSuperlayer() }
     container.layer.addSublayer(manager.previewLayer)
     manager.previewLayer.frame = container.bounds
