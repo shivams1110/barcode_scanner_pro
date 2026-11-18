@@ -33,7 +33,7 @@ A high-performance, **fully offline** barcode & QR scanner plugin for Flutter.
 
 ```yaml
 dependencies:
-  barcode_scanner_pro: ^0.4.0
+  barcode_scanner_pro: ^0.5.0
 ```
 
 ### Platform setup
